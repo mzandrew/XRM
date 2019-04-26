@@ -61,8 +61,8 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
   
   // Envelope parameters
   //
-  G4double env_sizeXY = 20*cm, env_sizeZ = 30*cm;
-  G4Material* env_mat = nist->FindOrBuildMaterial("G4_WATER");
+  G4double env_sizeXY = 6*mm, env_sizeZ = 1*cm;
+  G4Material* env_mat = nist->FindOrBuildMaterial("G4_He");
    
   // Option to switch on/off checking of volumes overlaps
   //
@@ -115,46 +115,46 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
                     0,                       //copy number
                     checkOverlaps);          //overlaps checking
  
-  //     
-  // Shape 1
-  //  
-  G4Material* shape1_mat = nist->FindOrBuildMaterial("G4_A-150_TISSUE");
-  G4ThreeVector pos1 = G4ThreeVector(0, 2*cm, -7*cm);
-        
-  // Conical section shape       
-  G4double shape1_rmina =  0.*cm, shape1_rmaxa = 2.*cm;
-  G4double shape1_rminb =  0.*cm, shape1_rmaxb = 4.*cm;
-  G4double shape1_hz = 3.*cm;
-  G4double shape1_phimin = 0.*deg, shape1_phimax = 360.*deg;
-  G4Cons* solidShape1 =    
-    new G4Cons("Shape1", 
-    shape1_rmina, shape1_rmaxa, shape1_rminb, shape1_rmaxb, shape1_hz,
-    shape1_phimin, shape1_phimax);
-                      
-  G4LogicalVolume* logicShape1 =                         
-    new G4LogicalVolume(solidShape1,         //its solid
-                        shape1_mat,          //its material
-                        "Shape1");           //its name
-               
-  new G4PVPlacement(0,                       //no rotation
-                    pos1,                    //at position
-                    logicShape1,             //its logical volume
-                    "Shape1",                //its name
-                    logicEnv,                //its mother  volume
-                    false,                   //no boolean operation
-                    0,                       //copy number
-                    checkOverlaps);          //overlaps checking
+//  //     
+//  // Shape 1
+//  //  
+//  G4Material* shape1_mat = nist->FindOrBuildMaterial("G4_A-150_TISSUE");
+//  G4ThreeVector pos1 = G4ThreeVector(0, 2*cm, -7*cm);
+//        
+//  // Conical section shape       
+//  G4double shape1_rmina =  0.*cm, shape1_rmaxa = 2.*cm;
+//  G4double shape1_rminb =  0.*cm, shape1_rmaxb = 4.*cm;
+//  G4double shape1_hz = 3.*cm;
+//  G4double shape1_phimin = 0.*deg, shape1_phimax = 360.*deg;
+//  G4Cons* solidShape1 =    
+//    new G4Cons("Shape1", 
+//    shape1_rmina, shape1_rmaxa, shape1_rminb, shape1_rmaxb, shape1_hz,
+//    shape1_phimin, shape1_phimax);
+//                      
+//  G4LogicalVolume* logicShape1 =                         
+//    new G4LogicalVolume(solidShape1,         //its solid
+//                        shape1_mat,          //its material
+//                        "Shape1");           //its name
+//               
+//  new G4PVPlacement(0,                       //no rotation
+//                    pos1,                    //at position
+//                    logicShape1,             //its logical volume
+//                    "Shape1",                //its name
+//                    logicEnv,                //its mother  volume
+//                    false,                   //no boolean operation
+//                    0,                       //copy number
+//                    checkOverlaps);          //overlaps checking
 
   //     
   // Shape 2
   //
-  G4Material* shape2_mat = nist->FindOrBuildMaterial("G4_BONE_COMPACT_ICRU");
-  G4ThreeVector pos2 = G4ThreeVector(0, -1*cm, 7*cm);
+  G4Material* shape2_mat = nist->FindOrBuildMaterial("G4_Si");
+  G4ThreeVector pos2 = G4ThreeVector(0, 0*cm, 0*cm);
 
   // Trapezoid shape       
-  G4double shape2_dxa = 12*cm, shape2_dxb = 12*cm;
-  G4double shape2_dya = 10*cm, shape2_dyb = 16*cm;
-  G4double shape2_dz  = 6*cm;      
+  G4double shape2_dxa = 75.*um, shape2_dxb = 75.*um;
+  G4double shape2_dya = 6.*mm, shape2_dyb = 6.*mm;
+  G4double shape2_dz  = 2.*mm;
   G4Trd* solidShape2 =    
     new G4Trd("Shape2",                      //its name
               0.5*shape2_dxa, 0.5*shape2_dxb, 

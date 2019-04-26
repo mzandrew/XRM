@@ -70,6 +70,7 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
 
   // collect energy deposited in this step
   G4double edepStep = step->GetTotalEnergyDeposit();
+G4cout << "step energy deposited: " << edepStep << G4endl;
   fEventAction->AddEdep(edepStep);  
 }
 

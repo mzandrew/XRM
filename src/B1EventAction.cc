@@ -39,7 +39,8 @@ B1EventAction::B1EventAction(B1RunAction* runAction)
 : G4UserEventAction(),
   fRunAction(runAction),
   fEdep(0.)
-{} 
+{
+} 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -59,6 +60,8 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 {   
   // accumulate statistics in run action
   fRunAction->AddEdep(fEdep);
+G4cout << "event energy deposited: " << fEdep << G4endl;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
