@@ -54,10 +54,11 @@ void B1EventAction::BeginOfEventAction(const G4Event*) {
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 const float epsilon = 1.e-6;
+const float silicon_work_function = 4.*CLHEP::eV;
 void B1EventAction::EndOfEventAction(const G4Event*) {   
 	// accumulate statistics in run action
 	fRunAction->AddEdep(fEdep);
-	if (fEdep > epsilon) {
+	if (fEdep > silicon_work_function) {
 		G4cout << "event energy deposited: " << fEdep/CLHEP::keV << " keV" << G4endl;
 	}
 }

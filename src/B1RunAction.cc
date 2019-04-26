@@ -106,8 +106,8 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
    = static_cast<const B1DetectorConstruction*>
      (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
   G4double mass = detectorConstruction->GetScoringVolume()->GetMass();
-  G4double dose = edep/mass;
-  G4double rmsDose = rms/mass;
+//  G4double dose = edep/mass;
+//  G4double rmsDose = rms/mass;
 
   // Run conditions
   //  note: There is no primary generator action object for "master"
@@ -127,16 +127,16 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
         
   // Print
   //  
-  if (IsMaster()) {
-    G4cout
-     << G4endl
-     << "--------------------End of Global Run-----------------------";
-  }
-  else {
-    G4cout
-     << G4endl
-     << "--------------------End of Local Run------------------------";
-  }
+//  if (IsMaster()) {
+//    G4cout
+//     << G4endl
+//     << "--------------------End of Global Run-----------------------";
+//  }
+//  else {
+//    G4cout
+//     << G4endl
+//     << "--------------------End of Local Run------------------------";
+//  }
   
 //  G4cout
 //     << G4endl

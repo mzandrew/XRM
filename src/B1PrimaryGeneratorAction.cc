@@ -52,7 +52,9 @@ B1PrimaryGeneratorAction::B1PrimaryGeneratorAction()
 	G4ParticleDefinition *particle = particleTable->FindParticle(particleName="gamma");
 	fParticleGun->SetParticleDefinition(particle);
 	fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
-	fParticleGun->SetParticleEnergy(10.*keV);
+//	fParticleGun->SetParticleEnergy(10.*keV);
+//	G4UImanager* UI = G4UImanager::GetUIpointer();
+//	UI->ApplyCommand("/control/alias critial_energy 10. keV");
 	G4double envSizeZ = 1.*cm;
 	G4double x0 = 0.*mm;
 	G4double y0 = 0.*mm;
@@ -66,6 +68,28 @@ B1PrimaryGeneratorAction::B1PrimaryGeneratorAction()
 
 B1PrimaryGeneratorAction::~B1PrimaryGeneratorAction() {
   delete fParticleGun;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+G4double ln(G4double value) {
+	return log(value);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+G4double InvSynFracInt(G4double y) {
+// after Burkhardt MONTE CARLO GENERATION OF THE ENERGY SPECTRUM OF SYNCHROTRON RADIATION
+	G4double x;
+	const G4double y1 = 0.7;
+	const G4double y2 = 0.91322603;
+	const G4double g1 = pow(y1, 3.);
+	const G4double g2 = -ln(1.-y2);
+	const G4double slope = (g2-g1) / (y2-y1);
+	     if (y<y1) { x = pow(y, 3.); }
+	else if (y>y2) { x = -ln(1.-y); }
+	else           { x = slope * y + y1; }
+	return x;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -86,6 +110,12 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 	pos.setY(y0);
 	fParticleGun->SetParticlePosition(pos);
 	fParticleGun->GeneratePrimaryVertex(anEvent);
+	static G4float critial_energy = fParticleGun->GetParticleEnergy();
+//	G4float critial_energy = 7.18*keV; // HER
+//	G4float critial_energy = 4.458.*keV; // LER
+	G4double q = G4UniformRand();
+	G4double w = InvSynFracInt(q);
+	fParticleGun->SetParticleEnergy(critial_energy*w);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -10,15 +10,23 @@ to run a geant4 executable (from build/ subdir):
 . /usr/local/bin/geant4.sh
 cd build; ./exampleB1
 
-edge-on:
-mza@ubuntu18-04:~/build/XRM/build$ cp ../*.mac .; ./exampleB1 HER-N-bunches.mac > HER.log ; ./exampleB1 LER-N-bunches.mac > LER.log
-mza@ubuntu18-04:~/build/XRM/build$ grep -c deposited *.log
+edge-on monochromatic 11 keV / 18 keV:
+mza@ubuntu18-04:~/build/XRM/build$ cp ../*.mac .; ./exampleB1 HER-N-bunches.mac > HER.log ; ./exampleB1 LER-N-bunches.mac > LER.log; grep -c deposited *.log
 HER.log:70
 LER.log:133
 
-face-on:
-mza@ubuntu18-04:~/build/XRM/build$ cp ../*.mac .; ./exampleB1 HER-N-bunches.mac > HER.log ; ./exampleB1 LER-N-bunches.mac > LER.log
-mza@ubuntu18-04:~/build/XRM/build$ grep -c deposited *.log
+face-on monochromatic 11 keV / 18 keV:
+mza@ubuntu18-04:~/build/XRM/build$ cp ../*.mac .; ./exampleB1 HER-N-bunches.mac > HER.log ; ./exampleB1 LER-N-bunches.mac > LER.log; grep -c deposited *.log
 HER.log:389
 LER.log:228
+
+edge-on including InvSynFracInt with critial energy 7.18 keV / 4.458 keV:
+mza@ubuntu18-04:~/build/XRM/build$ cp ../*.mac .; ./exampleB1 HER-N-bunches.mac > HER.log ; ./exampleB1 LER-N-bunches.mac > LER.log; grep -c deposited *.log
+HER.log:41
+LER.log:135
+
+face-on including InvSynFracInt with critial energy 7.18 keV / 4.458 keV:
+mza@ubuntu18-04:~/build/XRM/build$ cp ../*.mac .; ./exampleB1 HER-N-bunches.mac > HER.log ; ./exampleB1 LER-N-bunches.mac > LER.log; grep -c deposited *.log
+HER.log:1235
+LER.log:2993
 
