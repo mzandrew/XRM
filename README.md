@@ -10,3 +10,8 @@ to run a geant4 executable (from build/ subdir):
 . /usr/local/bin/geant4.sh
 cd build; ./exampleB1
 
+mza@ubuntu18-04:~/build/XRM/build$ cp ../*.mac .; ./exampleB1 HER-N-bunches.mac > HER.log ; ./exampleB1 LER-N-bunches.mac > LER.log
+mza@ubuntu18-04:~/build/XRM/build$ grep -c deposited *.log
+HER.log:70
+LER.log:133
+

@@ -1,0 +1,7 @@
+
+#/run/initialize
+#/gun/position 0 0 0
+
+/gun/position {x_mm} 0 0
+/run/beamOn 1
+

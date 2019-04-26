@@ -7,13 +7,13 @@
 #/run/verbose 2
 
 /control/alias x_size_mm 6.
-#/control/alias x_step_mm x_size_mm/9836.
+#/control/alias x_step_mm x_size_mm/24562.
 #/control/alias x_start_mm -x_size_mm/2. 
 #/control/alias x_end_mm x_size_mm/2. 
-/control/alias x_step_mm 1.01667344449e-4
+/control/alias x_step_mm 4.07132969628e-5
 /control/alias x_start_mm -3. 
 /control/alias x_end_mm 3.
 
-/gun/energy 11 keV
-/control/loop HER-1-bunch.mac x_mm {x_start_mm} {x_end_mm} {x_step_mm}
+/gun/energy 18 keV
+/control/loop LER-1-bunch.mac x_mm {x_start_mm} {x_end_mm} {x_step_mm}
 
