@@ -49,6 +49,8 @@ set(EXAMPLEB1_SCRIPTS
   run1.mac
   run2.mac
   vis.mac
+  HER-1-bunch.mac
+  HER-N-bunches.mac
   )
 
 foreach(_script ${EXAMPLEB1_SCRIPTS})

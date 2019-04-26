@@ -39,29 +39,26 @@ B1EventAction::B1EventAction(B1RunAction* runAction)
 : G4UserEventAction(),
   fRunAction(runAction),
   fEdep(0.)
-{
-} 
+{ } 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-B1EventAction::~B1EventAction()
-{}
+B1EventAction::~B1EventAction() { }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void B1EventAction::BeginOfEventAction(const G4Event*)
-{    
+void B1EventAction::BeginOfEventAction(const G4Event*) {    
   fEdep = 0.;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+const float epsilon = 1.e-6;
 void B1EventAction::EndOfEventAction(const G4Event*) {   
 	// accumulate statistics in run action
 	fRunAction->AddEdep(fEdep);
-	float epsilon = 1.e-6;
 	if (fEdep > epsilon) {
-		G4cout << "event energy deposited: " << fEdep << G4endl;
+		G4cout << "event energy deposited: " << fEdep/CLHEP::keV << " keV" << G4endl;
 	}
 }
 

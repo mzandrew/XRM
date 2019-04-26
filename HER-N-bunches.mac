@@ -1,0 +1,17 @@
+# Macro file for example B1
+# To be run preferably in batch, without graphics:
+# % exampleB1 run2.mac
+#/run/numberOfWorkers 4
+/run/initialize
+#/control/verbose 2
+#/run/verbose 2
+
+/control/alias x_size_mm 6.
+#/control/alias x_step_mm x_size_mm/166.
+#/control/alias x_start_mm -x_size_mm/2. 
+#/control/alias x_end_mm x_size_mm/2. 
+/control/alias x_step_mm 3.61445783133e-2
+/control/alias x_start_mm -3. 
+/control/alias x_end_mm 3.
+/control/loop HER-1-bunch.mac x_mm {x_start_mm} {x_end_mm} {x_step_mm}
+

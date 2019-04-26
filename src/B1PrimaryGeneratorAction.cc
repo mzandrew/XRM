@@ -44,42 +44,48 @@
 B1PrimaryGeneratorAction::B1PrimaryGeneratorAction()
 : G4VUserPrimaryGeneratorAction(), fParticleGun(0), fEnvelopeBox(0)
 {
-  G4int n_particle = 166;
-  fParticleGun = new G4ParticleGun(n_particle);
-  // default particle kinematic
-  G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
-  G4String particleName;
-  G4ParticleDefinition *particle = particleTable->FindParticle(particleName="gamma");
-  fParticleGun->SetParticleDefinition(particle);
-  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
-  fParticleGun->SetParticleEnergy(10.*keV);
+	G4int n_particle = 1;
+	fParticleGun = new G4ParticleGun(n_particle);
+	// default particle kinematic
+	G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
+	G4String particleName;
+	G4ParticleDefinition *particle = particleTable->FindParticle(particleName="gamma");
+	fParticleGun->SetParticleDefinition(particle);
+	fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
+	fParticleGun->SetParticleEnergy(10.*keV);
+	G4double envSizeZ = 1.*cm;
+	G4double x0 = 0.*mm;
+	G4double y0 = 0.*mm;
+	G4double z0 = -0.5 * envSizeZ;
+	G4ThreeVector pos;
+	pos.set(x0, y0, z0);
+	fParticleGun->SetParticlePosition(pos);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-B1PrimaryGeneratorAction::~B1PrimaryGeneratorAction()
-{
+B1PrimaryGeneratorAction::~B1PrimaryGeneratorAction() {
   delete fParticleGun;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
-  //this function is called at the begining of each event
-  // In order to avoid dependence of PrimaryGeneratorAction
-  // on DetectorConstruction class we get Envelope volume
-  // from G4LogicalVolumeStore.
-  G4double envSizeZ = 0;
-  if (!fEnvelopeBox) {
-    G4LogicalVolume* envLV = G4LogicalVolumeStore::GetInstance()->GetVolume("Envelope");
-    if ( envLV ) fEnvelopeBox = dynamic_cast<G4Box*>(envLV->GetSolid());
-  }
-  G4double size = 6.*mm; 
-  G4double x0 = size * (G4UniformRand()-0.5);
-  G4double y0 = size * (G4UniformRand()-0.5);
-  G4double z0 = -0.5 * envSizeZ;
-  fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
-  fParticleGun->GeneratePrimaryVertex(anEvent);
+	//this function is called at the begining of each event
+	// In order to avoid dependence of PrimaryGeneratorAction
+	// on DetectorConstruction class we get Envelope volume
+	// from G4LogicalVolumeStore.
+	if (!fEnvelopeBox) {
+		G4LogicalVolume* envLV = G4LogicalVolumeStore::GetInstance()->GetVolume("Envelope");
+		if ( envLV ) fEnvelopeBox = dynamic_cast<G4Box*>(envLV->GetSolid());
+	}
+	G4ThreeVector pos;
+	pos = fParticleGun->GetParticlePosition();
+	G4double beam_vertical_size = 6.*mm; 
+	G4double y0 = beam_vertical_size * (G4UniformRand()-0.5);
+	pos.setY(y0);
+	fParticleGun->SetParticlePosition(pos);
+	fParticleGun->GeneratePrimaryVertex(anEvent);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
