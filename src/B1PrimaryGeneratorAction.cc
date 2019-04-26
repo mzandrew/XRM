@@ -112,7 +112,7 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 	fParticleGun->GeneratePrimaryVertex(anEvent);
 	static G4float critial_energy = fParticleGun->GetParticleEnergy();
 //	G4float critial_energy = 7.18*keV; // HER
-//	G4float critial_energy = 4.458.*keV; // LER
+//	G4float critial_energy = 4.458*keV; // LER
 	G4double q = G4UniformRand();
 	G4double w = InvSynFracInt(q);
 	fParticleGun->SetParticleEnergy(critial_energy*w);
