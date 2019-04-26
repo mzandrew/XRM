@@ -114,7 +114,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
                     false,                   //no boolean operation
                     0,                       //copy number
                     checkOverlaps);          //overlaps checking
- 
+
 //  //     
 //  // Shape 1
 //  //  
@@ -145,12 +145,36 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 //                    0,                       //copy number
 //                    checkOverlaps);          //overlaps checking
 
-  //     
-  // Shape 2
-  //
+if (0) {
+  // edge-on
+  G4Material* shape1_mat = nist->FindOrBuildMaterial("G4_Si");
+  G4ThreeVector pos1 = G4ThreeVector(0.*cm, 0.*cm, 0.*cm);
+  // Trapezoid shape       
+  G4double shape1_dxa = 75.*um, shape1_dxb = 75.*um;
+  G4double shape1_dya = 6.*mm, shape1_dyb = 6.*mm;
+  G4double shape1_dz  = 2.*mm;
+  G4Trd* solidShape1 =    
+    new G4Trd("Shape1",                      //its name
+              0.5*shape1_dxa, 0.5*shape1_dxb, 
+              0.5*shape1_dya, 0.5*shape1_dyb, 0.5*shape1_dz); //its size
+  G4LogicalVolume* logicShape1 =                         
+    new G4LogicalVolume(solidShape1,         //its solid
+                        shape1_mat,          //its material
+                        "Shape1");           //its name
+  new G4PVPlacement(0,                       //no rotation
+                    pos1,                    //at position
+                    logicShape1,             //its logical volume
+                    "Shape1",                //its name
+                    logicEnv,                //its mother  volume
+                    false,                   //no boolean operation
+                    0,                       //copy number
+                    checkOverlaps);          //overlaps checking
+  // Set as scoring volume
+  fScoringVolume = logicShape1;
+} else {
+  // face-on
   G4Material* shape2_mat = nist->FindOrBuildMaterial("G4_Si");
-  G4ThreeVector pos2 = G4ThreeVector(0, 0*cm, 0*cm);
-
+  G4ThreeVector pos2 = G4ThreeVector(0.*cm, 0.*cm, 0.*cm);
   // Trapezoid shape       
   G4double shape2_dxa = 75.*um, shape2_dxb = 75.*um;
   G4double shape2_dya = 6.*mm, shape2_dyb = 6.*mm;
@@ -159,13 +183,13 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
     new G4Trd("Shape2",                      //its name
               0.5*shape2_dxa, 0.5*shape2_dxb, 
               0.5*shape2_dya, 0.5*shape2_dyb, 0.5*shape2_dz); //its size
-                
   G4LogicalVolume* logicShape2 =                         
     new G4LogicalVolume(solidShape2,         //its solid
                         shape2_mat,          //its material
                         "Shape2");           //its name
-               
-  new G4PVPlacement(0,                       //no rotation
+  G4RotationMatrix *yRot2 = new G4RotationMatrix; // Rotates X and Z axes only
+  yRot2->rotateY(M_PI/2.*rad);
+  new G4PVPlacement(yRot2,                   //rotation
                     pos2,                    //at position
                     logicShape2,             //its logical volume
                     "Shape2",                //its name
@@ -173,14 +197,11 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
                     false,                   //no boolean operation
                     0,                       //copy number
                     checkOverlaps);          //overlaps checking
-                
-  // Set Shape2 as scoring volume
-  //
+  // Set as scoring volume
   fScoringVolume = logicShape2;
+}
 
-  //
   //always return the physical World
-  //
   return physWorld;
 }
 
