@@ -56,11 +56,13 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void B1EventAction::EndOfEventAction(const G4Event*)
-{   
-  // accumulate statistics in run action
-  fRunAction->AddEdep(fEdep);
-G4cout << "event energy deposited: " << fEdep << G4endl;
+void B1EventAction::EndOfEventAction(const G4Event*) {   
+	// accumulate statistics in run action
+	fRunAction->AddEdep(fEdep);
+	float epsilon = 1.e-6;
+	if (fEdep > epsilon) {
+		G4cout << "event energy deposited: " << fEdep << G4endl;
+	}
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

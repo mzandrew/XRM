@@ -8,11 +8,11 @@
 
 /gun/particle gamma
 /gun/energy 11 keV
-/run/printProgress 100
+#/run/printProgress 100
 /run/beamOn 166
 
 /gun/particle gamma
 /gun/energy 18 keV
-/run/printProgress 100
+#/run/printProgress 100
 /run/beamOn 450
 
