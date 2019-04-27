@@ -59,7 +59,10 @@ void B1EventAction::EndOfEventAction(const G4Event*) {
 	// accumulate statistics in run action
 	fRunAction->AddEdep(fEdep);
 	if (fEdep > silicon_work_function) {
-		G4cout << "event energy deposited: " << fEdep/CLHEP::keV << " keV" << G4endl;
+		//G4cout << "event energy deposited: " << fEdep/CLHEP::keV << " keV" << G4endl;
+		G4cout << " " << fEdep/CLHEP::keV << G4endl;
+	} else {
+		G4cout << " 0.0" << G4endl;
 	}
 }
 

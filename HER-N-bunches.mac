@@ -5,6 +5,7 @@
 /run/initialize
 /control/verbose 0
 /run/verbose 0
+#/tracking/verbose 0
 
 /control/alias x_size_mm 6.
 #/control/alias x_step_mm x_size_mm/9836.

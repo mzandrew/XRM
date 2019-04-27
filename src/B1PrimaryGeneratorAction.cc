@@ -52,7 +52,7 @@ B1PrimaryGeneratorAction::B1PrimaryGeneratorAction()
 	G4ParticleDefinition *particle = particleTable->FindParticle(particleName="gamma");
 	fParticleGun->SetParticleDefinition(particle);
 	fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
-//	fParticleGun->SetParticleEnergy(10.*keV);
+	fParticleGun->SetParticleEnergy(10.*keV);
 //	G4UImanager* UI = G4UImanager::GetUIpointer();
 //	UI->ApplyCommand("/control/alias critial_energy 10. keV");
 	G4double envSizeZ = 1.*cm;
@@ -80,7 +80,7 @@ G4double ln(G4double value) {
 
 G4double InvSynFracInt(G4double y) {
 // after Burkhardt MONTE CARLO GENERATION OF THE ENERGY SPECTRUM OF SYNCHROTRON RADIATION
-	G4double x;
+	G4double x = 0.0;
 	const G4double y1 = 0.7;
 	const G4double y2 = 0.91322603;
 	const G4double g1 = pow(y1, 3.);
@@ -88,8 +88,10 @@ G4double InvSynFracInt(G4double y) {
 	const G4double slope = (g2-g1) / (y2-y1);
 	     if (y<y1) { x = pow(y, 3.); }
 	else if (y>y2) { x = -ln(1.-y); }
-	else           { x = slope * y + y1; }
+	else           { x = slope * (y-y1) + g1; }
 	return x;
+//	return y;
+//	return 1.;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -111,11 +113,16 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 	fParticleGun->SetParticlePosition(pos);
 	fParticleGun->GeneratePrimaryVertex(anEvent);
 	static G4float critial_energy = fParticleGun->GetParticleEnergy();
+	static G4int event_counter = 0;
+	event_counter++;
 //	G4float critial_energy = 7.18*keV; // HER
 //	G4float critial_energy = 4.458*keV; // LER
 	G4double q = G4UniformRand();
 	G4double w = InvSynFracInt(q);
-	fParticleGun->SetParticleEnergy(critial_energy*w);
+	G4double energy = critial_energy*w;
+	fParticleGun->SetParticleEnergy(energy);
+	//G4cout << "energy of photon: " << energy/CLHEP::keV << " keV" << G4endl;
+	G4cout << event_counter << " " << energy/CLHEP::keV;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
