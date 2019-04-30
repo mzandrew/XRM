@@ -39,28 +39,37 @@ B1EventAction::B1EventAction(B1RunAction* runAction)
 : G4UserEventAction(),
   fRunAction(runAction),
   fEdep(0.)
-{ } 
+{
+//	G4cout << "B1EventAction constructor called" << G4endl;
+} 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-B1EventAction::~B1EventAction() { }
+B1EventAction::~B1EventAction() {
+//	G4cout << "B1EventAction default constructor called" << G4endl;
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void B1EventAction::BeginOfEventAction(const G4Event*) {    
+//	G4cout << "BeginOfEventAction called" << G4endl;
   fEdep = 0.;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-const float epsilon = 1.e-6;
-const float silicon_work_function = 4.*CLHEP::eV;
+//const float epsilon = 1.e-6;
+//const float silicon_work_function = epsilon;
+const G4double silicon_work_function = 4.91*CLHEP::eV;
 void B1EventAction::EndOfEventAction(const G4Event*) {   
+//	G4cout << "EndOfEventAction called" << G4endl;
 	// accumulate statistics in run action
 	fRunAction->AddEdep(fEdep);
-	if (fEdep > silicon_work_function) {
-		//G4cout << "event energy deposited: " << fEdep/CLHEP::keV << " keV" << G4endl;
-		G4cout << " " << fEdep/CLHEP::keV << G4endl;
+	G4double energy_deposited = fEdep;
+	if (energy_deposited > silicon_work_function) {
+		//G4cout << "event energy deposited: " << energy_deposited/CLHEP::keV << " keV" << G4endl;
+		
+		G4cout << " " << energy_deposited/CLHEP::keV << G4endl;
 	} else {
 		G4cout << " 0.0" << G4endl;
 	}

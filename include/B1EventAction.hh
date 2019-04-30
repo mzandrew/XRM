@@ -36,7 +36,6 @@
 class B1RunAction;
 
 /// Event action class
-///
 
 class B1EventAction : public G4UserEventAction
 {
@@ -47,7 +46,7 @@ class B1EventAction : public G4UserEventAction
     virtual void BeginOfEventAction(const G4Event* event);
     virtual void EndOfEventAction(const G4Event* event);
 
-    void AddEdep(G4double edep) { fEdep += edep; }
+    void AddEdep(G4double edep) { fEdep += edep; /*G4cout << fEdep/CLHEP::keV << " keV so far;  called" << G4endl;*/ }
 
   private:
     B1RunAction* fRunAction;
@@ -58,4 +57,3 @@ class B1EventAction : public G4UserEventAction
 
 #endif
 
-    

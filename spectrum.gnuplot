@@ -1,5 +1,6 @@
 
 set logscale xy
+#plot 'build/HER.log' using 2:1
 #plot 'build/HER.summary' using 2:1
 plot 'build/HER.summary' using 3:2
 pause -1

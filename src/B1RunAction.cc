@@ -67,13 +67,15 @@ B1RunAction::B1RunAction()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-B1RunAction::~B1RunAction()
-{}
+B1RunAction::~B1RunAction() {
+//	G4cout << "B1RunAction destructor called" << G4endl;
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void B1RunAction::BeginOfRunAction(const G4Run*)
 { 
+//	G4cout << "BeginOfRunAction called" << G4endl;
   // inform the runManager to save random number seed
   G4RunManager::GetRunManager()->SetRandomNumberStore(false);
 
@@ -85,8 +87,8 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void B1RunAction::EndOfRunAction(const G4Run* run)
-{
+void B1RunAction::EndOfRunAction(const G4Run* run) {
+//	G4cout << "EndOfRunAction called" << G4endl;
   G4int nofEvents = run->GetNumberOfEvent();
   if (nofEvents == 0) return;
 
@@ -98,14 +100,15 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
   //
   G4double edep  = fEdep.GetValue();
   G4double edep2 = fEdep2.GetValue();
+//	G4cout << "endofrunaction " << edep/CLHEP::keV << "  called" << G4endl;
   
   G4double rms = edep2 - edep*edep/nofEvents;
   if (rms > 0.) rms = std::sqrt(rms); else rms = 0.;  
 
-  const B1DetectorConstruction* detectorConstruction
-   = static_cast<const B1DetectorConstruction*>
-     (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
-  G4double mass = detectorConstruction->GetScoringVolume()->GetMass();
+//  const B1DetectorConstruction* detectorConstruction
+//   = static_cast<const B1DetectorConstruction*>
+//     (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
+//  G4double mass = detectorConstruction->GetScoringVolume()->GetMass();
 //  G4double dose = edep/mass;
 //  G4double rmsDose = rms/mass;
 
@@ -155,6 +158,8 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
 void B1RunAction::AddEdep(G4double edep)
 {
   fEdep  += edep;
+//G4cout << "run energy deposited: " << edep << " keV;  called" << G4endl;
+//G4cout << "run energy deposited: " << fEdep.GetValue() << " keV so far;  called" << G4endl;
   fEdep2 += edep*edep;
 }
 

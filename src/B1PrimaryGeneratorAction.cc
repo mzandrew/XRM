@@ -28,7 +28,6 @@
 /// \brief Implementation of the B1PrimaryGeneratorAction class
 
 #include "B1PrimaryGeneratorAction.hh"
-
 #include "G4LogicalVolumeStore.hh"
 #include "G4LogicalVolume.hh"
 #include "G4Box.hh"
@@ -38,12 +37,14 @@
 #include "G4ParticleDefinition.hh"
 #include "G4SystemOfUnits.hh"
 #include "Randomize.hh"
+#include "G4SynchrotronRadiation.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B1PrimaryGeneratorAction::B1PrimaryGeneratorAction()
 : G4VUserPrimaryGeneratorAction(), fParticleGun(0), fEnvelopeBox(0)
 {
+//	G4cout << "B1PrimaryGeneratorAction constructor called" << G4endl;
 	G4int n_particle = 1;
 	fParticleGun = new G4ParticleGun(n_particle);
 	// default particle kinematic
@@ -55,10 +56,9 @@ B1PrimaryGeneratorAction::B1PrimaryGeneratorAction()
 	fParticleGun->SetParticleEnergy(10.*keV);
 //	G4UImanager* UI = G4UImanager::GetUIpointer();
 //	UI->ApplyCommand("/control/alias critial_energy 10. keV");
-	G4double envSizeZ = 1.*cm;
 	G4double x0 = 0.*mm;
 	G4double y0 = 0.*mm;
-	G4double z0 = -0.5 * envSizeZ;
+	G4double z0 = -200.*mm;
 	G4ThreeVector pos;
 	pos.set(x0, y0, z0);
 	fParticleGun->SetParticlePosition(pos);
@@ -97,6 +97,7 @@ G4double InvSynFracInt(G4double y) {
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
+//	G4cout << "GeneratePrimaries called" << G4endl;
 	//this function is called at the begining of each event
 	// In order to avoid dependence of PrimaryGeneratorAction
 	// on DetectorConstruction class we get Envelope volume
@@ -111,18 +112,19 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 	G4double y0 = beam_vertical_size * (G4UniformRand()-0.5);
 	pos.setY(y0);
 	fParticleGun->SetParticlePosition(pos);
-	fParticleGun->GeneratePrimaryVertex(anEvent);
 	static G4float critial_energy = fParticleGun->GetParticleEnergy();
-	static G4int event_counter = 0;
-	event_counter++;
 //	G4float critial_energy = 7.18*keV; // HER
 //	G4float critial_energy = 4.458*keV; // LER
 	G4double q = G4UniformRand();
-	G4double w = InvSynFracInt(q);
+	G4SynchrotronRadiation a;
+	G4double w = a.G4SynchrotronRadiation::InvSynFracInt(q);
 	G4double energy = critial_energy*w;
 	fParticleGun->SetParticleEnergy(energy);
 	//G4cout << "energy of photon: " << energy/CLHEP::keV << " keV" << G4endl;
-	G4cout << event_counter << " " << energy/CLHEP::keV;
+	fParticleGun->GeneratePrimaryVertex(anEvent); // this line actually fires the photon...
+	static G4int event_counter = 0;
+	event_counter++;
+	G4cout << event_counter << " " << std::setw(12) << energy/CLHEP::keV;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

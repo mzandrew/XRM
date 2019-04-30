@@ -42,17 +42,22 @@ B1SteppingAction::B1SteppingAction(B1EventAction* eventAction)
 : G4UserSteppingAction(),
   fEventAction(eventAction),
   fScoringVolume(0)
-{}
+{
+//	G4cout << "B1SteppingAction constructor called" << G4endl;
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B1SteppingAction::~B1SteppingAction()
-{}
+{
+//	G4cout << "B1SteppingAction destructor called" << G4endl;
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void B1SteppingAction::UserSteppingAction(const G4Step* step)
 {
+//	G4cout << "UserSteppingAction called" << G4endl;
   if (!fScoringVolume) { 
     const B1DetectorConstruction* detectorConstruction = static_cast<const B1DetectorConstruction*> (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
     fScoringVolume = detectorConstruction->GetScoringVolume();   
@@ -63,8 +68,8 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
   if (volume != fScoringVolume) return;
   // collect energy deposited in this step
   G4double edepStep = step->GetTotalEnergyDeposit();
-//G4cout << "step energy deposited: " << edepStep << G4endl;
-  fEventAction->AddEdep(edepStep);  
+//G4cout << "step energy deposited: " << edepStep/CLHEP::keV << " keV  called" << G4endl;
+  fEventAction->AddEdep(edepStep);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
