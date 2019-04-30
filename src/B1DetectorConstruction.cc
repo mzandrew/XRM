@@ -113,7 +113,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	                  0,                       //copy number
 	                  checkOverlaps);          //overlaps checking
 
-	if (0) { // select real XRM situation or bulk silicon
+	if (1) { // select real XRM situation or bulk silicon
 		G4Material* shape0_mat = nist->FindOrBuildMaterial("G4_Be");
 		G4ThreeVector pos0 = G4ThreeVector(0, 0, position_of_Be_window);
 		// Conical section shape       

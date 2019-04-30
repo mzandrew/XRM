@@ -20,13 +20,18 @@ mza@ubuntu18-04:~/build/XRM/build$ cp ../*.mac .; ./exampleB1 HER-N-bunches.mac 
 HER.log:389
 LER.log:228
 
+bulk silicon cube for reference:
+mza@ubuntu18-04:~/build/XRM$ ./go.sh
+HER.log:8743
+LER.log:21457
+
 edge-on including InvSynFracInt with critial energy 7.18 keV / 4.458 keV:
-mza@ubuntu18-04:~/build/XRM/build$ cp ../*.mac .; ./exampleB1 HER-N-bunches.mac > HER.log ; ./exampleB1 LER-N-bunches.mac > LER.log; grep -c deposited *.log
-HER.log:41
-LER.log:135
+mza@ubuntu18-04:~/build/XRM$ ./go.sh
+HER.log:627
+LER.log:723
 
 face-on including InvSynFracInt with critial energy 7.18 keV / 4.458 keV:
-mza@ubuntu18-04:~/build/XRM/build$ cp ../*.mac .; ./exampleB1 HER-N-bunches.mac > HER.log ; ./exampleB1 LER-N-bunches.mac > LER.log; grep -c deposited *.log
-HER.log:1235
-LER.log:2993
+mza@ubuntu18-04:~/build/XRM$ ./go.sh
+HER.log:282
+LER.log:381
 
