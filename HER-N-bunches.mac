@@ -16,7 +16,7 @@
 /control/alias x_end_m 3.e-3 
 
 # critial energy:
-#/gun/energy 7.18 keV
+/gun/energy 7.18 keV
 /control/loop HER-1-bunch.mac x_m {x_start_m} {x_end_m} {x_step_m}
 #/control/execute HER-1-bunch.mac 0
 
