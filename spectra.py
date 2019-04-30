@@ -59,6 +59,11 @@ histogram1 = ROOT.TH1F('histogram1', filename, number_of_bins, fbin_widths)
 #	histogram1.Fill(input_energies[event])
 for event in deposited_energies.keys():
 	histogram1.Fill(deposited_energies[event])
+histogram1.GetXaxis().SetTitle("deposited energy [keV]")
+histogram1.GetYaxis().SetTitle("number of events")
+#normalization = histogram1.GetEntries()
+#histogram1.Scale(1./normalization)
+#histogram1.GetYaxis().SetTitle("relative abundance")
 histogram1.Draw()
 canvas1.Update()
 
