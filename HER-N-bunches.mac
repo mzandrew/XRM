@@ -8,10 +8,10 @@
 #/tracking/verbose 0
 
 /control/alias x_size_m 6.e-3 
-#/control/alias x_step_mm x_size_mm/24562.
+#/control/alias x_step_mm x_size_mm/9837.
 #/control/alias x_start_mm -x_size_mm/2. 
 #/control/alias x_end_mm x_size_mm/2. 
-/control/alias x_step_m 2.44279781777e-7
+/control/alias x_step_m 6.09942055505e-7
 /control/alias x_start_m -3.e-3 
 /control/alias x_end_m 3.e-3 
 

@@ -11,7 +11,7 @@
 #/control/alias x_step_mm x_size_mm/24562.
 #/control/alias x_start_mm -x_size_mm/2. 
 #/control/alias x_end_mm x_size_mm/2. 
-/control/alias x_step_m 4.07132969628e-8
+/control/alias x_step_m 2.44279781777e-7
 /control/alias x_start_m -3.e-3 
 /control/alias x_end_m 3.e-3 
 
