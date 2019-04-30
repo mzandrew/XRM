@@ -7,16 +7,16 @@
 /run/verbose 0
 #/tracking/verbose 0
 
-/control/alias x_size_mm 6.
-#/control/alias x_step_mm x_size_mm/9836.
+/control/alias x_size_m 6.e-3 
+#/control/alias x_step_mm x_size_mm/24562.
 #/control/alias x_start_mm -x_size_mm/2. 
 #/control/alias x_end_mm x_size_mm/2. 
-/control/alias x_step_mm 1.01667344449e-4
-/control/alias x_start_mm -3. 
-/control/alias x_end_mm 3.
+/control/alias x_step_m 2.44279781777e-7
+/control/alias x_start_m -3.e-3 
+/control/alias x_end_m 3.e-3 
 
 # critial energy:
 #/gun/energy 7.18 keV
-/control/loop HER-1-bunch.mac x_mm {x_start_mm} {x_end_mm} {x_step_mm}
+/control/loop HER-1-bunch.mac x_m {x_start_m} {x_end_m} {x_step_m}
 #/control/execute HER-1-bunch.mac 0
 

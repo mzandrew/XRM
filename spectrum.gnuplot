@@ -2,9 +2,11 @@
 set logscale xy
 #plot 'build/HER.log' using 2:1
 #plot 'build/HER.summary' using 2:1
-plot 'build/HER.summary' using 3:2
+#plot 'build/HER.summary' using 3:2
+plot 'build/HER.summary' using 3:1
 pause -1
-plot 'build/LER.summary' using 3:2
+#plot 'build/LER.summary' using 3:2
+plot 'build/LER.summary' using 3:1
 pause -1
 
 #set offset 0,0,1,1
