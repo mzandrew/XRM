@@ -1,3 +1,9 @@
+This project is to simulate the expected flux of x-ray photons and the energy depoisted in a silicon strip sensor instrumented on the Low Energy Ring (LER) and the High Energy Ring (HER) at SuperKEKB.
+
+The "exampleB1" code is modified from the example project of the same name that comes with geant4.
+
+helpful notes:
+
 to build a geant4 executable:
 . /usr/local/share/Geant4-10.5.1/geant4make/geant4make.sh
 mkdir build; cd build; cmake ..; make
@@ -8,7 +14,9 @@ cd build; make
 
 to run a geant4 executable (from build/ subdir):
 . /usr/local/bin/geant4.sh
-cd build; ./exampleB1
+cd build; ./edge_on
+
+preliminary results:
 
 edge-on monochromatic 11 keV / 18 keV:
 mza@ubuntu18-04:~/build/XRM/build$ cp ../*.mac .; ./exampleB1 HER-N-bunches.mac > HER.log ; ./exampleB1 LER-N-bunches.mac > LER.log; grep -c deposited *.log
@@ -20,18 +28,21 @@ mza@ubuntu18-04:~/build/XRM/build$ cp ../*.mac .; ./exampleB1 HER-N-bunches.mac 
 HER.log:389
 LER.log:228
 
-bulk silicon cube for reference:
-mza@ubuntu18-04:~/build/XRM$ ./go.sh
-HER.log:8743
-LER.log:21457
+bulk_si: bulk silicon cube in beampipe including SR spectrum (InvSynFracInt) with critial energy 7.18 keV / 4.458 keV
+edge_on: including SR spectrum (InvSynFracInt) with critial energy 7.18 keV / 4.458 keV
+face_on: including SR spectrum (InvSynFracInt) with critial energy 7.18 keV / 4.458 keV
 
-edge-on including InvSynFracInt with critial energy 7.18 keV / 4.458 keV:
 mza@ubuntu18-04:~/build/XRM$ ./go.sh
-HER.log:627
-LER.log:723
-
-face-on including InvSynFracInt with critial energy 7.18 keV / 4.458 keV:
-mza@ubuntu18-04:~/build/XRM$ ./go.sh
-HER.log:282
-LER.log:381
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/mza/build/XRM/build
+[ 33%] Built target bulk_si
+[ 66%] Built target face_on
+[100%] Built target edge_on
+read 8743 lines from file HER-bulk_si.summary
+read 21457 lines from file LER-bulk_si.summary
+read 627 lines from file HER-edge_on.summary
+read 723 lines from file LER-edge_on.summary
+read 282 lines from file HER-face_on.summary
+read 381 lines from file LER-face_on.summary
 

@@ -113,7 +113,16 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	                  0,                       //copy number
 	                  checkOverlaps);          //overlaps checking
 
-	if (1) { // select real XRM situation or bulk silicon
+	#ifndef BULK_SI_SITUATION
+	#define REAL_XRM_SITUATION
+	#endif
+
+	#ifndef FACE_ON
+	#define EDGE_ON
+	#endif
+
+	#ifdef REAL_XRM_SITUATION
+		// select real XRM situation or bulk silicon
 		G4Material* shape0_mat = nist->FindOrBuildMaterial("G4_Be");
 		G4ThreeVector pos0 = G4ThreeVector(0, 0, position_of_Be_window);
 		// Conical section shape       
@@ -151,7 +160,8 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 		                  false,                   //no boolean operation
 		                  0,                       //copy number
 		                  checkOverlaps);          //overlaps checking
-		if (1) { // select edge-on or face-on
+		#ifdef EDGE_ON
+			// select edge-on or face-on
 			// edge-on
 			G4Material* shape1_mat = nist->FindOrBuildMaterial("G4_Si");
 			G4double position_of_edge_on_sensor = position_of_first_part_of_sensor + 2.*mm/2.;
@@ -176,7 +186,8 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 			                  checkOverlaps);          //overlaps checking
 			// Set as scoring volume
 			fScoringVolume = logicShape1;
-		} else {
+		#endif
+		#ifdef FACE_ON
 			// face-on
 			G4Material* shape2_mat = nist->FindOrBuildMaterial("G4_Si");
 			G4double position_of_face_on_sensor = position_of_first_part_of_sensor + 75.*um/2.;
@@ -203,8 +214,10 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 			                  checkOverlaps);          //overlaps checking
 			// Set as scoring volume
 			fScoringVolume = logicShape2;
-		}
-	} else {
+		#endif
+	#endif
+
+	#ifdef BULK_SI_SITUATION
 		// Si bulk
 		G4Material* shape3_mat = nist->FindOrBuildMaterial("G4_Si");
 		G4double shape3_dx = 6.*mm;
@@ -230,7 +243,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 		                  checkOverlaps);          //overlaps checking
 		// Set as scoring volume
 		fScoringVolume = logicShape3;
-	}
+	#endif
 
 
 	//always return the physical World

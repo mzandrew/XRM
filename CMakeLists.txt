@@ -2,7 +2,7 @@
 #----------------------------------------------------------------------------
 # Setup the project
 cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
-project(B1)
+project(XRM)
 
 #----------------------------------------------------------------------------
 # Find Geant4 package, activating all available UI and Vis drivers by default
@@ -34,8 +34,20 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
-add_executable(exampleB1 exampleB1.cc ${sources} ${headers})
-target_link_libraries(exampleB1 ${Geant4_LIBRARIES})
+#add_executable(exampleB1 exampleB1.cc ${sources} ${headers})
+#target_link_libraries(exampleB1 ${Geant4_LIBRARIES})
+
+add_executable(bulk_si exampleB1.cc ${sources} ${headers})
+target_link_libraries(bulk_si ${Geant4_LIBRARIES})
+target_compile_definitions(bulk_si PRIVATE BULK_SI_SITUATION=1)
+
+add_executable(edge_on exampleB1.cc ${sources} ${headers})
+target_link_libraries(edge_on ${Geant4_LIBRARIES})
+target_compile_definitions(edge_on PRIVATE EDGE_ON=1)
+
+add_executable(face_on exampleB1.cc ${sources} ${headers})
+target_link_libraries(face_on ${Geant4_LIBRARIES})
+target_compile_definitions(face_on PRIVATE FACE_ON=1)
 
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we
@@ -51,6 +63,8 @@ set(EXAMPLEB1_SCRIPTS
   vis.mac
   HER-1-bunch.mac
   HER-N-bunches.mac
+  LER-1-bunch.mac
+  LER-N-bunches.mac
   )
 
 foreach(_script ${EXAMPLEB1_SCRIPTS})
@@ -65,11 +79,12 @@ endforeach()
 # For internal Geant4 use - but has no effect if you build this
 # example standalone
 #
-add_custom_target(B1 DEPENDS exampleB1)
+add_custom_target(XRM DEPENDS edge_on)
 
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 #
-install(TARGETS exampleB1 DESTINATION bin)
-
+install(TARGETS bulk_si DESTINATION bin)
+install(TARGETS edge_on DESTINATION bin)
+install(TARGETS face_on DESTINATION bin)
 
