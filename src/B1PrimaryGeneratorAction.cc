@@ -110,7 +110,9 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 	pos = fParticleGun->GetParticlePosition();
 	G4double beam_vertical_size = 6.*mm; 
 	G4double y0 = beam_vertical_size * (G4UniformRand()-0.5);
+	G4double z0 = -200.*mm;
 	pos.setY(y0);
+	pos.setZ(z0);
 	fParticleGun->SetParticlePosition(pos);
 	static G4float critial_energy = fParticleGun->GetParticleEnergy();
 //	G4float critial_energy = 7.18*keV; // HER
