@@ -83,7 +83,7 @@
 #/vis/scene/add/scale   # Simple scale line
 #/vis/scene/add/axes    # Simple axes: x=red, y=green, z=blue.
 /vis/scene/add/eventID # Drawn at end of event
-/vis/scene/add/date    # Date stamp
+#/vis/scene/add/date    # Date stamp
 #/vis/scene/add/logo2D  # Simple logo
 #/vis/scene/add/logo    # 3D logo
 #
@@ -102,6 +102,7 @@
 /vis/scene/add/text -2.0  0 -21 cm 18  0  0 beam pipe
 /vis/scene/add/text  4.3  0  -8 cm 18  0  0 Be window
 /vis/scene/add/text -1.0  0  -9 cm 18  0  0 air gap
+/vis/scene/add/text  4.3  0   2 cm 18  0  0 Be window
 /vis/scene/add/text -2.0  0  20 cm 18  0  0 He box
 /vis/scene/add/text  3.7  0  52 cm 18  0  0 Si sensor
 #

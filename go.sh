@@ -14,11 +14,13 @@ for HL in H L; do
 		grep -v " 0.0$" ${HL}ER-${situation}.log | sort -n > ${HL}ER-${situation}
 		#grep -cvH " 0.0$" ${HL}ER-${situation}.log || /bin/true
 	done
-	../spectra.py ${HL}ER-bulk_si ${HL}ER-edge_on ${HL}ER-face_on
+	filename="XRM.${HL}ER.png"
+	../spectra.py $filename ${HL}ER-bulk_si ${HL}ER-edge_on ${HL}ER-face_on
+	mv $filename ..
 done
 
 cd ..
 #gnuplot spectrum.gnuplot
 #${HOME}/build/root/bin/thisroot.sh
-echo "eog build/*.png"
+#echo "eog build/*.png"
 

@@ -10,7 +10,7 @@ import numpy # float array
 
 number_of_bins = 100
 low = 0.004
-high = 60.
+high = 40.
 factor = 10.**(math.log10(high/low)/number_of_bins)
 #print str(factor)
 bin_widths = []
@@ -27,10 +27,12 @@ legend1 = ROOT.TLegend(0.1, 0.7, 0.45, 0.9)
 #if __name__ == "__main__":
 filenames = []
 import sys
+png_filename = "XRM.png"
 if len(sys.argv) < 2:
 	filenames.append("/dev/stdin")
 else:
-	for each in sys.argv[1:]:
+	png_filename = sys.argv[1]
+	for each in sys.argv[2:]:
 		filenames.append(each)
 histograms = []
 i = 0
@@ -55,7 +57,7 @@ for filename in filenames:
 			#print str(event_number) + " " + str(input_energy) + " " + str(deposited_energy)
 			input_energies[event_number] = input_energy
 			deposited_energies[event_number] = deposited_energy
-	histograms.append(ROOT.TH1F(filename, title, number_of_bins, fbin_widths))
+	histograms.append(ROOT.TH1F('histogram['+str(i)+']', title, number_of_bins, fbin_widths))
 	#for event in input_energies.keys():
 	#	histograms[i].Fill(input_energies[event])
 	for event in deposited_energies.keys():
@@ -74,7 +76,9 @@ for filename in filenames:
 	histogram_stack.Add(histograms[i])
 	i = i + 1
 canvas1 = ROOT.TCanvas('canvas1', 'mycanvas', 100, 50, 800, 600)
+#canvas1.SetBatch(1)
 canvas1.SetLogx()
+#canvas1.SetLogy()
 histogram_stack.Draw("nostack")
 histogram_stack.GetXaxis().SetTitle("deposited energy [keV]")
 histogram_stack.GetYaxis().SetTitle("number of events")
@@ -91,5 +95,6 @@ else:
 	#raw_input("Press Enter to continue...")
 	imagefile = ROOT.TImage.Create()
 	imagefile.FromPad(canvas1)
-	imagefile.WriteImage(filename + ".png")
+	imagefile.WriteImage(png_filename)
+	print "generated " + png_filename
 
