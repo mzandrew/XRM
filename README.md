@@ -4,6 +4,9 @@ The "exampleB1" code is modified from the example project of the same name that 
 
 helpful notes:
 
+to build geant4:
+https://github.com/mzandrew/bin/blob/master/physics/make_geant4_and_visualization_friends.sh
+
 to build a geant4 executable:
 . /usr/local/share/Geant4-10.5.1/geant4make/geant4make.sh
 mkdir build; cd build; cmake ..; make
