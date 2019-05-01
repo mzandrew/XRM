@@ -20,4 +20,5 @@ done
 cd ..
 #gnuplot spectrum.gnuplot
 #${HOME}/build/root/bin/thisroot.sh
+echo "eog build/*.png"
 
