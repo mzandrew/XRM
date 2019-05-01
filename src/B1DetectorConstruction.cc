@@ -54,32 +54,51 @@ B1DetectorConstruction::~B1DetectorConstruction()
 { }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+G4double z_position_of_gun;
+
+#ifndef BULK_SI_SITUATION
+#define REAL_XRM_SITUATION
+#endif
+
+#ifndef FACE_ON
+#ifndef EDGE_ON
+#define EDGE_ON
+#endif
+#endif
 
 G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	// Get nist material manager
 	G4NistManager* nist = G4NistManager::Instance();
 	// SuperKEKB XRM:
 	G4double vacuum_dimension = 10.*cm;
-	G4double Be_window_dimension_1 = 2.*mm;
-	G4double Be_window_dimension_2 = 2.*mm;
-	G4double air_gap_dimension = 10.*cm;
+	G4double Be_window_dimension_1 = 2.*mm; // HER=8741/534/216 LER=21464/597/283
+	//G4double Be_window_dimension_1 = 1.*mm; // HER=8741/768/379 LER=21464/921/529
+	G4double Be_window_dimension_2 = 2.*mm; // HER=8741/534/216 LER=21464/597/283
+	//G4double Be_window_dimension_2 = 1.*mm; // HER=8741/538/220 LER=21464/592/277
+	// both Be windows dimensions = 1mm leads to HER=8741/767/378 LER=21464/921/533
+	G4double air_gap_dimension = 10.*cm; // HER=8741/534/216 LER=21464/597/283
+	//G4double air_gap_dimension = 1.*cm; // HER=8741/575/251 LER=21464/658/323
 	//G4double wall_thickness_of_box = 3.*mm;
-	G4double inside_dimension_of_box = 614.*mm; // D8 LER
 //	G4double neck_dimension_of_box = 50.*mm + 108.*mm;
 	// Envelope parameters
 	G4double position_of_vacuum = 0. - vacuum_dimension/2. - Be_window_dimension_1 - air_gap_dimension - Be_window_dimension_2;
+	G4double env_diameter = 8.5*mm;
+	#ifdef REAL_XRM_SITUATION
+	G4double inside_dimension_of_box = 614.*mm; // D8 LER
 	G4double position_of_Be_window_1 = 0. - Be_window_dimension_1/2. - air_gap_dimension - Be_window_dimension_2;
 	G4double position_of_Be_window_2 = 0. - Be_window_dimension_2/2.;
 	G4double position_of_He_envelope = inside_dimension_of_box/2.;
 	G4double position_of_first_part_of_sensor = - inside_dimension_of_box/2. + 500.*mm;
+	G4double env_sizeZ = inside_dimension_of_box;
+	#endif
 	//G4double position_of_first_part_of_sensor = - inside_dimension_of_box/2. + 50.*mm; // in He, this doesn't seem to make a difference
 //	G4cout << "position_of_vacuum " << position_of_vacuum << G4endl;
 //	G4cout << "position_of_Be_window_1 " << position_of_Be_window_1 << G4endl;
 //	G4cout << "position_of_He_envelope " << position_of_He_envelope << G4endl;
 //	G4cout << "position_of_first_part_of_sensor " << position_of_first_part_of_sensor << G4endl;
-	G4double env_diameter = 8.5*mm, env_sizeZ = inside_dimension_of_box;
 	// Option to switch on/off checking of volumes overlaps
 	G4bool checkOverlaps = true;
+	z_position_of_gun = position_of_vacuum - 4.*cm;
 
 	// World
 	G4double world_sizeXY = 1.2*env_diameter;
@@ -116,17 +135,9 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	                  0,                       //copy number
 	                  checkOverlaps);          //overlaps checking
 
-	#ifndef BULK_SI_SITUATION
-	#define REAL_XRM_SITUATION
-	#endif
-
-	#ifndef FACE_ON
-	#define EDGE_ON
-	#endif
-
-	G4Material* Be_mat = nist->FindOrBuildMaterial("G4_Be");
 	#ifdef REAL_XRM_SITUATION
 		// select real XRM situation or bulk silicon
+		G4Material* Be_mat = nist->FindOrBuildMaterial("G4_Be");
 		G4ThreeVector pos0 = G4ThreeVector(0, 0, position_of_Be_window_1);
 		G4double shape0_rmina =  0.*cm, shape0_rmaxa = env_diameter/2.;
 		G4double shape0_rminb =  0.*cm, shape0_rmaxb = env_diameter/2.;

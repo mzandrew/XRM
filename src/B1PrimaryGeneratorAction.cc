@@ -95,6 +95,7 @@ G4double InvSynFracInt(G4double y) {
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+extern G4double z_position_of_gun;
 
 void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 //	G4cout << "GeneratePrimaries called" << G4endl;
@@ -110,7 +111,7 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 	pos = fParticleGun->GetParticlePosition();
 	G4double beam_vertical_size = 6.*mm; 
 	G4double y0 = beam_vertical_size * (G4UniformRand()-0.5);
-	G4double z0 = -200.*mm;
+	G4double z0 = z_position_of_gun;
 	pos.setY(y0);
 	pos.setZ(z0);
 	fParticleGun->SetParticlePosition(pos);
