@@ -72,6 +72,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	G4double position_of_Be_window_2 = 0. - Be_window_dimension_2/2.;
 	G4double position_of_He_envelope = inside_dimension_of_box/2.;
 	G4double position_of_first_part_of_sensor = - inside_dimension_of_box/2. + 500.*mm;
+	//G4double position_of_first_part_of_sensor = - inside_dimension_of_box/2. + 50.*mm; // in He, this doesn't seem to make a difference
 //	G4cout << "position_of_vacuum " << position_of_vacuum << G4endl;
 //	G4cout << "position_of_Be_window_1 " << position_of_Be_window_1 << G4endl;
 //	G4cout << "position_of_He_envelope " << position_of_He_envelope << G4endl;
@@ -165,7 +166,8 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 		                  0,                       //copy number
 		                  checkOverlaps);          //overlaps checking
 		// Envelope
-		G4Material* env_mat = nist->FindOrBuildMaterial("G4_He");
+		G4Material* env_mat = nist->FindOrBuildMaterial("G4_He"); // HER=8741/534/216 LER=21464/597/283
+		//G4Material* env_mat = nist->FindOrBuildMaterial("G4_AIR"); // HER=8741/353/104 LER=21464/400/142
 		G4Tubs *solidEnv = new G4Tubs("Envelope", 0., env_diameter/2., 0.5*env_sizeZ, 0., 2.*M_PI);
 		G4LogicalVolume *logicEnv = new G4LogicalVolume(solidEnv,            //its solid
 		                      env_mat,             //its material
