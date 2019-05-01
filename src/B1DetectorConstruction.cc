@@ -93,7 +93,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	G4double position_of_vacuum = 0. - vacuum_dimension/2. - Be_window_dimension_1 - air_gap_dimension - Be_window_dimension_2;
 	G4double env_diameter = 8.5*mm;
 	#ifdef REAL_XRM_SITUATION
-	G4double inside_dimension_of_box = 614.*mm; // D8 LER
+	G4double inside_dimension_of_box = 614.*mm;
 	G4double position_of_Be_window_1 = 0. - Be_window_dimension_1/2. - air_gap_dimension - Be_window_dimension_2;
 	G4double position_of_Be_window_2 = 0. - Be_window_dimension_2/2.;
 	G4double position_of_He_envelope = inside_dimension_of_box/2.;
@@ -187,6 +187,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 		                  false,                   //no boolean operation
 		                  0,                       //copy number
 		                  checkOverlaps);          //overlaps checking
+		//G4Material* glass_mat = nist->FindOrBuildMaterial("G4_GLASS_PLATE"); // suppression; HER=8743/241/57 LER=24459/268/83
 		pos0 = G4ThreeVector(0, 0, position_of_Be_window_2);
 		G4double shape4_hz = Be_window_dimension_2/2.;
 		G4Cons* solidshape4 = new G4Cons("shape4", 
