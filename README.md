@@ -1,6 +1,6 @@
 This project is to simulate the expected flux of synchrotron radition (x-ray photons) and the energy deposited in a silicon strip sensor instrumented on the Low Energy Ring (LER) and the High Energy Ring (HER) at SuperKEKB.
 
-![alt text](https://github.com/mzandrew/XRM/blob/master/XRM-geometry.png "XRM geometry")
+![alt text](XRM-geometry.png?raw=true "XRM geometry")
 
 The "exampleB1" code is modified from the example project of the same name that comes with geant4.
 
@@ -55,21 +55,24 @@ edge_on: including SR spectrum (InvSynFracInt) with critial energy 7.18 keV / 4.
 face_on: including SR spectrum (InvSynFracInt) with critial energy 7.18 keV / 4.458 keV
 
 ```
-mza@ubuntu18-04:~/build/XRM$ ./go.sh
+mza@ubuntu18-04:~/build/XRM$ ./go.sh 
 -- Configuring done
 -- Generating done
 -- Build files have been written to: /home/mza/build/XRM/build
 [ 33%] Built target bulk_si
 [ 66%] Built target face_on
 [100%] Built target edge_on
-read 8743 lines from file HER-bulk_si.summary
-read 21457 lines from file LER-bulk_si.summary
-read 627 lines from file HER-edge_on.summary
-read 723 lines from file LER-edge_on.summary
-read 282 lines from file HER-face_on.summary
-read 381 lines from file LER-face_on.summary
+read 8741 lines from file HER-bulk_si
+read 534 lines from file HER-edge_on
+read 216 lines from file HER-face_on
+generated XRM.HER.png
+read 21464 lines from file LER-bulk_si
+read 597 lines from file LER-edge_on
+read 283 lines from file LER-face_on
+generated XRM.LER.png
 ```
 
-![alt text](https://github.com/mzandrew/XRM/blob/master/XRM.HER.png "XRM HER")
+![alt text](XRM.HER.png?raw=true "XRM HER")
 
-![alt text](https://github.com/mzandrew/XRM/blob/master/XRM.LER.png "XRM LER")
+![alt text](XRM.LER.png?raw=true "XRM LER")
+

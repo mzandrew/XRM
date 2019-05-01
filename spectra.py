@@ -6,7 +6,7 @@ import math # log10
 import numpy # float array
 
 # written 2019-04-30 by mza
-# last updated 2019-04-30 by mza
+# last updated 2019-05-01 by mza
 
 number_of_bins = 100
 low = 0.004
