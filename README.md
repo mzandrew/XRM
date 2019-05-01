@@ -4,37 +4,55 @@ The "exampleB1" code is modified from the example project of the same name that 
 
 helpful notes:
 
-to build geant4:
+to build and install geant4:
 https://github.com/mzandrew/bin/blob/master/physics/make_geant4_and_visualization_friends.sh
 
 to build a geant4 executable:
+
+```
 . /usr/local/share/Geant4-10.5.1/geant4make/geant4make.sh
 mkdir build; cd build; cmake ..; make
+```
 
 to rebuild a geant4 executable after a source change:
 (to run with a new .mac file, copy the changed mac file into the build dir first)
+
+```
 cd build; make
+```
 
 to run a geant4 executable (from build/ subdir):
+
+```
 . /usr/local/bin/geant4.sh
 cd build; ./edge_on
+```
 
 preliminary results:
 
 edge-on monochromatic 11 keV / 18 keV:
+
+```
 mza@ubuntu18-04:~/build/XRM/build$ cp ../*.mac .; ./exampleB1 HER-N-bunches.mac > HER.log ; ./exampleB1 LER-N-bunches.mac > LER.log; grep -c deposited *.log
 HER.log:70
 LER.log:133
+```
 
 face-on monochromatic 11 keV / 18 keV:
+
+```
 mza@ubuntu18-04:~/build/XRM/build$ cp ../*.mac .; ./exampleB1 HER-N-bunches.mac > HER.log ; ./exampleB1 LER-N-bunches.mac > LER.log; grep -c deposited *.log
 HER.log:389
 LER.log:228
+```
 
 bulk_si: bulk silicon cube in beampipe including SR spectrum (InvSynFracInt) with critial energy 7.18 keV / 4.458 keV
+
 edge_on: including SR spectrum (InvSynFracInt) with critial energy 7.18 keV / 4.458 keV
+
 face_on: including SR spectrum (InvSynFracInt) with critial energy 7.18 keV / 4.458 keV
 
+```
 mza@ubuntu18-04:~/build/XRM$ ./go.sh
 -- Configuring done
 -- Generating done
@@ -48,4 +66,4 @@ read 627 lines from file HER-edge_on.summary
 read 723 lines from file LER-edge_on.summary
 read 282 lines from file HER-face_on.summary
 read 381 lines from file LER-face_on.summary
-
+```
