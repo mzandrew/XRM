@@ -69,3 +69,7 @@ read 723 lines from file LER-edge_on.summary
 read 282 lines from file HER-face_on.summary
 read 381 lines from file LER-face_on.summary
 ```
+
+![alt text](https://github.com/mzandrew/XRM/blob/master/XRM.HER.png "XRM HER")
+
+![alt text](https://github.com/mzandrew/XRM/blob/master/XRM.LER.png "XRM LER")
