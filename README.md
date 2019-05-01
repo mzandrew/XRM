@@ -1,4 +1,6 @@
-This project is to simulate the expected flux of x-ray photons and the energy deposited in a silicon strip sensor instrumented on the Low Energy Ring (LER) and the High Energy Ring (HER) at SuperKEKB.
+This project is to simulate the expected flux of synchrotron radition (x-ray photons) and the energy deposited in a silicon strip sensor instrumented on the Low Energy Ring (LER) and the High Energy Ring (HER) at SuperKEKB.
+
+![alt text](https://github.com/mzandrew/XRM/blob/master/XRM-geometry.png "XRM geometry")
 
 The "exampleB1" code is modified from the example project of the same name that comes with geant4.
 
