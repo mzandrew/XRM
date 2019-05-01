@@ -66,18 +66,29 @@ G4double z_position_of_gun;
 #endif
 #endif
 
+#ifndef LER
+#ifndef HER
+#define HER
+#endif
+#endif
+
 G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	// Get nist material manager
 	G4NistManager* nist = G4NistManager::Instance();
 	// SuperKEKB XRM:
 	G4double vacuum_dimension = 10.*cm;
-//	G4double Be_upstream_filter_dimension = 2.*mm; // since phase2 2.0 mm for HER; 0.5 mm for LER
+	#ifdef HER
+	G4double Be_upstream_filter_dimension = 2.*mm; // since phase2 2.0 mm for HER; 0.5 mm for LER
+	#endif
+	#ifdef LER
+	G4double Be_upstream_filter_dimension = 0.5*mm; // since phase2 2.0 mm for HER; 0.5 mm for LER
+	#endif
 //	G4double diamond_substrate_thickness = 800.*um; // since phase2
 //	G4double gold_mask_thickness = 20.*um;
-	G4double Be_window_dimension_1 = 0.2*mm; // nominal; HER=8741/1144/722 LER=21464/1656/1175
-	G4double Be_window_dimension_2 = 0.2*mm; // nominal; HER=8741/1144/722 LER=21464/1656/1175
-	G4double air_gap_dimension = 10.*cm; // nominal; HER=8741/1144/722 LER=21464/1656/1175
-	//G4double air_gap_dimension = 1.*cm; // HER=8741/1535/1083 LER=21464/2295/1784
+	G4double Be_window_dimension_1 = 0.2*mm; // nominal; HER=8743/695/340 LER=21459/1282/860
+	G4double Be_window_dimension_2 = 0.2*mm; // nominal; HER=8743/695/340 LER=21459/1282/860
+	G4double air_gap_dimension = 10.*cm; // nominal; HER=8743/695/340 LER=21459/1282/860
+	//G4double air_gap_dimension = 1.*cm; // enhancement; HER=8741/775/392 LER=21459/1640/1163
 //	G4double neck_dimension_of_box = 50.*mm + 108.*mm;
 	G4double position_of_vacuum = 0. - vacuum_dimension/2. - Be_window_dimension_1 - air_gap_dimension - Be_window_dimension_2;
 	G4double env_diameter = 8.5*mm;
@@ -96,7 +107,9 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 //	G4cout << "position_of_first_part_of_sensor " << position_of_first_part_of_sensor << G4endl;
 	// Option to switch on/off checking of volumes overlaps
 	G4bool checkOverlaps = true;
-	z_position_of_gun = position_of_vacuum - 4.*cm;
+	z_position_of_gun = position_of_vacuum - vacuum_dimension/2. + 1.*cm;
+	//G4double position_of_Be_filter = 0. - vacuum_dimension/2. + 2.*cm; // upstream of bulk_si reference
+	G4double position_of_Be_filter = 0. + vacuum_dimension/2. - 2.*cm; // downstream of bulk_si reference
 
 	// World
 	G4double world_sizeXY = 1.2*env_diameter;
@@ -133,14 +146,33 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	                  0,                       //copy number
 	                  checkOverlaps);          //overlaps checking
 
+	// all Be cylinders:
+	G4Material* Be_mat = nist->FindOrBuildMaterial("G4_Be");
+	G4double shape0_rmina =  0.*cm, shape0_rmaxa = env_diameter/2.;
+	G4double shape0_rminb =  0.*cm, shape0_rmaxb = env_diameter/2.;
+	G4double shape0_phimin = 0.*deg, shape0_phimax = 360.*deg;
+
+	// Be filter, upstream of mask:
+	G4double shape5_hz = Be_upstream_filter_dimension/2.;
+	G4ThreeVector pos0 = G4ThreeVector(0, 0, position_of_Be_filter);
+	G4Cons* solidshape5 = new G4Cons("shape5", 
+	  shape0_rmina, shape0_rmaxa, shape0_rminb, shape0_rmaxb, shape5_hz,
+	  shape0_phimin, shape0_phimax);
+	G4LogicalVolume* logicshape5 = new G4LogicalVolume(solidshape5,         //its solid
+	                      Be_mat,          //its material
+	                      "shape5");           //its name
+	new G4PVPlacement(0,                       //no rotation
+	                  pos0,                    //at position
+	                  logicshape5,             //its logical volume
+	                  "shape5",                //its name
+	                  logicVac,                //its mother  volume
+	                  false,                   //no boolean operation
+	                  0,                       //copy number
+	                  checkOverlaps);          //overlaps checking
 	#ifdef REAL_XRM_SITUATION
 		// select real XRM situation or bulk silicon
-		G4Material* Be_mat = nist->FindOrBuildMaterial("G4_Be");
-		G4ThreeVector pos0 = G4ThreeVector(0, 0, position_of_Be_window_1);
-		G4double shape0_rmina =  0.*cm, shape0_rmaxa = env_diameter/2.;
-		G4double shape0_rminb =  0.*cm, shape0_rmaxb = env_diameter/2.;
+		pos0 = G4ThreeVector(0, 0, position_of_Be_window_1);
 		G4double shape0_hz = Be_window_dimension_1/2.;
-		G4double shape0_phimin = 0.*deg, shape0_phimax = 360.*deg;
 		G4Cons* solidshape0 = new G4Cons("shape0", 
 		  shape0_rmina, shape0_rmaxa, shape0_rminb, shape0_rmaxb, shape0_hz,
 		  shape0_phimin, shape0_phimax);
@@ -156,12 +188,9 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 		                  0,                       //copy number
 		                  checkOverlaps);          //overlaps checking
 		pos0 = G4ThreeVector(0, 0, position_of_Be_window_2);
-		shape0_rmina =  0.*cm, shape0_rmaxa = env_diameter/2.;
-		shape0_rminb =  0.*cm, shape0_rmaxb = env_diameter/2.;
-		shape0_hz = Be_window_dimension_2/2.;
-		shape0_phimin = 0.*deg, shape0_phimax = 360.*deg;
+		G4double shape4_hz = Be_window_dimension_2/2.;
 		G4Cons* solidshape4 = new G4Cons("shape4", 
-		  shape0_rmina, shape0_rmaxa, shape0_rminb, shape0_rmaxb, shape0_hz,
+		  shape0_rmina, shape0_rmaxa, shape0_rminb, shape0_rmaxb, shape4_hz,
 		  shape0_phimin, shape0_phimax);
 		G4LogicalVolume* logicshape4 = new G4LogicalVolume(solidshape4,         //its solid
 		                      Be_mat,          //its material
@@ -175,8 +204,8 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 		                  0,                       //copy number
 		                  checkOverlaps);          //overlaps checking
 		// Envelope
-		G4Material* env_mat = nist->FindOrBuildMaterial("G4_He"); // nominal; HER=8741/1144/722 LER=21464/1656/1175
-		//G4Material* env_mat = nist->FindOrBuildMaterial("G4_AIR"); // HER=8741/606/254 LER=21464/662/350
+		G4Material* env_mat = nist->FindOrBuildMaterial("G4_He"); // nominal; HER=8743/695/340 LER=21459/1282/860
+		//G4Material* env_mat = nist->FindOrBuildMaterial("G4_AIR"); // suppression; HER=8743/447/162 LER=21459/597/268
 		G4Tubs *solidEnv = new G4Tubs("Envelope", 0., env_diameter/2., 0.5*env_sizeZ, 0., 2.*M_PI);
 		G4LogicalVolume *logicEnv = new G4LogicalVolume(solidEnv,            //its solid
 		                      env_mat,             //its material

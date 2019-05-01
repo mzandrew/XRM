@@ -37,17 +37,29 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 #add_executable(exampleB1 exampleB1.cc ${sources} ${headers})
 #target_link_libraries(exampleB1 ${Geant4_LIBRARIES})
 
-add_executable(bulk_si exampleB1.cc ${sources} ${headers})
-target_link_libraries(bulk_si ${Geant4_LIBRARIES})
-target_compile_definitions(bulk_si PRIVATE BULK_SI_SITUATION=1)
+add_executable(bulk_si_HER exampleB1.cc ${sources} ${headers})
+target_link_libraries(bulk_si_HER ${Geant4_LIBRARIES})
+target_compile_definitions(bulk_si_HER PRIVATE HER=1 BULK_SI_SITUATION=1)
 
-add_executable(edge_on exampleB1.cc ${sources} ${headers})
-target_link_libraries(edge_on ${Geant4_LIBRARIES})
-target_compile_definitions(edge_on PRIVATE EDGE_ON=1)
+add_executable(edge_on_HER exampleB1.cc ${sources} ${headers})
+target_link_libraries(edge_on_HER ${Geant4_LIBRARIES})
+target_compile_definitions(edge_on_HER PRIVATE HER=1 EDGE_ON=1)
 
-add_executable(face_on exampleB1.cc ${sources} ${headers})
-target_link_libraries(face_on ${Geant4_LIBRARIES})
-target_compile_definitions(face_on PRIVATE FACE_ON=1)
+add_executable(face_on_HER exampleB1.cc ${sources} ${headers})
+target_link_libraries(face_on_HER ${Geant4_LIBRARIES})
+target_compile_definitions(face_on_HER PRIVATE HER=1 FACE_ON=1)
+
+add_executable(bulk_si_LER exampleB1.cc ${sources} ${headers})
+target_link_libraries(bulk_si_LER ${Geant4_LIBRARIES})
+target_compile_definitions(bulk_si_LER PRIVATE LER=1 BULK_SI_SITUATION=1)
+
+add_executable(edge_on_LER exampleB1.cc ${sources} ${headers})
+target_link_libraries(edge_on_LER ${Geant4_LIBRARIES})
+target_compile_definitions(edge_on_LER PRIVATE LER=1 EDGE_ON=1)
+
+add_executable(face_on_LER exampleB1.cc ${sources} ${headers})
+target_link_libraries(face_on_LER ${Geant4_LIBRARIES})
+target_compile_definitions(face_on_LER PRIVATE LER=1 FACE_ON=1)
 
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we
@@ -79,12 +91,15 @@ endforeach()
 # For internal Geant4 use - but has no effect if you build this
 # example standalone
 #
-add_custom_target(XRM DEPENDS edge_on)
+add_custom_target(XRM DEPENDS edge_on_HER)
 
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 #
-install(TARGETS bulk_si DESTINATION bin)
-install(TARGETS edge_on DESTINATION bin)
-install(TARGETS face_on DESTINATION bin)
+install(TARGETS bulk_si_HER DESTINATION bin)
+install(TARGETS edge_on_HER DESTINATION bin)
+install(TARGETS face_on_HER DESTINATION bin)
+install(TARGETS bulk_si_LER DESTINATION bin)
+install(TARGETS edge_on_LER DESTINATION bin)
+install(TARGETS face_on_LER DESTINATION bin)
 

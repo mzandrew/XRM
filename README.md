@@ -66,16 +66,19 @@ mza@ubuntu18-04:~/build/XRM$ ./go.sh
 -- Configuring done
 -- Generating done
 -- Build files have been written to: /home/mza/build/XRM/build
-[ 33%] Built target bulk_si
-[ 66%] Built target face_on
-[100%] Built target edge_on
-read 8741 lines from file HER-bulk_si
-read 1144 lines from file HER-edge_on
-read 722 lines from file HER-face_on
+[ 16%] Built target edge_on_HER
+[ 33%] Built target bulk_si_HER
+[ 50%] Built target face_on_HER
+[ 66%] Built target bulk_si_LER
+[ 83%] Built target edge_on_LER
+[100%] Built target face_on_LER
+read 8743 lines from file HER-bulk_si
+read 695 lines from file HER-edge_on
+read 340 lines from file HER-face_on
 generated XRM.HER.png
-read 21464 lines from file LER-bulk_si
-read 1656 lines from file LER-edge_on
-read 1175 lines from file LER-face_on
+read 21459 lines from file LER-bulk_si
+read 1282 lines from file LER-edge_on
+read 860 lines from file LER-face_on
 generated XRM.LER.png
 ```
 

@@ -11,7 +11,7 @@ make
 
 for HL in H L; do
 	for situation in bulk_si edge_on face_on; do
-		./${situation} ${HL}ER-N-bunches.mac | grep "^[0-9]" > ${HL}ER-${situation}.log
+		./${situation}_${HL}ER ${HL}ER-N-bunches.mac | grep "^[0-9]" > ${HL}ER-${situation}.log
 		grep -v " 0.0$" ${HL}ER-${situation}.log | sort -n > ${HL}ER-${situation}
 		#grep -cvH " 0.0$" ${HL}ER-${situation}.log || /bin/true
 	done
