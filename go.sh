@@ -8,13 +8,13 @@ cmake ..
 make
 #cp ../*.mac .
 
-for situation in bulk_si edge_on face_on; do
-	for HL in H L; do
+for HL in H L; do
+	for situation in bulk_si edge_on face_on; do
 		./${situation} ${HL}ER-N-bunches.mac | grep "^[0-9]" > ${HL}ER-${situation}.log
-		grep -v " 0.0$" ${HL}ER-${situation}.log | sort -n > ${HL}ER-${situation}.summary
+		grep -v " 0.0$" ${HL}ER-${situation}.log | sort -n > ${HL}ER-${situation}
 		#grep -cvH " 0.0$" ${HL}ER-${situation}.log || /bin/true
-		../spectra.py ${HL}ER-${situation}.summary
 	done
+	../spectra.py ${HL}ER-bulk_si ${HL}ER-edge_on ${HL}ER-face_on
 done
 
 cd ..
