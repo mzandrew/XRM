@@ -70,12 +70,12 @@ mza@ubuntu18-04:~/build/XRM$ ./go.sh
 [ 66%] Built target face_on
 [100%] Built target edge_on
 read 8741 lines from file HER-bulk_si
-read 534 lines from file HER-edge_on
-read 216 lines from file HER-face_on
+read 1144 lines from file HER-edge_on
+read 722 lines from file HER-face_on
 generated XRM.HER.png
 read 21464 lines from file LER-bulk_si
-read 597 lines from file LER-edge_on
-read 283 lines from file LER-face_on
+read 1656 lines from file LER-edge_on
+read 1175 lines from file LER-face_on
 generated XRM.LER.png
 ```
 

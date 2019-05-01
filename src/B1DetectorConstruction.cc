@@ -72,16 +72,13 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	// SuperKEKB XRM:
 	G4double vacuum_dimension = 10.*cm;
 //	G4double Be_upstream_filter_dimension = 2.*mm; // since phase2 2.0 mm for HER; 0.5 mm for LER
-	G4double Be_window_dimension_1 = 2.*mm; // HER=8741/534/216 LER=21464/597/283
-	//G4double Be_window_dimension_1 = 1.*mm; // HER=8741/618/267 LER=21464/722/377
-	G4double Be_window_dimension_2 = 2.*mm; // HER=8741/534/216 LER=21464/597/283
-	//G4double Be_window_dimension_2 = 1.*mm; // HER=8741/613/282 LER=21464/712/372
-	// both Be windows dimensions = 1mm leads to HER=8741/767/378 LER=21464/921/533
-	G4double air_gap_dimension = 10.*cm; // HER=8741/534/216 LER=21464/597/283
-	//G4double air_gap_dimension = 1.*cm; // HER=8741/575/251 LER=21464/658/323
-	//G4double wall_thickness_of_box = 3.*mm;
+//	G4double diamond_substrate_thickness = 800.*um; // since phase2
+//	G4double gold_mask_thickness = 20.*um;
+	G4double Be_window_dimension_1 = 0.2*mm; // nominal; HER=8741/1144/722 LER=21464/1656/1175
+	G4double Be_window_dimension_2 = 0.2*mm; // nominal; HER=8741/1144/722 LER=21464/1656/1175
+	G4double air_gap_dimension = 10.*cm; // nominal; HER=8741/1144/722 LER=21464/1656/1175
+	//G4double air_gap_dimension = 1.*cm; // HER=8741/1535/1083 LER=21464/2295/1784
 //	G4double neck_dimension_of_box = 50.*mm + 108.*mm;
-	// Envelope parameters
 	G4double position_of_vacuum = 0. - vacuum_dimension/2. - Be_window_dimension_1 - air_gap_dimension - Be_window_dimension_2;
 	G4double env_diameter = 8.5*mm;
 	#ifdef REAL_XRM_SITUATION
@@ -89,10 +86,10 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	G4double position_of_Be_window_1 = 0. - Be_window_dimension_1/2. - air_gap_dimension - Be_window_dimension_2;
 	G4double position_of_Be_window_2 = 0. - Be_window_dimension_2/2.;
 	G4double position_of_He_envelope = inside_dimension_of_box/2.;
-	G4double position_of_first_part_of_sensor = - inside_dimension_of_box/2. + 500.*mm;
+	G4double position_of_first_part_of_sensor = - inside_dimension_of_box/2. + 500.*mm; // nominal
+	//G4double position_of_first_part_of_sensor = - inside_dimension_of_box/2. + 50.*mm; // in He, this doesn't seem to make a difference
 	G4double env_sizeZ = inside_dimension_of_box;
 	#endif
-	//G4double position_of_first_part_of_sensor = - inside_dimension_of_box/2. + 50.*mm; // in He, this doesn't seem to make a difference
 //	G4cout << "position_of_vacuum " << position_of_vacuum << G4endl;
 //	G4cout << "position_of_Be_window_1 " << position_of_Be_window_1 << G4endl;
 //	G4cout << "position_of_He_envelope " << position_of_He_envelope << G4endl;
@@ -178,8 +175,8 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 		                  0,                       //copy number
 		                  checkOverlaps);          //overlaps checking
 		// Envelope
-		G4Material* env_mat = nist->FindOrBuildMaterial("G4_He"); // HER=8741/534/216 LER=21464/597/283
-		//G4Material* env_mat = nist->FindOrBuildMaterial("G4_AIR"); // HER=8741/353/104 LER=21464/400/142
+		G4Material* env_mat = nist->FindOrBuildMaterial("G4_He"); // nominal; HER=8741/1144/722 LER=21464/1656/1175
+		//G4Material* env_mat = nist->FindOrBuildMaterial("G4_AIR"); // HER=8741/606/254 LER=21464/662/350
 		G4Tubs *solidEnv = new G4Tubs("Envelope", 0., env_diameter/2., 0.5*env_sizeZ, 0., 2.*M_PI);
 		G4LogicalVolume *logicEnv = new G4LogicalVolume(solidEnv,            //its solid
 		                      env_mat,             //its material
