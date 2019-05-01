@@ -30,6 +30,13 @@ to run a geant4 executable (from build/ subdir):
 cd build; ./edge_on
 ```
 
+to run a pyroot program:
+
+```
+. ${HOME}/build/root/bin/thisroot.sh
+./spectra.py blah.png inputfile1 inputfile2
+```
+
 preliminary results:
 
 edge-on monochromatic 11 keV / 18 keV:

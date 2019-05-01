@@ -7,6 +7,7 @@ cd build
 cmake ..
 make
 #cp ../*.mac .
+. ${HOME}/build/root/bin/thisroot.sh
 
 for HL in H L; do
 	for situation in bulk_si edge_on face_on; do

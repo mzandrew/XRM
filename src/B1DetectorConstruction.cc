@@ -71,10 +71,11 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	G4NistManager* nist = G4NistManager::Instance();
 	// SuperKEKB XRM:
 	G4double vacuum_dimension = 10.*cm;
+//	G4double Be_upstream_filter_dimension = 2.*mm; // since phase2 2.0 mm for HER; 0.5 mm for LER
 	G4double Be_window_dimension_1 = 2.*mm; // HER=8741/534/216 LER=21464/597/283
-	//G4double Be_window_dimension_1 = 1.*mm; // HER=8741/768/379 LER=21464/921/529
+	//G4double Be_window_dimension_1 = 1.*mm; // HER=8741/618/267 LER=21464/722/377
 	G4double Be_window_dimension_2 = 2.*mm; // HER=8741/534/216 LER=21464/597/283
-	//G4double Be_window_dimension_2 = 1.*mm; // HER=8741/538/220 LER=21464/592/277
+	//G4double Be_window_dimension_2 = 1.*mm; // HER=8741/613/282 LER=21464/712/372
 	// both Be windows dimensions = 1mm leads to HER=8741/767/378 LER=21464/921/533
 	G4double air_gap_dimension = 10.*cm; // HER=8741/534/216 LER=21464/597/283
 	//G4double air_gap_dimension = 1.*cm; // HER=8741/575/251 LER=21464/658/323
@@ -160,7 +161,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 		pos0 = G4ThreeVector(0, 0, position_of_Be_window_2);
 		shape0_rmina =  0.*cm, shape0_rmaxa = env_diameter/2.;
 		shape0_rminb =  0.*cm, shape0_rmaxb = env_diameter/2.;
-		shape0_hz = Be_window_dimension_1/2.;
+		shape0_hz = Be_window_dimension_2/2.;
 		shape0_phimin = 0.*deg, shape0_phimax = 360.*deg;
 		G4Cons* solidshape4 = new G4Cons("shape4", 
 		  shape0_rmina, shape0_rmaxa, shape0_rminb, shape0_rmaxb, shape0_hz,

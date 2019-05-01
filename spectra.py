@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 
-import re # search
+#import os # path
+#import sys # path
+#sys.path.append(ps.path.join(os.path.expanduser("~"), "/build/root/lib"))
 import ROOT # TH1F
+import re # search
 import math # log10
 import numpy # float array
 
