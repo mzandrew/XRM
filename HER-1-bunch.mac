@@ -3,5 +3,5 @@
 #/gun/position 0 0 0
 
 /gun/position {x_m} 0 0
-/run/beamOn 1
+/run/beamOn 897014
 

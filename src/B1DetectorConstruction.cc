@@ -311,7 +311,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 		                  0,                       //copy number
 		                  checkOverlaps);          //overlaps checking
 		// Set as scoring volume
-		fScoringVolume = beamdump_Si_logical_volume;
+		//fScoringVolume = beamdump_Si_logical_volume;
 	#endif
 
 	#ifdef BULK_SI_SITUATION

@@ -7,20 +7,13 @@
 /run/verbose 0
 #/tracking/verbose 0
 
-/control/alias x_size_m  14.e-3 
-/control/alias x_start_m -7.e-3 
-/control/alias x_end_m    7.e-3 
-#/control/alias x_step_m x_size_m/441.6
-#/control/alias x_step_m 2.26449275362e-3
-#/control/alias x_step_m x_size_m/24562.
-#/control/alias x_step_m 2.44279781777e-7
-#/control/alias x_step_m x_size_m/858790.
-#/control/alias x_step_m 6.98657413337e-9
-#/control/alias x_step_m x_size_m/167741563.055584
-/control/alias x_step_m 8.39248189622862E-011
+/control/alias x_size_m  14.025e-3
+/control/alias x_start_m -7.0125e-3
+/control/alias x_end_m    7.0125e-3
+# 187 steps is appropriate for 75 um in 14.025 mm
+/control/alias x_step_m 5.34759358289e-3
 
 # critial energy:
 /gun/energy 7.18 keV
 /control/loop HER-1-bunch.mac x_m {x_start_m} {x_end_m} {x_step_m}
-#/control/execute HER-1-bunch.mac 0
 

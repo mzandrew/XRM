@@ -7,17 +7,11 @@
 /run/verbose 0
 #/tracking/verbose 0
 
-/control/alias x_size_m  14.e-3 
-/control/alias x_start_m -7.e-3 
-/control/alias x_end_m    7.e-3 
-#/control/alias x_step_m x_size_m/167.
-#/control/alias x_step_m 5.9880239521e-3
-#/control/alias x_step_m x_size_m/9837.
-#/control/alias x_step_m 6.09942055505e-7
-#/control/alias x_step_m x_size_m/2260959.
-#/control/alias x_step_m 2.65374117797e-9
-#/control/alias x_step_m x_size_m/441617493.190753
-/control/alias x_step_m 3.36114407605266E-011
+/control/alias x_size_m  14.025e-3
+/control/alias x_start_m -7.0125e-3
+/control/alias x_end_m    7.0125e-3
+# 187 steps is appropriate for 75 um in 14.025 mm
+/control/alias x_step_m 5.34759358289e-3
 
 # critial energy:
 /gun/energy 4.458 keV

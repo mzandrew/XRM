@@ -1,9 +1,17 @@
 #!/usr/bin/env python
 
-#import os # path
-#import sys # path
+import os # path, environ
+import sys # path, exit, argv
 #sys.path.append(ps.path.join(os.path.expanduser("~"), "/build/root/lib"))
-import ROOT # TH1F
+try:
+	import ROOT # TH1F
+except:
+	print "ROOT environment not setup yet"
+	HOME = os.environ['HOME']
+	#print ". " + HOME + "/build/root/bin/thisroot.sh; " + str(sys.argv)
+	print ". " + HOME + "/build/root/bin/thisroot.sh"
+	print sys.argv[0] + " ..."
+	sys.exit(1)
 import re # search
 import math # log10
 import numpy # float array
@@ -13,7 +21,7 @@ import numpy # float array
 
 number_of_bins = 100
 low = 0.004
-high = 40.
+high = 50.
 factor = 10.**(math.log10(high/low)/number_of_bins)
 #print str(factor)
 bin_widths = []
@@ -91,11 +99,16 @@ for filename in filenames:
 	#histograms[i].Scale(1./normalization)
 	#histograms[i].GetYaxis().SetTitle("relative abundance")
 	#histograms[i].SetLineColor(ROOT.kWhite + i)
-	histograms[i].SetLineColor(ROOT.kGray + i)
-	histograms[i].SetFillColor(ROOT.kGray + i)
-#	if 0==i:
+	#histograms[i].SetLineColor(ROOT.kGray + i)
+	#histograms[i].SetFillColor(ROOT.kGray + i)
+	if 0==i:
+		histograms[i].SetLineColor(ROOT.kGray)
+		histograms[i].SetFillColor(ROOT.kGray)
 #		histograms[0].Draw()
-#	else:
+	elif 1==i:
+		histograms[i].SetLineColor(ROOT.kBlue)
+	else:
+		histograms[i].SetLineColor(ROOT.kRed)
 #		histograms[i].Draw("same")
 	histogram_stack.Add(histograms[i])
 	i = i + 1
