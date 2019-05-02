@@ -7,13 +7,17 @@
 /run/verbose 0
 #/tracking/verbose 0
 
-/control/alias x_size_m 6.e-3 
-#/control/alias x_step_mm x_size_mm/9837.
-#/control/alias x_start_mm -x_size_mm/2. 
-#/control/alias x_end_mm x_size_mm/2. 
-/control/alias x_step_m 6.09942055505e-7
-/control/alias x_start_m -3.e-3 
-/control/alias x_end_m 3.e-3 
+/control/alias x_size_m  14.e-3 
+/control/alias x_start_m -7.e-3 
+/control/alias x_end_m    7.e-3 
+#/control/alias x_step_m x_size_m/441.6
+#/control/alias x_step_m 2.26449275362e-3
+#/control/alias x_step_m x_size_m/24562.
+#/control/alias x_step_m 2.44279781777e-7
+#/control/alias x_step_m x_size_m/858790.
+#/control/alias x_step_m 6.98657413337e-9
+#/control/alias x_step_m x_size_m/167741563.055584
+/control/alias x_step_m 8.39248189622862E-011
 
 # critial energy:
 /gun/energy 7.18 keV

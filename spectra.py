@@ -26,6 +26,22 @@ bin_widths.append(high)
 #print bin_widths
 fbin_widths = numpy.array(bin_widths, dtype='float64')
 
+J_per_eV = 1.60217733e-19
+J_per_MeV = 1.0e6 * J_per_eV
+bunches_per_second = 508.8875e6
+
+def show_energy_per_bunch_and_power():
+	print "total_energy_incident " + str(total_energy_incident_keV/1000.0) + " MeV per bunch"
+	print "total_energy_deposited " + str(total_energy_deposited_keV/1000.0) + " MeV per bunch"
+	total_energy_incident_J = J_per_MeV * total_energy_incident_keV / 1000.0
+	total_energy_deposited_J = J_per_MeV * total_energy_deposited_keV / 1000.0
+	print "total_energy_incident " + str(total_energy_incident_J) + " J per bunch"
+	print "total_energy_deposited " + str(total_energy_deposited_J) + " J per bunch"
+	total_power_incident_W = total_energy_incident_J * bunches_per_second
+	total_power_deposited_W = total_energy_deposited_J * bunches_per_second
+	print "total_power_incident " + str(total_power_incident_W) + " W"
+	print "total_power_deposited " + str(total_power_deposited_W) + " W"
+
 legend1 = ROOT.TLegend(0.1, 0.7, 0.45, 0.9)
 #if __name__ == "__main__":
 filenames = []
@@ -48,23 +64,28 @@ for filename in filenames:
 		line = line.rstrip("\n\r")
 		lines.append(line)
 	print "read " + str(len(lines)) + " lines from file " + filename
-	input_energies = {}
-	deposited_energies = {}
+	input_energies_keV = {}
+	deposited_energies_keV = {}
+	total_energy_incident_keV = 0.0
+	total_energy_deposited_keV = 0.0
 	for line in lines:
 		match = re.search("^([0-9]+) +([.e0-9-]+) +([.e0-9-]+)$", line)
 		if match:
 			#print line
 			event_number = int(match.group(1))
-			input_energy = float(match.group(2))
-			deposited_energy = float(match.group(3))
+			input_energy_keV = float(match.group(2))
+			deposited_energy_keV = float(match.group(3))
+			total_energy_incident_keV += input_energy_keV
+			total_energy_deposited_keV += deposited_energy_keV
 			#print str(event_number) + " " + str(input_energy) + " " + str(deposited_energy)
-			input_energies[event_number] = input_energy
-			deposited_energies[event_number] = deposited_energy
+			input_energies_keV[event_number] = input_energy_keV
+			deposited_energies_keV[event_number] = deposited_energy_keV
+	show_energy_per_bunch_and_power()
 	histograms.append(ROOT.TH1F('histogram['+str(i)+']', title, number_of_bins, fbin_widths))
 	#for event in input_energies.keys():
 	#	histograms[i].Fill(input_energies[event])
-	for event in deposited_energies.keys():
-		histograms[i].Fill(deposited_energies[event])
+	for event in deposited_energies_keV.keys():
+		histograms[i].Fill(deposited_energies_keV[event])
 	legend1.AddEntry(histograms[i], filename + " (" + str(int(histograms[i].GetEntries())) + " entries)")
 	#normalization = histograms[i].GetEntries()
 	#histograms[i].Scale(1./normalization)

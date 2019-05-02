@@ -152,12 +152,12 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	G4double shape0_rminb =  0.*cm, shape0_rmaxb = env_diameter/2.;
 	G4double shape0_phimin = 0.*deg, shape0_phimax = 360.*deg;
 
+	G4Material* Si_mat = nist->FindOrBuildMaterial("G4_Si");
+
 	// Be filter, upstream of mask:
 	G4double shape5_hz = Be_upstream_filter_dimension/2.;
 	G4ThreeVector pos0 = G4ThreeVector(0, 0, position_of_Be_filter);
-	G4Cons* solidshape5 = new G4Cons("shape5", 
-	  shape0_rmina, shape0_rmaxa, shape0_rminb, shape0_rmaxb, shape5_hz,
-	  shape0_phimin, shape0_phimax);
+	G4Cons* solidshape5 = new G4Cons("shape5", shape0_rmina, shape0_rmaxa, shape0_rminb, shape0_rmaxb, shape5_hz, shape0_phimin, shape0_phimax);
 	G4LogicalVolume* logicshape5 = new G4LogicalVolume(solidshape5,         //its solid
 	                      Be_mat,          //its material
 	                      "shape5");           //its name
@@ -173,9 +173,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 		// select real XRM situation or bulk silicon
 		pos0 = G4ThreeVector(0, 0, position_of_Be_window_1);
 		G4double shape0_hz = Be_window_dimension_1/2.;
-		G4Cons* solidshape0 = new G4Cons("shape0", 
-		  shape0_rmina, shape0_rmaxa, shape0_rminb, shape0_rmaxb, shape0_hz,
-		  shape0_phimin, shape0_phimax);
+		G4Cons* solidshape0 = new G4Cons("shape0", shape0_rmina, shape0_rmaxa, shape0_rminb, shape0_rmaxb, shape0_hz, shape0_phimin, shape0_phimax);
 		G4LogicalVolume* logicshape0 = new G4LogicalVolume(solidshape0,         //its solid
 		                      Be_mat,          //its material
 		                      "shape0");           //its name
@@ -190,9 +188,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 		//G4Material* glass_mat = nist->FindOrBuildMaterial("G4_GLASS_PLATE"); // suppression; HER=8743/241/57 LER=24459/268/83
 		pos0 = G4ThreeVector(0, 0, position_of_Be_window_2);
 		G4double shape4_hz = Be_window_dimension_2/2.;
-		G4Cons* solidshape4 = new G4Cons("shape4", 
-		  shape0_rmina, shape0_rmaxa, shape0_rminb, shape0_rmaxb, shape4_hz,
-		  shape0_phimin, shape0_phimax);
+		G4Cons* solidshape4 = new G4Cons("shape4", shape0_rmina, shape0_rmaxa, shape0_rminb, shape0_rmaxb, shape4_hz, shape0_phimin, shape0_phimax);
 		G4LogicalVolume* logicshape4 = new G4LogicalVolume(solidshape4,         //its solid
 		                      Be_mat,          //its material
 		                      "shape4");           //its name
@@ -220,6 +216,29 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 		                  false,                   //no boolean operation
 		                  0,                       //copy number
 		                  checkOverlaps);          //overlaps checking
+//#define COPPER_BLOCKER_ON
+		#ifdef COPPER_BLOCKER_ON
+			// select edge-on or face-on
+			// edge-on
+			G4Material* copper_mat = nist->FindOrBuildMaterial("G4_Cu");
+			G4ThreeVector copper1_pos = G4ThreeVector(0, 0, 100.*mm);
+			const G4String name = "copper1";
+			//G4double copper1_length = 200.*um; // HER=8743/4/0 LER=21459/0/0
+			//G4double copper1_length = 100.*um; // HER=8743/5/0 LER=21459/10/5
+			//G4double copper1_length = 50.*um; // HER=8743/42/15 LER=21459/56/26
+			G4double copper1_length = 25.*um; // HER=8743/123/44 LER=21459/148/79
+			//G4double copper1_length = 0.*um; // HER=8743/690/339 LER=21459/1285/868
+			G4Cons* copper1_solidshape = new G4Cons("shape4", shape0_rmina, shape0_rmaxa, shape0_rminb, shape0_rmaxb, copper1_length/2., shape0_phimin, shape0_phimax);
+			G4LogicalVolume* copper_logical_volume = new G4LogicalVolume(copper1_solidshape, copper_mat, name);
+			new G4PVPlacement(0,                       //no rotation
+			                  copper1_pos,                    //at position
+			                  copper_logical_volume,             //its logical volume
+			                  name,                //its name
+			                  logicEnv,                //its mother  volume
+			                  false,                   //no boolean operation
+			                  0,                       //copy number
+			                  checkOverlaps);          //overlaps checking
+		#endif
 		#ifdef EDGE_ON
 			// select edge-on or face-on
 			// edge-on
@@ -275,11 +294,28 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 			// Set as scoring volume
 			fScoringVolume = logicShape2;
 		#endif
+	// Si beamdump downstream
+		G4double beamdump_Si_dz = 6.*mm;
+		G4double position_of_beamdump_Si = inside_dimension_of_box + beamdump_Si_dz/2.;
+		G4ThreeVector pos6 = G4ThreeVector(0, 0, position_of_beamdump_Si);
+		G4Tubs* beamdump_Si_solidshape = new G4Tubs("beamdump", 0., env_diameter/2., 0.5*beamdump_Si_dz, 0., 2.*M_PI);
+		G4LogicalVolume* beamdump_Si_logical_volume = new G4LogicalVolume(beamdump_Si_solidshape,         //its solid
+		                      Si_mat,          //its material
+		                      "beamdump");           //its name
+		new G4PVPlacement(0,                       //rotation
+		                  pos6,                    //at position
+		                  beamdump_Si_logical_volume, //its logical volume
+		                  "beamdump",                //its name
+		                  logicWorld,                //its mother  volume
+		                  false,                   //no boolean operation
+		                  0,                       //copy number
+		                  checkOverlaps);          //overlaps checking
+		// Set as scoring volume
+		fScoringVolume = beamdump_Si_logical_volume;
 	#endif
 
 	#ifdef BULK_SI_SITUATION
 		// Si bulk
-		G4Material* shape3_mat = nist->FindOrBuildMaterial("G4_Si");
 		G4double shape3_dz = 6.*mm;
 		//G4double position_of_bulk_sensor = position_of_first_part_of_sensor + shape3_dz/2.;
 		//G4double position_of_bulk_sensor = position_of_vacuum;
@@ -288,7 +324,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 		G4ThreeVector pos3 = G4ThreeVector(0, 0, position_of_bulk_sensor);
 		G4Tubs* solidShape3 = new G4Tubs("Envelope", 0., env_diameter/2., 0.5*shape3_dz, 0., 2.*M_PI);
 		G4LogicalVolume* logicShape3 = new G4LogicalVolume(solidShape3,         //its solid
-		                      shape3_mat,          //its material
+		                      Si_mat,          //its material
 		                      "Envelope");           //its name
 		new G4PVPlacement(0,                       //rotation
 		                  pos3,                    //at position
@@ -301,7 +337,6 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 		// Set as scoring volume
 		fScoringVolume = logicShape3;
 	#endif
-
 
 	//always return the physical World
 	return physWorld;

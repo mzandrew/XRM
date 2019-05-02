@@ -6,7 +6,7 @@ mkdir -p build
 cd build
 cmake ..
 make
-#cp ../*.mac .
+. /usr/local/bin/geant4.sh
 . ${HOME}/build/root/bin/thisroot.sh
 
 for HL in H L; do
@@ -19,9 +19,4 @@ for HL in H L; do
 	../spectra.py $filename ${HL}ER-bulk_si ${HL}ER-edge_on ${HL}ER-face_on
 	mv $filename ..
 done
-
-cd ..
-#gnuplot spectrum.gnuplot
-#${HOME}/build/root/bin/thisroot.sh
-#echo "eog build/*.png"
 
