@@ -50,7 +50,7 @@ def show_energy_per_bunch_and_power():
 	print "total_power_incident " + str(total_power_incident_W) + " W"
 	print "total_power_deposited " + str(total_power_deposited_W) + " W"
 
-legend1 = ROOT.TLegend(0.1, 0.7, 0.45, 0.9)
+legend1 = ROOT.TLegend(0.1, 0.75, 0.45, 0.9)
 #if __name__ == "__main__":
 filenames = []
 import sys
@@ -121,8 +121,11 @@ histogram_stack.GetXaxis().SetTitle("deposited energy [keV]")
 histogram_stack.GetYaxis().SetTitle("number of events")
 histogram_stack.GetXaxis().CenterTitle(1)
 histogram_stack.GetYaxis().CenterTitle(1)
+histogram_stack.GetXaxis().SetTitleOffset(1.3)
+histogram_stack.GetYaxis().SetMaxDigits(3)
 #canvas1.BuildLegend()
 legend1.Draw()
+canvas1.Modified()
 canvas1.Update()
 
 if len(sys.argv) < 2:
