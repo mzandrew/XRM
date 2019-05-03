@@ -17,9 +17,9 @@ import math # log10
 import numpy # float array
 
 # written 2019-04-30 by mza
-# last updated 2019-05-01 by mza
+# last updated 2019-05-03 by mza
 
-number_of_bins = 100
+number_of_bins = 1000
 low = 0.004
 high = 50.
 factor = 10.**(math.log10(high/low)/number_of_bins)
@@ -39,10 +39,10 @@ J_per_MeV = 1.0e6 * J_per_eV
 bunches_per_second = 508.8875e6
 
 def show_energy_per_bunch_and_power():
-	print "total_energy_incident " + str(total_energy_incident_keV/1000.0) + " MeV per bunch"
-	print "total_energy_deposited " + str(total_energy_deposited_keV/1000.0) + " MeV per bunch"
-	total_energy_incident_J = J_per_MeV * total_energy_incident_keV / 1000.0
-	total_energy_deposited_J = J_per_MeV * total_energy_deposited_keV / 1000.0
+	print "total_energy_incident " + str(total_energy_incident_eV/1.e6) + " MeV per bunch"
+	print "total_energy_deposited " + str(total_energy_deposited_eV/1.e6) + " MeV per bunch"
+	total_energy_incident_J = J_per_MeV * total_energy_incident_eV / 1.e6
+	total_energy_deposited_J = J_per_MeV * total_energy_deposited_eV / 1.e6
 	print "total_energy_incident " + str(total_energy_incident_J) + " J per bunch"
 	print "total_energy_deposited " + str(total_energy_deposited_J) + " J per bunch"
 	total_power_incident_W = total_energy_incident_J * bunches_per_second
@@ -65,35 +65,38 @@ histograms = []
 i = 0
 title = " vs ".join(filenames)
 histogram_stack = ROOT.THStack("histogram_stack", title)
+lines = 0
 for filename in filenames:
 	#print filename
-	lines = []
+	#lines = []
+	#for line in open(filename):
+	#	line = line.rstrip("\n\r")
+	#	lines.append(line)
+	#input_energies_eV = {}
+	#deposited_energies_eV = {}
+	total_energy_incident_eV = 0.0
+	total_energy_deposited_eV = 0.0
+	histograms.append(ROOT.TH1F('histogram['+str(i)+']', title, number_of_bins, fbin_widths))
 	for line in open(filename):
 		line = line.rstrip("\n\r")
-		lines.append(line)
-	print "read " + str(len(lines)) + " lines from file " + filename
-	input_energies_keV = {}
-	deposited_energies_keV = {}
-	total_energy_incident_keV = 0.0
-	total_energy_deposited_keV = 0.0
-	for line in lines:
 		match = re.search("^([0-9]+) +([.e0-9-]+) +([.e0-9-]+)$", line)
 		if match:
 			#print line
-			event_number = int(match.group(1))
-			input_energy_keV = float(match.group(2))
-			deposited_energy_keV = float(match.group(3))
-			total_energy_incident_keV += input_energy_keV
-			total_energy_deposited_keV += deposited_energy_keV
+			#event_number = int(match.group(1))
+			input_energy_eV = float(match.group(2))
+			deposited_energy_eV = float(match.group(3))
+			total_energy_incident_eV += input_energy_eV
+			total_energy_deposited_eV += deposited_energy_eV
 			#print str(event_number) + " " + str(input_energy) + " " + str(deposited_energy)
-			input_energies_keV[event_number] = input_energy_keV
-			deposited_energies_keV[event_number] = deposited_energy_keV
+			#input_energies_eV[event_number] = input_energy_eV
+			#deposited_energies_eV[event_number] = deposited_energy_eV
+			histograms[i].Fill(deposited_energy_eV/1000.0)
+		lines = lines + 1
+	print "read " + str(lines) + " lines from file " + filename
 	show_energy_per_bunch_and_power()
-	histograms.append(ROOT.TH1F('histogram['+str(i)+']', title, number_of_bins, fbin_widths))
 	#for event in input_energies.keys():
 	#	histograms[i].Fill(input_energies[event])
-	for event in deposited_energies_keV.keys():
-		histograms[i].Fill(deposited_energies_keV[event])
+	#for event in deposited_energies_eV.keys():
 	legend1.AddEntry(histograms[i], filename + " (" + str(int(histograms[i].GetEntries())) + " entries)")
 	#normalization = histograms[i].GetEntries()
 	#histograms[i].Scale(1./normalization)

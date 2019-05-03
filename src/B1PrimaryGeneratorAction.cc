@@ -111,7 +111,7 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 	G4ThreeVector pos;
 	pos = fParticleGun->GetParticlePosition();
 	#ifdef HER
-		G4double beam_vertical_size = 6.5*mm; 
+		G4double beam_vertical_size = 6.55*mm; 
 	#endif
 	#ifdef LER
 		G4double beam_vertical_size = 6.9*mm; 
@@ -132,7 +132,7 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 	//G4cout << "energy of photon: " << energy/CLHEP::keV << " keV" << G4endl;
 	fParticleGun->GeneratePrimaryVertex(anEvent); // this line actually fires the photon...
 	event_counter++;
-	G4cout << event_counter << " " << std::setw(12) << energy/CLHEP::keV;
+	G4cout << event_counter << " " << energy/CLHEP::eV;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

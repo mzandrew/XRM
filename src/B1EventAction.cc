@@ -68,7 +68,7 @@ void B1EventAction::EndOfEventAction(const G4Event*) {
 	G4double energy_deposited = fEdep;
 	if (energy_deposited > silicon_work_function) {
 		//G4cout << "event energy deposited: " << energy_deposited/CLHEP::keV << " keV" << G4endl;
-		G4cout << " " << energy_deposited/CLHEP::keV << G4endl;
+		G4cout << " " << energy_deposited/CLHEP::eV << G4endl;
 	} else {
 		G4cout << " 0.0" << G4endl;
 	}
