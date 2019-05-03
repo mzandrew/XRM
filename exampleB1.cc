@@ -41,6 +41,7 @@
 #include "Randomize.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+extern G4int event_counter;
 
 int main(int argc, char **argv)
 {
@@ -91,6 +92,7 @@ int main(int argc, char **argv)
   // in the main() program !
   delete visManager;
   delete runManager;
+  G4cout << "completed " << event_counter << " events" << G4endl;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....

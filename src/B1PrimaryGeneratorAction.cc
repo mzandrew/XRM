@@ -96,6 +96,7 @@ G4double InvSynFracInt(G4double y) {
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 extern G4double z_position_of_gun;
+G4int event_counter = 0;
 
 void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 //	G4cout << "GeneratePrimaries called" << G4endl;
@@ -109,7 +110,12 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 	}
 	G4ThreeVector pos;
 	pos = fParticleGun->GetParticlePosition();
-	G4double beam_vertical_size = 6.*mm; 
+	#ifdef HER
+		G4double beam_vertical_size = 6.5*mm; 
+	#endif
+	#ifdef LER
+		G4double beam_vertical_size = 6.9*mm; 
+	#endif
 	G4double y0 = beam_vertical_size * (G4UniformRand()-0.5);
 	G4double z0 = z_position_of_gun;
 	pos.setY(y0);
@@ -125,7 +131,6 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 	fParticleGun->SetParticleEnergy(energy);
 	//G4cout << "energy of photon: " << energy/CLHEP::keV << " keV" << G4endl;
 	fParticleGun->GeneratePrimaryVertex(anEvent); // this line actually fires the photon...
-	static G4int event_counter = 0;
 	event_counter++;
 	G4cout << event_counter << " " << std::setw(12) << energy/CLHEP::keV;
 }
