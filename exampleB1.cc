@@ -62,7 +62,7 @@ int main(int argc, char **argv)
   // Detector construction
   runManager->SetUserInitialization(new B1DetectorConstruction());
   // Physics list
-  G4VModularPhysicsList* physicsList = new QBBC;
+  G4VModularPhysicsList* physicsList = new QBBC; // takes 70m for 191M photons
   physicsList->SetVerboseLevel(0);
   runManager->SetUserInitialization(physicsList);
   // User action initialization
