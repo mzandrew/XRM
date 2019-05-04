@@ -31,6 +31,7 @@
 
 #include "G4RunManager.hh"
 #include "G4NistManager.hh"
+#include "G4SubtractionSolid.hh"
 #include "G4Box.hh"
 #include "G4Tubs.hh"
 #include "G4Cons.hh"
@@ -116,8 +117,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	G4double world_sizeXY = 5.0*env_diameter;
 	G4double world_sizeZ  = 2.*650.*mm;
 	G4Material* world_mat = nist->FindOrBuildMaterial("G4_AIR");
-	G4Box* solidWorld = new G4Box("World",                       //its name
-	     0.5*world_sizeXY, 0.5*world_sizeXY, 0.5*world_sizeZ);     //its size
+	G4Box* solidWorld = new G4Box("World", 0.5*world_sizeXY, 0.5*world_sizeXY, 0.5*world_sizeZ);
 	G4LogicalVolume* logicWorld = new G4LogicalVolume(solidWorld,          //its solid
 	                      world_mat,           //its material
 	                      "World");            //its name
@@ -234,6 +234,31 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 			new G4PVPlacement(0,                       //no rotation
 			                  copper1_pos,                    //at position
 			                  copper_logical_volume,             //its logical volume
+			                  name,                //its name
+			                  logicEnv,                //its mother  volume
+			                  false,                   //no boolean operation
+			                  0,                       //copy number
+			                  checkOverlaps);          //overlaps checking
+		#endif
+#define COPPER_SLIT_ON
+		#ifdef COPPER_SLIT_ON
+			// select edge-on or face-on
+			// edge-on
+			G4Material* copper_mat = nist->FindOrBuildMaterial("G4_Cu");
+			G4ThreeVector copper_slit1_pos = G4ThreeVector(0, 0, 100.*mm);
+			const G4String name = "copper1";
+			//G4double copper1_length = 200.*um; // HER=8743/4/0 LER=21459/0/0
+			//G4double copper1_length = 100.*um; // HER=8743/5/0 LER=21459/10/5
+			//G4double copper1_length = 50.*um; // HER=8743/42/15 LER=21459/56/26
+			G4double copper_slit1_length = 25.*um; // HER=8743/123/44 LER=21459/148/79
+			//G4double copper1_length = 0.*um; // HER=8743/690/339 LER=21459/1285/868
+			G4Tubs *copper_slit1_cyl_solidshape = new G4Tubs("copper_slit1_cyl", 0., env_diameter/2., copper_slit1_length/2., 0., 2.*M_PI);
+			G4Box *copper_slit1_box_solidshape = new G4Box("copper_slit1_box", 75.*um/2., 14.*mm/2., copper_slit1_length);
+			G4VSolid *copper_slit1_solidshape = new G4SubtractionSolid("copper_slit1", copper_slit1_cyl_solidshape, copper_slit1_box_solidshape, 0, G4ThreeVector(0., 0., 0.));
+			G4LogicalVolume *copper_slit1_logical_volume = new G4LogicalVolume(copper_slit1_solidshape, copper_mat, name);
+			new G4PVPlacement(0,                       //no rotation
+			                  copper_slit1_pos,                    //at position
+			                  copper_slit1_logical_volume,             //its logical volume
 			                  name,                //its name
 			                  logicEnv,                //its mother  volume
 			                  false,                   //no boolean operation
