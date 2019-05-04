@@ -91,7 +91,8 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	//G4double air_gap_dimension = 1.*cm; // enhancement; HER=8741/775/392 LER=21459/1640/1163
 //	G4double neck_dimension_of_box = 50.*mm + 108.*mm;
 	G4double position_of_vacuum = 0. - vacuum_dimension/2. - Be_window_dimension_1 - air_gap_dimension - Be_window_dimension_2;
-	G4double env_diameter = 8.5*mm;
+	//G4double hypotenuse = sqrt(6.9**2.+14.**2.); // 15.61
+	G4double env_diameter = 16.*mm;
 	#ifdef REAL_XRM_SITUATION
 	G4double inside_dimension_of_box = 614.*mm;
 	G4double position_of_Be_window_1 = 0. - Be_window_dimension_1/2. - air_gap_dimension - Be_window_dimension_2;
@@ -112,7 +113,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	G4double position_of_Be_filter = 0. + vacuum_dimension/2. - 2.*cm; // downstream of bulk_si reference
 
 	// World
-	G4double world_sizeXY = 1.2*env_diameter;
+	G4double world_sizeXY = 5.0*env_diameter;
 	G4double world_sizeZ  = 2.*650.*mm;
 	G4Material* world_mat = nist->FindOrBuildMaterial("G4_AIR");
 	G4Box* solidWorld = new G4Box("World",                       //its name

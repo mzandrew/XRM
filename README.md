@@ -30,6 +30,11 @@ to run a geant4 executable (from build/ subdir):
 cd build; ./edge_on
 ```
 
+to run 100 events in the visualization:
+```
+/run/beamOn 100
+```
+
 to run a pyroot program:
 
 ```
