@@ -4,6 +4,7 @@ declare localdir=$(cd $(dirname $(readlink -f $0)); pwd)
 cd $localdir
 mkdir -p build
 cd build
+. /usr/local/share/Geant4-10.5.1/geant4make/geant4make.sh
 cmake ..
 make -j2
 . /usr/local/bin/geant4.sh
