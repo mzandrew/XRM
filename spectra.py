@@ -10,7 +10,8 @@ except:
 	HOME = os.environ['HOME']
 	#print ". " + HOME + "/build/root/bin/thisroot.sh; " + str(sys.argv)
 	print ". " + HOME + "/build/root/bin/thisroot.sh"
-	print sys.argv[0] + " ..."
+	#print sys.argv[0] + sys.argv[1:]
+	print " ".join(sys.argv[0:])
 	sys.exit(1)
 import re # search
 import math # log10
