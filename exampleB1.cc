@@ -74,6 +74,18 @@ int main(int argc, char **argv)
   visManager->Initialize();
   // Get the pointer to the User Interface manager
   G4UImanager* UImanager = G4UImanager::GetUIpointer();
+  // from http://hypernews.slac.stanford.edu/HyperNews/geant4/get/phys-list/923/1/1.html
+  UImanager->ApplyCommand("/gras/physics/addPhysics em_livermore");
+  //UImanager->ApplyCommand("/gras/physics/addPhysics em_penelope");
+  UImanager->ApplyCommand("/cuts/setLowEdge 4 eV");
+  //UImanager->ApplyCommand("/gras/physics/productionCutsLowestEnergy 10 eV");
+  UImanager->ApplyCommand("/process/em/fluo true");
+  UImanager->ApplyCommand("/process/em/auger true");
+  UImanager->ApplyCommand("/process/em/pixe true");
+  //UImanager->ApplyCommand("/gras/physics/setCuts 0.1 um");
+  //UImanager->ApplyCommand("/gras/physics/setGCut 1 nm");
+  //UImanager->ApplyCommand("/gras/physics/setECut 1 nm");
+  //UImanager->ApplyCommand("/run/setCut 10 nm");
   // Process macro or start UI session
   if ( ! ui ) { 
     // batch mode
