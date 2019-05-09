@@ -99,8 +99,8 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	G4double position_of_Be_window_1 = 0. - Be_window_dimension_1/2. - air_gap_dimension - Be_window_dimension_2;
 	G4double position_of_Be_window_2 = 0. - Be_window_dimension_2/2.;
 	G4double position_of_He_envelope = inside_dimension_of_box/2.;
-	G4double position_of_first_part_of_sensor = - inside_dimension_of_box/2. + 500.*mm; // nominal
-	//G4double position_of_first_part_of_sensor = - inside_dimension_of_box/2. + 50.*mm; // in He, this doesn't seem to make a difference
+	G4double position_of_first_part_of_sensor = - inside_dimension_of_box/2. + 50.*cm; // nominal
+	//G4double position_of_first_part_of_sensor = - inside_dimension_of_box/2. + 5.*cm; // in He, this doesn't seem to make a difference
 	G4double env_sizeZ = inside_dimension_of_box;
 	#endif
 //	G4cout << "position_of_vacuum " << position_of_vacuum << G4endl;
@@ -154,6 +154,8 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	G4double shape0_phimin = 0.*deg, shape0_phimax = 360.*deg;
 
 	G4Material* Si_mat = nist->FindOrBuildMaterial("G4_Si");
+
+	G4String name = "nothing";
 
 	// Be filter, upstream of mask:
 	G4double shape5_hz = Be_upstream_filter_dimension/2.;
@@ -217,12 +219,43 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 		                  false,                   //no boolean operation
 		                  0,                       //copy number
 		                  checkOverlaps);          //overlaps checking
+#define SCINTILLATOR_PRESENT
+		#ifdef SCINTILLATOR_PRESENT
+			// from http://hypernews.slac.stanford.edu/HyperNews/geant4/get/phys-list/923.html
+			G4int ncomponents,natoms;
+			G4double density_YAG = 4.56*g/cm3;
+			G4Element *Y = nist->FindOrBuildElement("Y");
+			G4Element *Al = nist->FindOrBuildElement("Al");
+			G4Element *O = nist->FindOrBuildElement("O");
+			G4Material *YAG = new G4Material("YAG",density_YAG,ncomponents=3);
+			YAG->AddElement(Y,natoms=3);
+			YAG->AddElement(Al,natoms=5);
+			YAG->AddElement(O,natoms=12);
+			G4Element *Ce = nist->FindOrBuildElement("Ce");
+			G4double density_CeYAG = 4.56*g/cm3; // ??
+			G4Material *CeYAG = new G4Material("CeYAG",density_CeYAG,ncomponents=2);
+			CeYAG->AddMaterial(YAG,98.2*perCent);
+			CeYAG->AddElement(Ce,1.8*perCent);
+			G4ThreeVector scintillator_pos = G4ThreeVector(0, 0, 20.*cm - env_sizeZ/2.);
+			name = "scintillator";
+			G4double scintillator_length = 141.*um;
+			G4Tubs *scintillator_solidshape = new G4Tubs(name, 0., env_diameter/2., scintillator_length/2., 0., 2.*M_PI);
+			G4LogicalVolume *scintillator_logical_volume = new G4LogicalVolume(scintillator_solidshape, CeYAG, name);
+			new G4PVPlacement(0,                       //no rotation
+			                  scintillator_pos,                    //at position
+			                  scintillator_logical_volume,             //its logical volume
+			                  name,                //its name
+			                  logicEnv,                //its mother  volume
+			                  false,                   //no boolean operation
+			                  0,                       //copy number
+			                  checkOverlaps);          //overlaps checking
+		#endif
 //#define COPPER_BLOCKER_ON
 		#ifdef COPPER_BLOCKER_ON
 			// select edge-on or face-on
 			// edge-on
 			G4Material* copper_mat = nist->FindOrBuildMaterial("G4_Cu");
-			G4ThreeVector copper1_pos = G4ThreeVector(0, 0, 100.*mm);
+			G4ThreeVector copper1_pos = G4ThreeVector(0, 0, 45.*cm - env_sizeZ/2.);
 			const G4String name = "copper1";
 			//G4double copper1_length = 200.*um; // HER=8743/4/0 LER=21459/0/0
 			//G4double copper1_length = 100.*um; // HER=8743/5/0 LER=21459/10/5
@@ -245,8 +278,8 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 			// select edge-on or face-on
 			// edge-on
 			G4Material* copper_mat = nist->FindOrBuildMaterial("G4_Cu");
-			G4ThreeVector copper_slit1_pos = G4ThreeVector(0, 0, 100.*mm);
-			const G4String name = "copper1";
+			G4ThreeVector copper_slit1_pos = G4ThreeVector(0, 0, 45.*cm - env_sizeZ/2.);
+			name = "copper1";
 			//G4double copper1_length = 200.*um; // HER=8743/4/0 LER=21459/0/0
 			//G4double copper1_length = 100.*um; // HER=8743/5/0 LER=21459/10/5
 			//G4double copper1_length = 50.*um; // HER=8743/42/15 LER=21459/56/26
