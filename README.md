@@ -77,49 +77,55 @@ mza@ubuntu18-04:~/build/XRM$ time ./go.sh
 [ 66%] Built target bulk_si_LER
 [ 83%] Built target edge_on_LER
 [100%] Built target face_on_LER
-read 2396552 lines from file HER-bulk_si
-total_energy_incident 5850.34435035 MeV per bunch
-total_energy_deposited 5824.15868615 MeV per bunch
-total_energy_incident 9.37328909082e-10 J per bunch
-total_energy_deposited 9.33133501327e-10 J per bunch
-total_power_incident 0.47699496522 W
-total_power_deposited 0.474859974657 W
-read 128371 lines from file HER-edge_on
-total_energy_incident 1476.95432533 MeV per bunch
-total_energy_deposited 1363.95464558 MeV per bunch
-total_energy_incident 2.36634273749e-10 J per bunch
-total_energy_deposited 2.18529721229e-10 J per bunch
-total_power_incident 0.120420223982 W
-total_power_deposited 0.111207043512 W
-read 89164 lines from file HER-face_on
-total_energy_incident 774.31649203 MeV per bunch
-total_energy_deposited 767.723974367 MeV per bunch
-total_energy_incident 1.24059232978e-10 J per bunch
-total_energy_deposited 1.23002994743e-10 J per bunch
-total_power_incident 0.0631321929219 W
-total_power_deposited 0.0625946864872 W
+./bulk_si_HER HER-N-bunches.mac > HER-bulk_si.log
+./edge_on_HER HER-N-bunches.mac > HER-edge_on.log
+./face_on_HER HER-N-bunches.mac > HER-face_on.log
+read 2671699 lines from file HER-bulk_si
+total_energy_incident 6524.29642445 MeV per bunch
+total_energy_deposited 6499.16526734 MeV per bunch
+total_energy_incident 1.04530798255e-09 J per bunch
+total_energy_deposited 1.04128152552e-09 J per bunch
+total_power_incident 0.531944165967 W
+total_power_deposited 0.529895152321 W
+read 2802602 lines from file HER-edge_on
+total_energy_incident 1504.79012802 MeV per bunch
+total_energy_deposited 1390.30807343 MeV per bunch
+total_energy_incident 2.41094062952e-10 J per bunch
+total_energy_deposited 2.22752007697e-10 J per bunch
+total_power_incident 0.122689754961 W
+total_power_deposited 0.113355712317 W
+read 2867576 lines from file HER-face_on
+total_energy_incident 567.97320967 MeV per bunch
+total_energy_deposited 562.791373454 MeV per bunch
+total_energy_incident 9.09993800581e-11 J per bunch
+total_energy_deposited 9.01691580067e-11 J per bunch
+total_power_incident 0.0463084470193 W
+total_power_deposited 0.0458859573951 W
 generated XRM.HER.png
-read 6184428 lines from file LER-bulk_si
-total_energy_incident 9699.35538419 MeV per bunch
-total_energy_deposited 9687.73242506 MeV per bunch
-total_energy_incident 1.55400873122e-09 J per bunch
-total_energy_deposited 1.55214652705e-09 J per bunch
-total_power_incident 0.790815618206 W
-total_power_deposited 0.789867965786 W
-read 252243 lines from file LER-edge_on
-total_energy_incident 2184.02109783 MeV per bunch
-total_energy_deposited 2108.94106555 MeV per bunch
-total_energy_incident 3.49918909118e-10 J per bunch
-total_energy_deposited 3.37889756553e-10 J per bunch
-total_power_incident 0.178069358864 W
-total_power_deposited 0.171947873488 W
-read 247267 lines from file LER-face_on
-total_energy_incident 1745.83327374 MeV per bunch
-total_energy_deposited 1739.30969343 MeV per bunch
-total_energy_incident 2.79713449315e-10 J per bunch
-total_energy_deposited 2.78668256067e-10 J per bunch
-total_power_incident 0.142342677938 W
-total_power_deposited 0.141810792159 W
+./bulk_si_LER LER-N-bunches.mac > LER-bulk_si.log
+./edge_on_LER LER-N-bunches.mac > LER-edge_on.log
+./face_on_LER LER-N-bunches.mac > LER-face_on.log
+read 2619147 lines from file LER-bulk_si
+total_energy_incident 4104.33136828 MeV per bunch
+total_energy_deposited 4099.48835191 MeV per bunch
+total_energy_incident 6.57586667307e-10 J per bunch
+total_energy_deposited 6.56810730204e-10 J per bunch
+total_power_incident 0.334637635159 W
+total_power_deposited 0.334242770466 W
+read 2711466 lines from file LER-edge_on
+total_energy_incident 798.21338691 MeV per bunch
+total_energy_deposited 770.447401231 MeV per bunch
+total_energy_incident 1.27887939301e-10 J per bunch
+total_energy_deposited 1.23439336021e-10 J per bunch
+total_power_incident 0.065080573711 W
+total_power_deposited 0.0628167351093 W
+read 2775469 lines from file LER-face_on
+total_energy_incident 455.24275851 MeV per bunch
+total_energy_deposited 453.445355438 MeV per bunch
+total_energy_incident 7.29379627331e-11 J per bunch
+total_energy_deposited 7.26499868877e-11 J per bunch
+total_power_incident 0.0371172175104 W
+total_power_deposited 0.0369706702023 W
 generated XRM.LER.png
 ```
 

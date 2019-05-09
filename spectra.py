@@ -79,7 +79,7 @@ for filename in filenames:
 	histograms.append(ROOT.TH1F('histogram['+str(i)+']', title, number_of_bins, fbin_widths))
 	for line in open(filename):
 		line = line.rstrip("\n\r")
-		match = re.search("^([0-9]+) +([.e0-9-]+) +([.e0-9-]+)$", line)
+		match = re.search("^([0-9]+) +([.e0-9-]+) .* +([.e0-9-]+)$", line)
 		if match:
 			#print line
 			#event_number = int(match.group(1))
