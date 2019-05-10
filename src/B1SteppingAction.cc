@@ -34,7 +34,7 @@
 #include "G4Step.hh"
 #include "G4Event.hh"
 #include "G4RunManager.hh"
-#include "G4LogicalVolume.hh"
+#include "sensitiveObject.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -56,19 +56,27 @@ B1SteppingAction::~B1SteppingAction()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void B1SteppingAction::UserSteppingAction(const G4Step* step) {
+	const G4VProcess *process = step->GetPostStepPoint()->GetProcessDefinedStep();
+	G4String name = process->GetProcessName();
+	// collect energy deposited in this step
+	G4double edepStep = step->GetTotalEnergyDeposit();
+	if ("Transportation" != name) {
+		G4cout << " " << edepStep/CLHEP::eV << " " << name;
+	}
+	sensitiveObject *object = (sensitiveObject*) step->GetPreStepPoint()->GetTouchableHandle()->GetVolume();
+//	G4cout << " [" << object->getDepositedEnergy()/CLHEP::eV;
+	object->accumulateDepositedEnergy(edepStep);
+//	G4cout << "," << object->getDepositedEnergy()/CLHEP::eV << "] " << name;
 	//	G4cout << "UserSteppingAction called" << G4endl;
+	return;
 	if (!fScoringVolume) { 
 		const B1DetectorConstruction* detectorConstruction = static_cast<const B1DetectorConstruction*> (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
 		fScoringVolume = detectorConstruction->GetScoringVolume();   
 	}
 	// get volume of the current step
-	G4LogicalVolume* volume = step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume();
+	G4LogicalVolume *volume = step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume();
 	// check if we are in scoring volume
 	if (volume != fScoringVolume) return;
-	const G4VProcess *process = step->GetPostStepPoint()->GetProcessDefinedStep();
-	G4String name = process->GetProcessName();
-	// collect energy deposited in this step
-	G4double edepStep = step->GetTotalEnergyDeposit();
 	//G4cout << "step energy deposited: " << edepStep/CLHEP::eV << " eV " << name << G4endl;
 	G4cout << " " << edepStep/CLHEP::eV << " " << name;
 	fEventAction->AddEdep(edepStep);

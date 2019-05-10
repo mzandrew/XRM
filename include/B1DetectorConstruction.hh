@@ -32,6 +32,7 @@
 
 #include "G4VUserDetectorConstruction.hh"
 #include "globals.hh"
+#include "sensitiveObject.hh"
 
 class G4VPhysicalVolume;
 class G4LogicalVolume;
@@ -47,6 +48,8 @@ class B1DetectorConstruction : public G4VUserDetectorConstruction
     virtual G4VPhysicalVolume* Construct();
     
     G4LogicalVolume* GetScoringVolume() const { return fScoringVolume; }
+
+	std::vector<sensitiveObject*> sensitiveObjectVector;
 
   protected:
     G4LogicalVolume*  fScoringVolume;
