@@ -67,8 +67,8 @@ histograms = []
 i = 0
 title = " vs ".join(filenames)
 histogram_stack = ROOT.THStack("histogram_stack", title)
-lines = 0
 for filename in filenames:
+	lines = 0
 	#print filename
 	#lines = []
 	#for line in open(filename):
