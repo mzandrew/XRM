@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+# written 2019-04-30 by mza
+# last updated 2019-05-09 by mza
+
 import os # path, environ
 import sys # path, exit, argv
 #sys.path.append(ps.path.join(os.path.expanduser("~"), "/build/root/lib"))
@@ -12,12 +15,10 @@ except:
 	print ". " + HOME + "/build/root/bin/thisroot.sh"
 	print sys.argv[0] + " ..."
 	sys.exit(1)
+ROOT.gROOT.SetBatch(True)
 import re # search
 import math # log10
 import numpy # float array
-
-# written 2019-04-30 by mza
-# last updated 2019-05-03 by mza
 
 number_of_bins = 1000
 low = 0.004
