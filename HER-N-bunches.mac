@@ -7,9 +7,8 @@
 /run/verbose 0
 #/tracking/verbose 0
 
-/control/alias x_size_m  14.025e-3
-/control/alias x_start_m -7.0125e-3
-/control/alias x_end_m    7.0125e-3
+/control/alias x_start_m -6.975e-3
+/control/alias x_end_m    7.05e-3
 # 187 steps is appropriate for 75 um in 14.025 mm
 /control/alias x_step_m 75.e-6
 
