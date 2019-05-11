@@ -18,9 +18,11 @@ fi
 . ${HOME}/build/root/bin/thisroot.sh
 #echo "$ROOTSYS $PYTHONPATH"
 
+#declare situation_list="bulk_si edge_on edge_on_CeYAG face_on"
+declare situation_list="bulk_si edge_on edge_on_CeYAG"
 for HL in H L; do
 	if [ $generate -gt 0 ]; then
-		for situation in bulk_si edge_on edge_on_CeYAG face_on; do
+		for situation in $situation_list; do
 			echo "./${situation}_${HL}ER ${HL}ER-N-bunches.mac > ${HL}ER-${situation}"
 			./${situation}_${HL}ER ${HL}ER-N-bunches.mac > ${HL}ER-${situation}
 			#grep -cvH " 0.0$" ${HL}ER-${situation}.log || /bin/true

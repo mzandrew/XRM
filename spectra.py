@@ -37,7 +37,7 @@ bin_widths.append(high)
 #print str(number_of_bins)
 #print bin_widths
 fbin_widths = numpy.array(bin_widths, dtype='float64')
-epsilon_eV = 1.
+epsilon_eV = 4.9
 legend1 = ROOT.TLegend(0.1, 0.6, 0.4, 0.9)
 
 J_per_eV = 1.60217733e-19
@@ -51,7 +51,8 @@ def show_energy_per_bunch_and_power(string):
 	total_energy_incident_J = J_per_MeV * total_energy_incident_eV / 1.e6
 	#print "total_energy_incident " + str(total_energy_incident_J) + " J per bunch"
 	total_power_incident_W = total_energy_incident_J * bunches_per_second
-	print "total_power_incident %.3f W" % total_power_incident_W
+	#print "total_power_incident %.3f W" % total_power_incident_W
+	print "%.3f W incident" % (total_power_incident_W)
 	for key in sorted(total_energy_deposited_eV, key=total_energy_deposited_eV.get, reverse=True):
 		match = re.search(string, key)
 		if match:
@@ -59,9 +60,8 @@ def show_energy_per_bunch_and_power(string):
 			total_energy_deposited_J[key] = J_per_MeV * total_energy_deposited_eV[key] / 1.e6
 			#print "total_energy_deposited[" + key + "] " + str(total_energy_deposited_J[key]) + " J per bunch"
 			total_power_deposited_W[key] = total_energy_deposited_J[key] * bunches_per_second
-			print "total_power_deposited[" + key + "] %.3f W" % total_power_deposited_W[key]
-		else:
-			print key
+			#print "total_power_deposited[" + key + "] %.3f W" % total_power_deposited_W[key]
+			print "%.3f W deposited in %s" % (total_power_deposited_W[key], key)
 
 def parse_string(string):
 #	print string
@@ -141,6 +141,9 @@ for filename in filenames:
 				match = re.search("ER-face_on_(BeWindow|Air|BeFilter|CopperSlit)", name)
 				if match:
 					continue
+				match = re.search("ER-edge_on_CeYAG_(BeWindow|Air|BeFilter|CopperSlit)", name)
+				if match:
+					continue
 				try:
 					total_energy_deposited_eV[name] += deposited_energy_eV
 				except:
@@ -189,17 +192,51 @@ for filename in filenames:
 #	for key in histograms.keys():
 #		histogram_stack.Add(histograms[key])
 
-for key in histograms.keys():
-	match = re.search("SiBulk", key)
-	if match:
-		histograms[key].SetLineColor(ROOT.kGray)
-		histograms[key].SetFillColor(ROOT.kGray)
-		histogram_stack.Add(histograms[key])
-		legend1.AddEntry(histograms[key], "%.3f W %s (%d entries)" % (total_power_deposited_W[key], key, histograms[key].GetEntries()))
-j = 0
-for key in histograms.keys():
-	match = re.search("(SiBulk|SiEdgeOn|SiFaceOn)", key)
-	if not match:
+if 0==1:
+	for key in histograms.keys():
+		match = re.search("SiBulk", key)
+		if match:
+			histograms[key].SetLineColor(ROOT.kGray)
+			histograms[key].SetFillColor(ROOT.kGray)
+			histogram_stack.Add(histograms[key])
+			legend1.AddEntry(histograms[key], "%.3f W %s (%d entries)" % (total_power_deposited_W[key], key, histograms[key].GetEntries()))
+	j = 0
+	for key in histograms.keys():
+		match = re.search("(SiBulk|SiEdgeOn|SiFaceOn|YAG)", key)
+		if not match:
+			histograms[key].SetLineColor(ROOT.kGreen + j)
+			match = re.search("Be(Window|Filter)", key)
+			if match:
+				histograms[key].SetLineColor(ROOT.kMagenta)
+			match = re.search("Copper", key)
+			if match:
+				histograms[key].SetLineColor(ROOT.kOrange)
+			match = re.search("Air", key)
+			if match:
+				histograms[key].SetLineColor(ROOT.kBlack)
+			match = re.search("SiBeamDump", key)
+			if match:
+				histograms[key].SetLineColor(ROOT.kGray+3)
+			histogram_stack.Add(histograms[key])
+			legend1.AddEntry(histograms[key], "%.3f W %s (%d entries)" % (total_power_deposited_W[key], key, histograms[key].GetEntries()))
+			j = j + 1
+	for key in histograms.keys():
+		match = re.search("(SiEdgeOn|SiFaceOn|YAG)", key)
+		if match:
+			match = re.search("SiEdgeOn", key)
+			if match:
+				histograms[key].SetLineColor(ROOT.kBlue)
+			match = re.search("SiFaceOn", key)
+			if match:
+				histograms[key].SetLineColor(ROOT.kRed)
+			match = re.search("Ce:YAG", key)
+			if match:
+				histograms[key].SetLineColor(ROOT.kRed)
+			histogram_stack.Add(histograms[key])
+			legend1.AddEntry(histograms[key], "%.3f W %s (%d entries)" % (total_power_deposited_W[key], key, histograms[key].GetEntries()))
+else:
+	j = 0
+	for key in sorted(total_power_deposited_W, key=total_power_deposited_W.get, reverse=True):
 		histograms[key].SetLineColor(ROOT.kGreen + j)
 		match = re.search("Be(Window|Filter)", key)
 		if match:
@@ -213,20 +250,23 @@ for key in histograms.keys():
 		match = re.search("SiBeamDump", key)
 		if match:
 			histograms[key].SetLineColor(ROOT.kGray+3)
-		histogram_stack.Add(histograms[key])
-		legend1.AddEntry(histograms[key], "%.3f W %s (%d entries)" % (total_power_deposited_W[key], key, histograms[key].GetEntries()))
-		j = j + 1
-for key in histograms.keys():
-	match = re.search("(SiEdgeOn|SiFaceOn)", key)
-	if match:
+		match = re.search("SiBulk", key)
+		if match:
+			histograms[key].SetLineColor(ROOT.kGray)
+			histograms[key].SetFillColor(ROOT.kGray)
 		match = re.search("SiEdgeOn", key)
 		if match:
 			histograms[key].SetLineColor(ROOT.kBlue)
 		match = re.search("SiFaceOn", key)
 		if match:
 			histograms[key].SetLineColor(ROOT.kRed)
+		match = re.search("Ce:YAG", key)
+		if match:
+			histograms[key].SetLineColor(ROOT.kRed)
 		histogram_stack.Add(histograms[key])
 		legend1.AddEntry(histograms[key], "%.3f W %s (%d entries)" % (total_power_deposited_W[key], key, histograms[key].GetEntries()))
+		j = j + 1
+
 canvas1 = ROOT.TCanvas('canvas1', 'mycanvas', 100, 50, 1280, 1024)
 #canvas1.SetBatch(1)
 canvas1.SetLogx()
