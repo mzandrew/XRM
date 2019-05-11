@@ -20,7 +20,7 @@ fi
 
 for HL in H L; do
 	if [ $generate -gt 0 ]; then
-		for situation in bulk_si edge_on face_on; do
+		for situation in bulk_si edge_on edge_on_CeYAG face_on; do
 			echo "./${situation}_${HL}ER ${HL}ER-N-bunches.mac > ${HL}ER-${situation}"
 			./${situation}_${HL}ER ${HL}ER-N-bunches.mac > ${HL}ER-${situation}
 			#grep -cvH " 0.0$" ${HL}ER-${situation}.log || /bin/true
@@ -29,7 +29,7 @@ for HL in H L; do
 	if [ $plot -gt 0 ]; then
 		filename="XRM.${HL}ER.png"
 		#../spectra.py $filename ${HL}ER-bulk_si ${HL}ER-edge_on ${HL}ER-face_on
-		../spectra.py $filename ${HL}ER-bulk_si ${HL}ER-edge_on
+		../spectra.py $filename ${HL}ER-bulk_si ${HL}ER-edge_on ${HL}ER-edge_on_CeYAG
 		mv $filename ..
 	fi
 done

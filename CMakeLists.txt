@@ -45,6 +45,10 @@ add_executable(edge_on_HER exampleB1.cc ${sources} ${headers})
 target_link_libraries(edge_on_HER ${Geant4_LIBRARIES})
 target_compile_definitions(edge_on_HER PRIVATE HER=1 EDGE_ON=1)
 
+add_executable(edge_on_CeYAG_HER exampleB1.cc ${sources} ${headers})
+target_link_libraries(edge_on_CeYAG_HER ${Geant4_LIBRARIES})
+target_compile_definitions(edge_on_CeYAG_HER PRIVATE HER=1 EDGE_ON=1 SCINTILLATOR_PRESENT=1)
+
 add_executable(face_on_HER exampleB1.cc ${sources} ${headers})
 target_link_libraries(face_on_HER ${Geant4_LIBRARIES})
 target_compile_definitions(face_on_HER PRIVATE HER=1 FACE_ON=1)
@@ -56,6 +60,10 @@ target_compile_definitions(bulk_si_LER PRIVATE LER=1 BULK_SI_SITUATION=1)
 add_executable(edge_on_LER exampleB1.cc ${sources} ${headers})
 target_link_libraries(edge_on_LER ${Geant4_LIBRARIES})
 target_compile_definitions(edge_on_LER PRIVATE LER=1 EDGE_ON=1)
+
+add_executable(edge_on_CeYAG_LER exampleB1.cc ${sources} ${headers})
+target_link_libraries(edge_on_CeYAG_LER ${Geant4_LIBRARIES})
+target_compile_definitions(edge_on_CeYAG_LER PRIVATE LER=1 EDGE_ON=1 SCINTILLATOR_PRESENT=1)
 
 add_executable(face_on_LER exampleB1.cc ${sources} ${headers})
 target_link_libraries(face_on_LER ${Geant4_LIBRARIES})
@@ -98,8 +106,10 @@ add_custom_target(XRM DEPENDS edge_on_HER)
 #
 install(TARGETS bulk_si_HER DESTINATION bin)
 install(TARGETS edge_on_HER DESTINATION bin)
+install(TARGETS edge_on_CeYAG_HER DESTINATION bin)
 install(TARGETS face_on_HER DESTINATION bin)
 install(TARGETS bulk_si_LER DESTINATION bin)
 install(TARGETS edge_on_LER DESTINATION bin)
+install(TARGETS edge_on_CeYAG_LER DESTINATION bin)
 install(TARGETS face_on_LER DESTINATION bin)
 
