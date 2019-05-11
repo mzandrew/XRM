@@ -3,7 +3,10 @@
 #/gun/position 0 0 0
 
 /gun/position {x_m} 0 0
+
+# 1W:
 /run/beamOn 47821
-#/run/beamOn 2361591
-#/run/beamOn 168384376
+
+# 100W:
+#/run/beamOn 4782100
 
