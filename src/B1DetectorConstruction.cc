@@ -292,7 +292,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 			//G4double copper1_length = 200.*um; // HER=8743/4/0 LER=21459/0/0
 			//G4double copper1_length = 100.*um; // HER=8743/5/0 LER=21459/10/5
 			//G4double copper1_length = 50.*um; // HER=8743/42/15 LER=21459/56/26
-			G4double copper_slit1_length = 9.525.*mm; // HER=8743/123/44 LER=21459/148/79
+			G4double copper_slit1_length = 9.525*mm; // HER=8743/123/44 LER=21459/148/79
 			//G4double copper1_length = 0.*um; // HER=8743/690/339 LER=21459/1285/868
 			G4Tubs *copper_slit1_cyl_solidshape = new G4Tubs("copper_slit1_cyl", 0., env_diameter/2., copper_slit1_length/2., 0., 2.*M_PI);
 			G4Box *copper_slit1_box_solidshape = new G4Box("copper_slit1_box", 75.*um/2., 14.*mm/2., copper_slit1_length);
