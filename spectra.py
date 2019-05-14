@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # written 2019-04-30 by mza
-# last updated 2019-05-09 by mza
+# last updated 2019-05-13 by mza
 
 import os # path, environ
 import sys # path, exit, argv
@@ -21,24 +21,20 @@ import re # search
 import math # log10
 import numpy # float array
 
-skim = 10
+skim = 1
 stop_short = False
 number_of_bins = 200
 low = 0.004
-high = 50.
+high = 70.
 factor = 10.**(math.log10(high/low)/number_of_bins)
-#print str(factor)
 bin_widths = []
 bin_widths.append(low)
 for i in range(number_of_bins - 1):
 	bin_widths.append(bin_widths[i]*factor)
 bin_widths.append(high)
-#print len(bin_widths)
-#print str(number_of_bins)
-#print bin_widths
 fbin_widths = numpy.array(bin_widths, dtype='float64')
 epsilon_eV = 4.9
-legend1 = ROOT.TLegend(0.1, 0.6, 0.4, 0.9)
+legend1 = ROOT.TLegend(0.15, 0.4, 0.5, 0.7)
 
 J_per_eV = 1.60217733e-19
 J_per_MeV = 1.0e6 * J_per_eV
@@ -66,9 +62,6 @@ def show_energy_per_bunch_and_power(string):
 def parse_string(string):
 #	print string
 	match = re.search(" +([.e0-9-]+) ([:a-zA-Z0-9]+)(.*)$", string)
-	#deposited_energy_eV = 0.0
-	#tag = "BLANK"
-	#not_done = len(remaining_string)
 	if match:
 		deposited_energy_eV = float(match.group(1))
 		tag = match.group(2)
@@ -93,13 +86,6 @@ histogram_stack = ROOT.THStack("histogram_stack", title)
 
 for filename in filenames:
 	print "reading file " + filename + "..."
-	#print filename
-	#lines = []
-	#for line in open(filename):
-	#	line = line.rstrip("\n\r")
-	#	lines.append(line)
-	#input_energies_eV = {}
-	#deposited_energies_eV = {}
 	total_energy_incident_eV = 0.0
 	total_energy_deposited_eV = {}
 	histogram_initiated = 0
@@ -154,8 +140,6 @@ for filename in filenames:
 					histograms[name] = ROOT.TH1F(name, title, number_of_bins, fbin_widths)
 					histograms[name].Fill(deposited_energy_eV/1000.0)
 			#print str(event_number) + " " + str(incident_energy) + " " + str(deposited_energy)
-			#incident_energies_eV[event_number] = incident_energy_eV
-			#deposited_energies_eV[event_number] = deposited_energy_eV
 			if 0==matching_lines%100000:
 				print "read " + str(matching_lines) + " lines from file " + filename + " so far..."
 			if stop_short:
@@ -164,111 +148,46 @@ for filename in filenames:
 	print "read " + str(matching_lines) + " lines from file " + filename + " total"
 	show_energy_per_bunch_and_power(filename)
 
-	#for event in input_energies.keys():
-	#	histograms[i].Fill(input_energies[event])
-	#for event in deposited_energies_eV.keys():
 	#normalization = histograms[i].GetEntries()
 	#histograms[i].Scale(1./normalization)
 	#histograms[i].GetYaxis().SetTitle("relative abundance")
-	#histograms[i].SetLineColor(ROOT.kWhite + i)
-	#histograms[i].SetLineColor(ROOT.kGray + i)
-	#histograms[i].SetFillColor(ROOT.kGray + i)
 
-#	j = 0
-#	for key in histograms.keys():
-#		if 0==i:
-#			histograms[key].SetLineColor(ROOT.kGreen + j)
-#		elif 1==i:
-#			histograms[key].SetLineColor(ROOT.kBlue + j)
-#		elif 2==i:
-#			histograms[key].SetLineColor(ROOT.kRed + j)
-#		match = re.search("SiBulk", key)
-#		if match:
-#		j = j + 1
-##	else:
-##		histograms[i].SetLineColor(ROOT.kRed)
-##		histograms[i].Draw("same")
-#	i = i + 1
-#	for key in histograms.keys():
-#		histogram_stack.Add(histograms[key])
-
-if 0==1:
-	for key in histograms.keys():
-		match = re.search("SiBulk", key)
-		if match:
-			histograms[key].SetLineColor(ROOT.kGray)
-			histograms[key].SetFillColor(ROOT.kGray)
-			histogram_stack.Add(histograms[key])
-			legend1.AddEntry(histograms[key], "%.3f W %s (%d entries)" % (total_power_deposited_W[key], key, histograms[key].GetEntries()))
-	j = 0
-	for key in histograms.keys():
-		match = re.search("(SiBulk|SiEdgeOn|SiFaceOn|YAG)", key)
-		if not match:
-			histograms[key].SetLineColor(ROOT.kGreen + j)
-			match = re.search("Be(Window|Filter)", key)
-			if match:
-				histograms[key].SetLineColor(ROOT.kMagenta)
-			match = re.search("Copper", key)
-			if match:
-				histograms[key].SetLineColor(ROOT.kOrange)
-			match = re.search("Air", key)
-			if match:
-				histograms[key].SetLineColor(ROOT.kBlack)
-			match = re.search("SiBeamDump", key)
-			if match:
-				histograms[key].SetLineColor(ROOT.kGray+3)
-			histogram_stack.Add(histograms[key])
-			legend1.AddEntry(histograms[key], "%.3f W %s (%d entries)" % (total_power_deposited_W[key], key, histograms[key].GetEntries()))
-			j = j + 1
-	for key in histograms.keys():
-		match = re.search("(SiEdgeOn|SiFaceOn|YAG)", key)
-		if match:
-			match = re.search("SiEdgeOn", key)
-			if match:
-				histograms[key].SetLineColor(ROOT.kBlue)
-			match = re.search("SiFaceOn", key)
-			if match:
-				histograms[key].SetLineColor(ROOT.kRed)
-			match = re.search("Ce:YAG", key)
-			if match:
-				histograms[key].SetLineColor(ROOT.kRed)
-			histogram_stack.Add(histograms[key])
-			legend1.AddEntry(histograms[key], "%.3f W %s (%d entries)" % (total_power_deposited_W[key], key, histograms[key].GetEntries()))
-else:
-	j = 0
-	for key in sorted(total_power_deposited_W, key=total_power_deposited_W.get, reverse=True):
-		histograms[key].SetLineColor(ROOT.kGreen + j)
-		match = re.search("Be(Window|Filter)", key)
-		if match:
-			histograms[key].SetLineColor(ROOT.kMagenta)
-		match = re.search("Copper", key)
-		if match:
-			histograms[key].SetLineColor(ROOT.kOrange)
-		match = re.search("Air", key)
-		if match:
-			histograms[key].SetLineColor(ROOT.kBlack)
-		match = re.search("SiBeamDump", key)
-		if match:
-			histograms[key].SetLineColor(ROOT.kGray+3)
-		match = re.search("SiBulk", key)
-		if match:
-			histograms[key].SetLineColor(ROOT.kGray)
-			histograms[key].SetFillColor(ROOT.kGray)
-		match = re.search("SiEdgeOn", key)
-		if match:
-			histograms[key].SetLineColor(ROOT.kBlue)
-		match = re.search("SiFaceOn", key)
-		if match:
-			histograms[key].SetLineColor(ROOT.kRed)
-		match = re.search("Ce:YAG", key)
-		if match:
-			histograms[key].SetLineColor(ROOT.kRed)
-		histogram_stack.Add(histograms[key])
-		legend1.AddEntry(histograms[key], "%.3f W %s (%d entries)" % (total_power_deposited_W[key], key, histograms[key].GetEntries()))
-		j = j + 1
+j = 0
+for key in sorted(total_power_deposited_W, key=total_power_deposited_W.get, reverse=True):
+	histograms[key].SetLineColor(ROOT.kGreen + j)
+	match = re.search("Be(Window|Filter)", key)
+	if match:
+		histograms[key].SetLineColor(ROOT.kCyan)
+	match = re.search("Copper", key)
+	if match:
+		histograms[key].SetLineColor(ROOT.kOrange+1)
+	match = re.search("SiBulk", key)
+	if match:
+		histograms[key].SetLineColor(ROOT.kGray)
+		histograms[key].SetFillColor(ROOT.kGray)
+	match = re.search("SiBeamDump", key)
+	if match:
+		histograms[key].SetLineColor(ROOT.kGray+1)
+	match = re.search("Air", key)
+	if match:
+		histograms[key].SetLineColor(ROOT.kGray+2)
+	match = re.search("SiEdgeOn", key)
+	if match:
+		histograms[key].SetLineColor(ROOT.kBlue)
+	match = re.search("CeYAG_SiEdgeOn", key)
+	if match:
+		histograms[key].SetLineColor(ROOT.kMagenta)
+#	match = re.search("SiFaceOn", key)
+#	if match:
+#		histograms[key].SetLineColor(ROOT.kRed)
+	match = re.search("Ce:YAG", key)
+	if match:
+		histograms[key].SetLineColor(ROOT.kRed)
+	histogram_stack.Add(histograms[key])
+	legend1.AddEntry(histograms[key], "%.3f W %s (%d entries)" % (total_power_deposited_W[key], key, histograms[key].GetEntries()))
+	j = j + 1
 
 canvas1 = ROOT.TCanvas('canvas1', 'mycanvas', 100, 50, 1280, 1024)
-#canvas1.SetBatch(1)
 canvas1.SetLogx()
 canvas1.SetLogy()
 histogram_stack.Draw("nostack")
@@ -278,7 +197,6 @@ histogram_stack.GetXaxis().CenterTitle(1)
 histogram_stack.GetYaxis().CenterTitle(1)
 histogram_stack.GetXaxis().SetTitleOffset(1.3)
 histogram_stack.GetYaxis().SetMaxDigits(3)
-#canvas1.BuildLegend()
 legend1.Draw()
 canvas1.Modified()
 canvas1.Update()

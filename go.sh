@@ -25,7 +25,6 @@ for HL in H L; do
 		for situation in $situation_list; do
 			echo "./${situation}_${HL}ER ${HL}ER-N-bunches.mac > ${HL}ER-${situation}"
 			./${situation}_${HL}ER ${HL}ER-N-bunches.mac > ${HL}ER-${situation}
-			#grep -cvH " 0.0$" ${HL}ER-${situation}.log || /bin/true
 		done
 	fi
 	if [ $plot -gt 0 ]; then
