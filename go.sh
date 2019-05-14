@@ -39,10 +39,14 @@ function do_ring {
 }
 
 if [ $generate_quick -gt 0 ]; then
+	echo "running HER simulation in background..."
 	do_ring H >> output-HER.log &
+	echo "running LER simulation..."
 	do_ring L | tee -a output-LER.log
 else
+	echo "running HER simulation..."
 	do_ring H | tee -a output-HER.log
+	echo "running LER simulation..."
 	do_ring L | tee -a output-LER.log
 fi
 
