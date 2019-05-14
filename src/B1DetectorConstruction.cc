@@ -74,6 +74,12 @@ G4double z_position_of_gun;
 #endif
 #endif
 
+#ifndef CEYAG
+#ifndef LUAGCE
+#define LUAGCE
+#endif
+#endif
+
 G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	// Get nist material manager
 	G4NistManager* nist = G4NistManager::Instance();
@@ -159,6 +165,8 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	G4Material* Si_mat = nist->FindOrBuildMaterial("G4_Si");
 
 	G4String name = "nothing";
+	G4RotationMatrix *yRot = new G4RotationMatrix; // Rotates X and Z axes only
+	yRot->rotateY(M_PI/4.*rad);
 
 	// Be filter, upstream of mask:
 	G4double shape5_hz = Be_upstream_filter_dimension/2.;
@@ -231,24 +239,39 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 			// from http://hypernews.slac.stanford.edu/HyperNews/geant4/get/phys-list/923.html
 			G4int ncomponents,natoms;
 			G4double density_YAG = 4.56*g/cm3;
-			G4Element *Y = nist->FindOrBuildElement("Y");
 			G4Element *Al = nist->FindOrBuildElement("Al");
 			G4Element *O = nist->FindOrBuildElement("O");
+			G4Element *Ce = nist->FindOrBuildElement("Ce");
+			#ifdef CEYAG
+			G4Element *Y = nist->FindOrBuildElement("Y");
 			G4Material *YAG = new G4Material("YAG",density_YAG,ncomponents=3);
 			YAG->AddElement(Y,natoms=3);
 			YAG->AddElement(Al,natoms=5);
 			YAG->AddElement(O,natoms=12);
-			G4Element *Ce = nist->FindOrBuildElement("Ce");
-			G4double density_CeYAG = 4.56*g/cm3; // ??
-			G4Material *CeYAG = new G4Material("CeYAG",density_CeYAG,ncomponents=2);
-			CeYAG->AddMaterial(YAG,98.2*perCent);
-			CeYAG->AddElement(Ce,1.8*perCent);
-			G4ThreeVector scintillator_pos = G4ThreeVector(0, 0, 20.*cm - env_sizeZ/2.);
+			G4double density_CeYAG = 4.55*g/cm3; // mulyani p56
 			name = "Ce:YAG";
-			G4double scintillator_length = 141.*um;
+			G4Material *scint = new G4Material(name,density_CeYAG,ncomponents=2);
+			scint->AddMaterial(YAG,98.2*perCent);
+			scint->AddElement(Ce,1.8*perCent);
+			#endif
+			#ifdef LUAGCE
+			// Lu3 Al5 O12
+			G4Element *Lu = nist->FindOrBuildElement("Lu");
+			G4Material *LuAG = new G4Material("LuAG",density_YAG,ncomponents=3);
+			LuAG->AddElement(Lu,natoms=3);
+			LuAG->AddElement(Al,natoms=5);
+			LuAG->AddElement(O,natoms=12);
+			G4double density_LuAGCe = 6.76*g/cm3; // mulyani p56
+			name = "LuAG:Ce";
+			G4Material *scint = new G4Material(name,density_LuAGCe,ncomponents=2);
+			scint->AddMaterial(LuAG,99.7*perCent);
+			scint->AddElement(Ce,0.3*perCent);
+			#endif
+			G4ThreeVector scintillator_pos = G4ThreeVector(0, 0, 20.*cm - env_sizeZ/2.);
+			G4double scintillator_length = 100.*um;
 			G4Tubs *scintillator_solidshape = new G4Tubs(name, 0., env_diameter/2., scintillator_length/2., 0., 2.*M_PI);
-			G4LogicalVolume *scintillator_logical_volume = new G4LogicalVolume(scintillator_solidshape, CeYAG, name);
-			objet = new sensitiveObject(0,                       //no rotation
+			G4LogicalVolume *scintillator_logical_volume = new G4LogicalVolume(scintillator_solidshape, scint, name);
+			objet = new sensitiveObject(yRot,
 			                  scintillator_pos,                    //at position
 			                  scintillator_logical_volume,             //its logical volume
 			                  name,                //its name
