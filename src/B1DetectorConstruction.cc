@@ -84,7 +84,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	// Get nist material manager
 	G4NistManager* nist = G4NistManager::Instance();
 	// SuperKEKB XRM:
-	G4double vacuum_dimension = 10.*cm;
+	G4double vacuum_dimension = 20.*cm;
 	#ifdef HER
 	G4double Be_upstream_filter_dimension = 2.*mm; // since phase2 2.0 mm for HER; 0.5 mm for LER
 	#endif
@@ -98,7 +98,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	G4double position_of_vacuum = 0. - vacuum_dimension/2. - Be_window_dimension;
 	//G4double hypotenuse = sqrt(6.9**2.+14.**2.); // 15.61
 	G4double env_diameter = 16.*mm;
-	G4double object_radius = env_diameter/2. - 1.*mm;
+	G4double object_radius = env_diameter/2. - 250.*um;
 	#ifdef REAL_XRM_SITUATION
 	G4double inside_dimension_of_box = 614.*mm;
 	G4double position_of_Be_window = 0. - Be_window_dimension/2.;
@@ -114,9 +114,10 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	// Option to switch on/off checking of volumes overlaps
 	G4bool checkOverlaps = true;
 	z_position_of_gun = position_of_vacuum - vacuum_dimension/2. + 1.*cm;
-	//G4double position_of_Be_filter = 0. - vacuum_dimension/2. + 2.*cm; // upstream of bulk_si reference
-	G4double position_of_Be_filter = 0. + vacuum_dimension/2. - 2.*cm; // downstream of bulk_si reference
+	G4double position_of_Be_filter = 0. + vacuum_dimension/2. - 10.*cm; // downstream of bulk_si reference
+	G4double position_of_mask = 0. + vacuum_dimension/2. - 5.*cm; // downstream of bulk_si reference
 	sensitiveObject *objet;
+	G4int ncomponents;
 
 	// World
 	G4double world_sizeXY = 5.0*env_diameter;
@@ -181,6 +182,29 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	                  0,                       //copy number
 	                  checkOverlaps);          //overlaps checking
 	sensitiveObjectVector.push_back(objet);
+
+	// diamond substrate for mask
+	name = "diamond";
+	G4double diamond_sizeZ = 800.*um;
+	G4Material *carbon = nist->FindOrBuildMaterial("G4_C");
+	G4double density_diamond = 3.5*g/cm3;
+	G4Material *diamond_mat = new G4Material(name,density_diamond,ncomponents=1);
+	diamond_mat->AddMaterial(carbon,100.*perCent);
+	G4ThreeVector mask_pos = G4ThreeVector(0, 0, position_of_mask);
+	G4Tubs *diamond_solid = new G4Tubs(name, 0., object_radius, 0.5*diamond_sizeZ, 0., 2.*M_PI);
+	G4LogicalVolume *diamond_logical_volume = new G4LogicalVolume(diamond_solid,         //its solid
+	                      diamond_mat,          //its material
+	                      name);           //its name
+	objet = new sensitiveObject(0,                       //no rotation
+	                  mask_pos,                    //at position
+	                  diamond_logical_volume,             //its logical volume
+	                  name,                //its name
+	                  logicVac,                //its mother  volume
+	                  false,                   //no boolean operation
+	                  0,                       //copy number
+	                  checkOverlaps);          //overlaps checking
+	sensitiveObjectVector.push_back(objet);
+
 	#ifdef REAL_XRM_SITUATION
 		// select real XRM situation or bulk silicon
 		pos0 = G4ThreeVector(0, 0, position_of_Be_window);
@@ -201,7 +225,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 		// Envelope
 		G4Material* env_mat = nist->FindOrBuildMaterial("G4_He"); // nominal; HER=8743/695/340 LER=21459/1282/860
 		//G4Material* env_mat = nist->FindOrBuildMaterial("G4_AIR"); // suppression; HER=8743/447/162 LER=21459/597/268
-		G4Tubs *solidEnv = new G4Tubs("Envelope", 0., object_radius, 0.5*env_sizeZ, 0., 2.*M_PI);
+		G4Tubs *solidEnv = new G4Tubs("Envelope", 0., env_diameter/2., 0.5*env_sizeZ, 0., 2.*M_PI);
 		G4LogicalVolume *logicEnv = new G4LogicalVolume(solidEnv,            //its solid
 		                      env_mat,             //its material
 		                      "Envelope");         //its name
@@ -217,8 +241,8 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 		sensitiveObjectVector.push_back(objet);
 //#define SCINTILLATOR_PRESENT
 		#ifdef SCINTILLATOR_PRESENT
+			G4int natoms;
 			// from http://hypernews.slac.stanford.edu/HyperNews/geant4/get/phys-list/923.html
-			G4int ncomponents,natoms;
 			G4double density_YAG = 4.56*g/cm3;
 			G4Element *Al = nist->FindOrBuildElement("Al");
 			G4Element *O = nist->FindOrBuildElement("O");
@@ -395,7 +419,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 		G4double shape3_dz = 6.*mm;
 		//G4double position_of_bulk_sensor = position_of_first_part_of_sensor + shape3_dz/2.;
 		//G4double position_of_bulk_sensor = position_of_vacuum;
-		G4double position_of_bulk_sensor = 0.;
+		G4double position_of_bulk_sensor = 0. - 5*cm;
 		//G4double position_of_bulk_sensor = - inside_dimension_of_box/2.;
 		G4ThreeVector pos3 = G4ThreeVector(0, 0, position_of_bulk_sensor);
 		G4Tubs* solidShape3 = new G4Tubs("Envelope", 0., object_radius, 0.5*shape3_dz, 0., 2.*M_PI);

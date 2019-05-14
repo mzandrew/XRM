@@ -99,13 +99,14 @@
 # Attach text to one corner of Shape2, with a small, fixed offset
 #/vis/scene/add/text 6 7 10 cm 18 4 4 Shape2
 
-/vis/scene/add/text  1.0  1.0  -3 cm 18  0  0 Be
-/vis/scene/add/text  1.0  1.0  -8 cm 18  0  0 pipe
-/vis/scene/add/text  1.0  1.0  -1 cm 18  0  0 Be
-/vis/scene/add/text  1.0  1.0  20 cm 18  0  0 scint
-/vis/scene/add/text  1.0  1.0  30 cm 18  0  0 He
-/vis/scene/add/text  1.0  1.0  45 cm 18  0  0 Cu
-/vis/scene/add/text  1.0  1.0  50 cm 18  0  0 Si
+/vis/scene/add/text 1.0 1.0 -16 cm 18 0 0 pipe
+/vis/scene/add/text 1.0 1.0 -11 cm 18 0 0 Be
+/vis/scene/add/text 1.0 1.0  -7 cm 18 0 0 mask
+/vis/scene/add/text 1.0 1.0  -1 cm 18 0 0 Be
+/vis/scene/add/text 1.0 1.0  19 cm 18 0 0 scint
+/vis/scene/add/text 1.0 1.0  30 cm 18 0 0 He
+/vis/scene/add/text 1.0 1.0  44 cm 18 0 0 Cu
+/vis/scene/add/text 1.0 1.0  50 cm 18 0 0 Si
 #
 # To get nice view
 # Make the "World" box invisible
