@@ -1,6 +1,7 @@
 #!/bin/bash -e
 
-declare -i build=1 generate=1 plot=1
+declare -i build=0 generate=0 plot=1
+declare -i generate_quick=1
 
 declare localdir=$(cd $(dirname $(readlink -f $0)); pwd)
 cd $localdir
@@ -19,8 +20,10 @@ fi
 #echo "$ROOTSYS $PYTHONPATH"
 
 #declare situation_list="bulk_si edge_on edge_on_CeYAG face_on"
-declare situation_list="bulk_si edge_on edge_on_CeYAG"
-for HL in H L; do
+declare situation_list="bulk_si edge_on edge_on_scint edge_on_scint_gold"
+
+function do_ring {
+	local HL=${1}
 	if [ $generate -gt 0 ]; then
 		for situation in $situation_list; do
 			echo "./${situation}_${HL}ER ${HL}ER-N-bunches.mac > ${HL}ER-${situation}"
@@ -30,8 +33,16 @@ for HL in H L; do
 	if [ $plot -gt 0 ]; then
 		filename="XRM.${HL}ER.png"
 		#../spectra.py $filename ${HL}ER-bulk_si ${HL}ER-edge_on ${HL}ER-face_on
-		../spectra.py $filename ${HL}ER-bulk_si ${HL}ER-edge_on ${HL}ER-edge_on_CeYAG
+		../spectra.py $filename ${HL}ER-bulk_si ${HL}ER-edge_on ${HL}ER-edge_on_scint ${HL}ER-edge_on_scint_gold
 		mv $filename ..
 	fi
-done
+}
+
+if [ $generate_quick -gt 0 ]; then
+	do_ring H >> output-HER.log &
+	do_ring L | tee -a output-LER.log
+else
+	do_ring H | tee -a output-HER.log
+	do_ring L | tee -a output-LER.log
+fi
 

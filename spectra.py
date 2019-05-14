@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # written 2019-04-30 by mza
-# last updated 2019-05-13 by mza
+# last updated 2019-05-14 by mza
 
 import os # path, environ
 import sys # path, exit, argv
@@ -21,7 +21,7 @@ import re # search
 import math # log10
 import numpy # float array
 
-skim = 1
+skim = 10
 stop_short = False
 number_of_bins = 200
 low = 0.004
@@ -118,16 +118,16 @@ for filename in filenames:
 				if deposited_energy_eV < epsilon_eV:
 					continue
 				name = filename + "_" + tag
-				match = re.search("bulk_si_Air", name)
+				match = re.search("Air", name)
 				if match:
 					continue
-				match = re.search("bulk_si_BeFilter", name)
+				match = re.search("bulk_si_(BeFilter|diamond|gold)", name)
 				if match:
 					continue
-				match = re.search("ER-face_on_(BeWindow|Air|BeFilter|CopperSlit)", name)
+				match = re.search("ER-edge_on_scint_(BeWindow|BeFilter|CopperSlit|diamond|SiBeamDump)", name)
 				if match:
 					continue
-				match = re.search("ER-edge_on_CeYAG_(BeWindow|Air|BeFilter|CopperSlit)", name)
+				match = re.search("ER-edge_on_scint_gold_(BeWindow|BeFilter|CopperSlit|diamond|SiBeamDump)", name)
 				if match:
 					continue
 				try:

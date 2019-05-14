@@ -190,13 +190,13 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	G4double density_diamond = 3.5*g/cm3;
 	G4Material *diamond_mat = new G4Material(name,density_diamond,ncomponents=1);
 	diamond_mat->AddMaterial(carbon,100.*perCent);
-	G4ThreeVector mask_pos = G4ThreeVector(0, 0, position_of_mask);
+	G4ThreeVector diamond_pos = G4ThreeVector(0, 0, position_of_mask+diamond_sizeZ/2.);
 	G4Tubs *diamond_solid = new G4Tubs(name, 0., object_radius, 0.5*diamond_sizeZ, 0., 2.*M_PI);
 	G4LogicalVolume *diamond_logical_volume = new G4LogicalVolume(diamond_solid,         //its solid
 	                      diamond_mat,          //its material
 	                      name);           //its name
 	objet = new sensitiveObject(0,                       //no rotation
-	                  mask_pos,                    //at position
+	                  diamond_pos,                    //at position
 	                  diamond_logical_volume,             //its logical volume
 	                  name,                //its name
 	                  logicVac,                //its mother  volume
@@ -204,6 +204,27 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	                  0,                       //copy number
 	                  checkOverlaps);          //overlaps checking
 	sensitiveObjectVector.push_back(objet);
+
+	#ifdef MASK_FULL
+	// full gold for mask
+	name = "gold";
+	G4double gold_sizeZ = 20.*um;
+	G4Material *gold_mat = nist->FindOrBuildMaterial("G4_Au");
+	G4ThreeVector gold_pos = G4ThreeVector(0, 0, position_of_mask-gold_sizeZ/2.);
+	G4Tubs *gold_solid = new G4Tubs(name, 0., object_radius, 0.5*gold_sizeZ, 0., 2.*M_PI);
+	G4LogicalVolume *gold_logical_volume = new G4LogicalVolume(gold_solid,         //its solid
+	                      gold_mat,          //its material
+	                      name);           //its name
+	objet = new sensitiveObject(0,                       //no rotation
+	                  gold_pos,                    //at position
+	                  gold_logical_volume,             //its logical volume
+	                  name,                //its name
+	                  logicVac,                //its mother  volume
+	                  false,                   //no boolean operation
+	                  0,                       //copy number
+	                  checkOverlaps);          //overlaps checking
+	sensitiveObjectVector.push_back(objet);
+	#endif
 
 	#ifdef REAL_XRM_SITUATION
 		// select real XRM situation or bulk silicon

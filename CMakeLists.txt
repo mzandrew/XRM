@@ -49,9 +49,13 @@ add_executable(edge_on_scint_HER exampleB1.cc ${sources} ${headers})
 target_link_libraries(edge_on_scint_HER ${Geant4_LIBRARIES})
 target_compile_definitions(edge_on_scint_HER PRIVATE HER=1 EDGE_ON=1 SCINTILLATOR_PRESENT=1)
 
-add_executable(face_on_HER exampleB1.cc ${sources} ${headers})
-target_link_libraries(face_on_HER ${Geant4_LIBRARIES})
-target_compile_definitions(face_on_HER PRIVATE HER=1 FACE_ON=1)
+add_executable(edge_on_scint_gold_HER exampleB1.cc ${sources} ${headers})
+target_link_libraries(edge_on_scint_gold_HER ${Geant4_LIBRARIES})
+target_compile_definitions(edge_on_scint_gold_HER PRIVATE HER=1 EDGE_ON=1 SCINTILLATOR_PRESENT=1 MASK_FULL=1)
+
+#add_executable(face_on_HER exampleB1.cc ${sources} ${headers})
+#target_link_libraries(face_on_HER ${Geant4_LIBRARIES})
+#target_compile_definitions(face_on_HER PRIVATE HER=1 FACE_ON=1)
 
 add_executable(bulk_si_LER exampleB1.cc ${sources} ${headers})
 target_link_libraries(bulk_si_LER ${Geant4_LIBRARIES})
@@ -65,9 +69,13 @@ add_executable(edge_on_scint_LER exampleB1.cc ${sources} ${headers})
 target_link_libraries(edge_on_scint_LER ${Geant4_LIBRARIES})
 target_compile_definitions(edge_on_scint_LER PRIVATE LER=1 EDGE_ON=1 SCINTILLATOR_PRESENT=1)
 
-add_executable(face_on_LER exampleB1.cc ${sources} ${headers})
-target_link_libraries(face_on_LER ${Geant4_LIBRARIES})
-target_compile_definitions(face_on_LER PRIVATE LER=1 FACE_ON=1)
+add_executable(edge_on_scint_gold_LER exampleB1.cc ${sources} ${headers})
+target_link_libraries(edge_on_scint_gold_LER ${Geant4_LIBRARIES})
+target_compile_definitions(edge_on_scint_gold_LER PRIVATE LER=1 EDGE_ON=1 SCINTILLATOR_PRESENT=1 MASK_FULL=1)
+
+#add_executable(face_on_LER exampleB1.cc ${sources} ${headers})
+#target_link_libraries(face_on_LER ${Geant4_LIBRARIES})
+#target_compile_definitions(face_on_LER PRIVATE LER=1 FACE_ON=1)
 
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we
@@ -107,9 +115,11 @@ add_custom_target(XRM DEPENDS edge_on_HER)
 install(TARGETS bulk_si_HER DESTINATION bin)
 install(TARGETS edge_on_HER DESTINATION bin)
 install(TARGETS edge_on_scint_HER DESTINATION bin)
-install(TARGETS face_on_HER DESTINATION bin)
+install(TARGETS edge_on_scint_gold_HER DESTINATION bin)
+#install(TARGETS face_on_HER DESTINATION bin)
 install(TARGETS bulk_si_LER DESTINATION bin)
 install(TARGETS edge_on_LER DESTINATION bin)
 install(TARGETS edge_on_scint_LER DESTINATION bin)
-install(TARGETS face_on_LER DESTINATION bin)
+install(TARGETS edge_on_scint_gold_LER DESTINATION bin)
+#install(TARGETS face_on_LER DESTINATION bin)
 
