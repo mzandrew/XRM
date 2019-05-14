@@ -21,7 +21,7 @@ import re # search
 import math # log10
 import numpy # float array
 
-skim = 10
+skim = 1
 stop_short = False
 number_of_bins = 200
 low = 0.004
@@ -34,7 +34,7 @@ for i in range(number_of_bins - 1):
 bin_widths.append(high)
 fbin_widths = numpy.array(bin_widths, dtype='float64')
 epsilon_eV = 4.9
-legend1 = ROOT.TLegend(0.15, 0.5, 0.5, 0.75)
+legend1 = ROOT.TLegend(0.15, 0.45, 0.5, 0.7)
 
 J_per_eV = 1.60217733e-19
 J_per_MeV = 1.0e6 * J_per_eV
@@ -154,35 +154,50 @@ for filename in filenames:
 
 j = 0
 for key in sorted(total_power_deposited_W, key=total_power_deposited_W.get, reverse=True):
-	histograms[key].SetLineColor(ROOT.kGreen + j)
-	match = re.search("Be(Window|Filter)", key)
-	if match:
-		histograms[key].SetLineColor(ROOT.kCyan)
-	match = re.search("Copper", key)
-	if match:
-		histograms[key].SetLineColor(ROOT.kOrange+1)
+	histograms[key].SetLineColor(ROOT.kWhite)
 	match = re.search("SiBulk", key)
 	if match:
 		histograms[key].SetLineColor(ROOT.kGray)
 		histograms[key].SetFillColor(ROOT.kGray)
-	match = re.search("SiBeamDump", key)
+	match = re.search("BeFilter", key)
 	if match:
-		histograms[key].SetLineColor(ROOT.kGray+1)
+		histograms[key].SetLineColor(ROOT.kCyan)
+	match = re.search("BeWindow", key)
+	if match:
+		histograms[key].SetLineColor(ROOT.kCyan+2)
+	match = re.search("gold_gold", key)
+	if match:
+		histograms[key].SetLineColor(ROOT.kYellow)
+	match = re.search("diamond", key)
+	if match:
+		histograms[key].SetLineColor(ROOT.kBlack)
 	match = re.search("Air", key)
 	if match:
 		histograms[key].SetLineColor(ROOT.kGray+2)
+	match = re.search("Copper", key)
+	if match:
+		histograms[key].SetLineColor(ROOT.kOrange+10)
+	match = re.search("LuAG:Ce", key)
+	if match:
+		histograms[key].SetLineColor(ROOT.kRed)
+	match = re.search("gold_LuAG:Ce", key)
+	if match:
+		histograms[key].SetLineColor(ROOT.kRed+2)
 	match = re.search("SiEdgeOn", key)
 	if match:
+		histograms[key].SetLineColor(ROOT.kGreen)
+	match = re.search("scint_SiEdgeOn", key)
+	if match:
 		histograms[key].SetLineColor(ROOT.kBlue)
-	match = re.search("CeYAG_SiEdgeOn", key)
+	match = re.search("scint_gold_SiEdgeOn", key)
 	if match:
 		histograms[key].SetLineColor(ROOT.kMagenta)
 #	match = re.search("SiFaceOn", key)
 #	if match:
 #		histograms[key].SetLineColor(ROOT.kRed)
-	match = re.search("Ce:YAG", key)
+	match = re.search("SiBeamDump", key)
 	if match:
-		histograms[key].SetLineColor(ROOT.kRed)
+		histograms[key].SetLineColor(ROOT.kGray+1)
 	histogram_stack.Add(histograms[key])
 	legend1.AddEntry(histograms[key], "%.3f W %s (%d entries)" % (total_power_deposited_W[key], key, histograms[key].GetEntries()))
 	j = j + 1

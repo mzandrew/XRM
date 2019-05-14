@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-declare -i build=0 generate=0 plot=1
+declare -i build=1 generate=1 plot=1
 declare -i generate_quick=1
 
 declare localdir=$(cd $(dirname $(readlink -f $0)); pwd)
