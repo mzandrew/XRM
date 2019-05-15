@@ -34,7 +34,7 @@ for i in range(number_of_bins - 1):
 bin_widths.append(high)
 fbin_widths = numpy.array(bin_widths, dtype='float64')
 epsilon_eV = 4.9
-legend1 = ROOT.TLegend(0.15, 0.45, 0.5, 0.7)
+legend1 = ROOT.TLegend(0.15, 0.50, 0.5, 0.75)
 
 J_per_eV = 1.60217733e-19
 J_per_MeV = 1.0e6 * J_per_eV
