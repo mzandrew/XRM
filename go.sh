@@ -20,7 +20,8 @@ fi
 #echo "$ROOTSYS $PYTHONPATH"
 
 #declare situation_list="bulk_si edge_on edge_on_CeYAG face_on"
-declare situation_list="bulk_si edge_on edge_on_scint edge_on_scint_gold"
+#declare situation_list="bulk_si edge_on edge_on_scint edge_on_scint_gold"
+declare situation_list="edge_on edge_on_scint edge_on_scint_gold"
 
 function do_ring {
 	local HL=${1}
@@ -33,7 +34,8 @@ function do_ring {
 	if [ $plot -gt 0 ]; then
 		filename="XRM.${HL}ER.png"
 		#../spectra.py $filename ${HL}ER-bulk_si ${HL}ER-edge_on ${HL}ER-face_on
-		../spectra.py $filename ${HL}ER-bulk_si ${HL}ER-edge_on ${HL}ER-edge_on_scint ${HL}ER-edge_on_scint_gold
+		#../spectra.py $filename ${HL}ER-bulk_si ${HL}ER-edge_on ${HL}ER-edge_on_scint ${HL}ER-edge_on_scint_gold
+		../spectra.py $filename ${HL}ER-edge_on ${HL}ER-edge_on_scint ${HL}ER-edge_on_scint_gold
 		mv $filename ..
 	fi
 }

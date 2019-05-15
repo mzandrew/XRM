@@ -21,7 +21,7 @@ import re # search
 import math # log10
 import numpy # float array
 
-mode = 1 # suppress processes, similar spectra
+#mode = 1 # suppress processes, similar spectra
 mode = 2 # executive summary
 skim = 1
 stop_short = False
@@ -46,12 +46,12 @@ bunches_per_second = 508.8875e6
 total_energy_deposited_J = {}
 total_power_deposited_W = {}
 def show_energy_per_bunch_and_power(string):
-	#print "total_energy_incident " + str(total_energy_incident_eV/1.e6) + " MeV per bunch"
-	total_energy_incident_J = J_per_MeV * total_energy_incident_eV / 1.e6
-	#print "total_energy_incident " + str(total_energy_incident_J) + " J per bunch"
-	total_power_incident_W = total_energy_incident_J * bunches_per_second
-	#print "total_power_incident %.3f W" % total_power_incident_W
-	print "%.3f W incident" % (total_power_incident_W)
+	#print "total_energy_incoming " + str(total_energy_incoming_eV/1.e6) + " MeV per bunch"
+	#total_energy_incoming_J = J_per_MeV * total_energy_incoming_eV / 1.e6
+	#print "total_energy_incoming " + str(total_energy_incoming_J) + " J per bunch"
+	#total_power_incoming_W = total_energy_incoming_J * bunches_per_second
+	#print "total_power_incoming %.3f W" % total_power_incoming_W
+	#print "%.3f W incoming" % (total_power_incoming_W)
 	for key in sorted(total_energy_deposited_eV, key=total_energy_deposited_eV.get, reverse=True):
 		match = re.search(string, key)
 		if match:
@@ -60,7 +60,11 @@ def show_energy_per_bunch_and_power(string):
 			#print "total_energy_deposited[" + key + "] " + str(total_energy_deposited_J[key]) + " J per bunch"
 			total_power_deposited_W[key] = total_energy_deposited_J[key] * bunches_per_second
 			#print "total_power_deposited[" + key + "] %.3f W" % total_power_deposited_W[key]
-			print "%.3f W deposited in %s" % (total_power_deposited_W[key], key)
+			match = re.search("incoming", key)
+			if match:
+				print "%.3f W %s" % (total_power_deposited_W[key], key)
+			else:
+				print "%.3f W deposited in %s" % (total_power_deposited_W[key], key)
 
 def parse_string(string):
 #	print string
@@ -89,48 +93,53 @@ histogram_stack = ROOT.THStack("histogram_stack", title)
 
 for filename in filenames:
 	print "reading file " + filename + "..."
-	total_energy_incident_eV = 0.0
+	#total_energy_incoming_eV = 0.0
 	total_energy_deposited_eV = {}
 	histogram_initiated = 0
 	#total_lines = sum(1 for line in open(filename))
 	lines = 0
 	matching_lines = 0
+	incoming = filename + "_incoming"
+	total_energy_deposited_eV[incoming] = 0.
+	histograms[incoming] = ROOT.TH1F(incoming, title, number_of_bins, fbin_widths)
 	for line in open(filename):
 		lines = lines + 1
 		if not 0==lines%skim:
 			continue
 		line = line.rstrip("\n\r")
-		# evt# incident_E E1 process1 E2 process2 ... depE_a object_a depE_b object_b ...
+		# evt# incoming_E E1 process1 E2 process2 ... depE_a object_a depE_b object_b ...
 		# 1 36.8176 13.63 phot 23.1876 eIoni 0 Air 0 BeFilter 36.8176 SiBulk
 		match = re.search("^([0-9]+) +([.e0-9-]+)(.*)$", line)
 		if match:
 			matching_lines = matching_lines + 1
 			event_number = int(match.group(1))
-			incident_energy_eV = float(match.group(2))
-			total_energy_incident_eV += incident_energy_eV
+			incoming_energy_eV = float(match.group(2))
+			histograms[incoming].Fill(incoming_energy_eV/1000.0)
+			#total_energy_incoming_eV += incoming_energy_eV
+			total_energy_deposited_eV[incoming] += incoming_energy_eV
 			remaining_string = match.group(3)
 			not_done = len(remaining_string)
 			while not_done:
 				(deposited_energy_eV, tag, not_done, remaining_string) = parse_string(remaining_string)
+				if deposited_energy_eV < epsilon_eV:
+					continue
 				match = re.search("(phot|eIoni|msc|compt|eBrem|Rayl)", tag)
 				if match:
 					continue
-				match = re.search("(HeBox)", tag)
+				match = re.search("(SiBulk|HeBox)", tag)
 				if match:
 					continue
-				if deposited_energy_eV < epsilon_eV:
+				match = re.search("Air", tag)
+				if match:
 					continue
 				name = filename + "_" + tag
-				match = re.search("Air", name)
-				if match:
-					continue
 				match = re.search("bulk_si_(BeFilter|diamond|gold)", name)
 				if match:
 					continue
-				match = re.search("ER-edge_on_scint_(BeWindow|BeFilter|CopperSlit|diamond|SiBeamDump)", name)
+				match = re.search("ER-edge_on_scint_(BeWindow|BeFilter|diamond|SiBeamDump)", name)
 				if match:
 					continue
-				match = re.search("ER-edge_on_scint_gold_(BeWindow|BeFilter|CopperSlit|diamond|SiBeamDump)", name)
+				match = re.search("ER-edge_on_scint_gold_(BeWindow|BeFilter|diamond|SiBeamDump)", name)
 				if match:
 					continue
 				if 2==mode: # executive summary of signal:no signal
@@ -146,7 +155,7 @@ for filename in filenames:
 				except:
 					histograms[name] = ROOT.TH1F(name, title, number_of_bins, fbin_widths)
 					histograms[name].Fill(deposited_energy_eV/1000.0)
-			#print str(event_number) + " " + str(incident_energy) + " " + str(deposited_energy)
+			#print str(event_number) + " " + str(incoming_energy) + " " + str(deposited_energy)
 			if 0==matching_lines%100000:
 				print "read " + str(matching_lines) + " lines from file " + filename + " so far..."
 			if stop_short:
@@ -160,9 +169,11 @@ for filename in filenames:
 	#histograms[i].GetYaxis().SetTitle("relative abundance")
 
 j = 0
+counter = {}
+counter["Copper"] = 0
 for key in sorted(total_power_deposited_W, key=total_power_deposited_W.get, reverse=True):
 	histograms[key].SetLineColor(ROOT.kWhite)
-	match = re.search("SiBulk", key)
+	match = re.search("(SiBulk|incoming)", key)
 	if match:
 		histograms[key].SetLineColor(ROOT.kGray)
 		histograms[key].SetFillColor(ROOT.kGray)
@@ -183,7 +194,8 @@ for key in sorted(total_power_deposited_W, key=total_power_deposited_W.get, reve
 		histograms[key].SetLineColor(ROOT.kGray+2)
 	match = re.search("Copper", key)
 	if match:
-		histograms[key].SetLineColor(ROOT.kOrange+10)
+		histograms[key].SetLineColor(ROOT.kOrange+10-counter["Copper"])
+		counter["Copper"] = counter["Copper"] + 1
 	match = re.search("LuAG:Ce", key)
 	if match:
 		histograms[key].SetLineColor(ROOT.kRed)
@@ -205,8 +217,10 @@ for key in sorted(total_power_deposited_W, key=total_power_deposited_W.get, reve
 	match = re.search("SiBeamDump", key)
 	if match:
 		histograms[key].SetLineColor(ROOT.kGray+1)
-	histogram_stack.Add(histograms[key])
-	legend1.AddEntry(histograms[key], "%.3f W %s (%d entries)" % (total_power_deposited_W[key], key, histograms[key].GetEntries()))
+	match = re.search("(scint|scint_gold)_incoming", key)
+	if not match:
+		histogram_stack.Add(histograms[key])
+		legend1.AddEntry(histograms[key], "%.3f W %s (%d entries)" % (total_power_deposited_W[key], key, histograms[key].GetEntries()))
 	j = j + 1
 
 canvas1 = ROOT.TCanvas('canvas1', 'mycanvas', 100, 50, 1280, 1024)
