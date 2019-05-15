@@ -21,11 +21,13 @@ import re # search
 import math # log10
 import numpy # float array
 
+mode = 1 # suppress processes, similar spectra
+mode = 2 # executive summary
 skim = 1
 stop_short = False
-number_of_bins = 200
-low = 0.004
-high = 70.
+number_of_bins = 100
+low = 0.1
+high = 100.
 factor = 10.**(math.log10(high/low)/number_of_bins)
 bin_widths = []
 bin_widths.append(low)
@@ -33,8 +35,9 @@ for i in range(number_of_bins - 1):
 	bin_widths.append(bin_widths[i]*factor)
 bin_widths.append(high)
 fbin_widths = numpy.array(bin_widths, dtype='float64')
-epsilon_eV = 4.9
-legend1 = ROOT.TLegend(0.15, 0.50, 0.5, 0.75)
+#epsilon_eV = 4.9
+epsilon_eV = 99.9
+legend1 = ROOT.TLegend(0.15, 0.52, 0.5, 0.77)
 
 J_per_eV = 1.60217733e-19
 J_per_MeV = 1.0e6 * J_per_eV
@@ -130,6 +133,10 @@ for filename in filenames:
 				match = re.search("ER-edge_on_scint_gold_(BeWindow|BeFilter|CopperSlit|diamond|SiBeamDump)", name)
 				if match:
 					continue
+				if 2==mode: # executive summary of signal:no signal
+					match = re.search("(BeFilter|scint_gold_gold|LuAG:Ce|diamond|SiBeamDump|BeWindow)", name)
+					if match:
+						continue
 				try:
 					total_energy_deposited_eV[name] += deposited_energy_eV
 				except:
@@ -185,7 +192,7 @@ for key in sorted(total_power_deposited_W, key=total_power_deposited_W.get, reve
 		histograms[key].SetLineColor(ROOT.kRed+2)
 	match = re.search("SiEdgeOn", key)
 	if match:
-		histograms[key].SetLineColor(ROOT.kGreen)
+		histograms[key].SetLineColor(ROOT.kGreen+2)
 	match = re.search("scint_SiEdgeOn", key)
 	if match:
 		histograms[key].SetLineColor(ROOT.kBlue)
