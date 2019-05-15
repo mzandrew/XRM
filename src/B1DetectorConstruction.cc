@@ -307,19 +307,20 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 			                  checkOverlaps);          //overlaps checking
 			sensitiveObjectVector.push_back(objet);
 		#endif
-//#define COPPER_BLOCKER_ON
+#define COPPER_BLOCKER_ON
 		#ifdef COPPER_BLOCKER_ON
 			// select edge-on or face-on
 			// edge-on
 			G4Material* copper_mat = nist->FindOrBuildMaterial("G4_Cu");
 			G4ThreeVector copper1_pos = G4ThreeVector(0, 0, 45.*cm - env_sizeZ/2.);
-			const G4String name = "copper1";
+			name = "CopperBlocker";
 			//G4double copper1_length = 200.*um; // HER=8743/4/0 LER=21459/0/0
 			//G4double copper1_length = 100.*um; // HER=8743/5/0 LER=21459/10/5
 			//G4double copper1_length = 50.*um; // HER=8743/42/15 LER=21459/56/26
-			G4double copper1_length = 25.*um; // HER=8743/123/44 LER=21459/148/79
+			//G4double copper1_length = 25.*um; // HER=8743/123/44 LER=21459/148/79
 			//G4double copper1_length = 0.*um; // HER=8743/690/339 LER=21459/1285/868
-			G4Cons* copper1_solidshape = new G4Cons("shape4", shape0_rmina, shape0_rmaxa, shape0_rminb, shape0_rmaxb, copper1_length/2., shape0_phimin, shape0_phimax);
+			G4double copper1_length = 9.525*mm; // HER=8743/123/44 LER=21459/148/79
+			G4Tubs *copper1_solidshape = new G4Tubs(name, 0., object_radius, copper1_length/2., 0., 2.*M_PI);
 			G4LogicalVolume* copper_logical_volume = new G4LogicalVolume(copper1_solidshape, copper_mat, name);
 			objet = new sensitiveObject(0,                       //no rotation
 			                  copper1_pos,                    //at position
@@ -331,7 +332,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 			                  checkOverlaps);          //overlaps checking
 			sensitiveObjectVector.push_back(objet);
 		#endif
-#define COPPER_SLIT_ON
+//#define COPPER_SLIT_ON
 		#ifdef COPPER_SLIT_ON
 			// select edge-on or face-on
 			// edge-on
