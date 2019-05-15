@@ -5,5 +5,5 @@
 /gun/position {x_m} 0 0
 
 # 1W:
-/run/beamOn 245855
+/run/beamOn 241270
 
