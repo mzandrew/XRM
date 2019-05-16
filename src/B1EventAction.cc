@@ -64,32 +64,20 @@ void B1EventAction::BeginOfEventAction(const G4Event*) {
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-//const float epsilon = 1.e-6;
+const float epsilon = 1.e-3*CLHEP::eV;
 //const float silicon_work_function = epsilon;
 //const G4double silicon_work_function = 4.91*CLHEP::eV;
 void B1EventAction::EndOfEventAction(const G4Event*) {   
-	//G4VPhysicalVolume *detector = G4RunManager::GetRunManager()->GetUserDetectorConstruction();
 	B1DetectorConstruction *detector = (B1DetectorConstruction*) G4RunManager::GetRunManager()->GetUserDetectorConstruction();
 	for (std::vector<sensitiveObject*>::iterator i=detector->sensitiveObjectVector.begin(); i!=detector->sensitiveObjectVector.end(); i++) {
 		G4double energy_deposited = (*i)->getDepositedEnergy();
-		G4String name = (*i)->GetName();
-		G4cout << " " << energy_deposited/CLHEP::eV << " " << name;
+		if (energy_deposited > epsilon) {
+			G4String name = (*i)->GetName();
+			G4cout << " " << energy_deposited/CLHEP::eV << " " << name;
+		}
 	}
 	G4cout << G4endl;
 	return;
-//	sensitiveObject *object = (sensitiveObject*) step->GetPreStepPoint()->GetTouchableHandle()->GetVolume();
-//	G4cout << " [" << object->getDepositedEnergy()/CLHEP::eV;
-//	object->accumulateDepositedEnergy(edepStep);
-//	G4cout << "EndOfEventAction called" << G4endl;
-	// accumulate statistics in run action
-	fRunAction->AddEdep(fEdep);
-	G4double energy_deposited = fEdep;
-//	if (energy_deposited > silicon_work_function) {
-		//G4cout << "event energy deposited: " << energy_deposited/CLHEP::eV << " eV" << G4endl;
-		G4cout << " " << energy_deposited/CLHEP::eV << G4endl;
-//	} else {
-//		G4cout << " 0.0" << G4endl;
-//	}
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

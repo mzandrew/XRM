@@ -133,17 +133,17 @@ for filename in filenames:
 				if match:
 					continue
 				name = filename + "_" + tag
-				match = re.search("bulk_si_(BeFilter|diamond|gold)", name)
+				match = re.search("bulk_si_(BeFilter|BeWindow|DiamondMask|GoldMask)", name)
 				if match:
 					continue
-				match = re.search("ER-edge_on_scint_(BeWindow|BeFilter|diamond|SiBeamDump)", name)
+				match = re.search("ER-edge_on_scint_(BeFilter|BeWindow|DiamondMask|SiBeamDump)", name)
 				if match:
 					continue
-				match = re.search("ER-edge_on_scint_gold_(BeWindow|BeFilter|diamond|SiBeamDump)", name)
+				match = re.search("ER-edge_on_scint_gold_(BeFilter|BeWindow|DiamondMask|SiBeamDump)", name)
 				if match:
 					continue
 				if 2==mode: # executive summary of signal:no signal
-					match = re.search("(BeFilter|scint_gold_gold|LuAG:Ce|diamond|SiBeamDump|BeWindow)", name)
+					match = re.search("(BeFilter|BeWindow|scint_gold_GoldMask|DiamondMask|LuAG:Ce|SiBeamDump)", name)
 					if match:
 						continue
 				try:
@@ -183,10 +183,10 @@ for key in sorted(total_power_deposited_W, key=total_power_deposited_W.get, reve
 	match = re.search("BeWindow", key)
 	if match:
 		histograms[key].SetLineColor(ROOT.kCyan+2)
-	match = re.search("gold_gold", key)
+	match = re.search("GoldMask", key)
 	if match:
 		histograms[key].SetLineColor(ROOT.kYellow)
-	match = re.search("diamond", key)
+	match = re.search("DiamondMask", key)
 	if match:
 		histograms[key].SetLineColor(ROOT.kBlack)
 	match = re.search("Air", key)

@@ -55,12 +55,13 @@ B1SteppingAction::~B1SteppingAction()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+const float epsilon = 1.e-3*CLHEP::eV;
 void B1SteppingAction::UserSteppingAction(const G4Step* step) {
 	const G4VProcess *process = step->GetPostStepPoint()->GetProcessDefinedStep();
 	G4String name = process->GetProcessName();
 	// collect energy deposited in this step
 	G4double edepStep = step->GetTotalEnergyDeposit();
-	if ("Transportation" != name) {
+	if ("Transportation" != name && edepStep > epsilon) {
 		G4cout << " " << edepStep/CLHEP::eV << " " << name;
 	}
 	sensitiveObject *object = (sensitiveObject*) step->GetPreStepPoint()->GetTouchableHandle()->GetVolume();
@@ -69,17 +70,6 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step) {
 //	G4cout << "," << object->getDepositedEnergy()/CLHEP::eV << "] " << name;
 	//	G4cout << "UserSteppingAction called" << G4endl;
 	return;
-	if (!fScoringVolume) { 
-		const B1DetectorConstruction* detectorConstruction = static_cast<const B1DetectorConstruction*> (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
-		fScoringVolume = detectorConstruction->GetScoringVolume();   
-	}
-	// get volume of the current step
-	G4LogicalVolume *volume = step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume();
-	// check if we are in scoring volume
-	if (volume != fScoringVolume) return;
-	//G4cout << "step energy deposited: " << edepStep/CLHEP::eV << " eV " << name << G4endl;
-	G4cout << " " << edepStep/CLHEP::eV << " " << name;
-	fEventAction->AddEdep(edepStep);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

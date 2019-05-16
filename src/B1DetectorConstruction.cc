@@ -184,7 +184,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	sensitiveObjectVector.push_back(objet);
 
 	// diamond substrate for mask
-	name = "diamond";
+	name = "DiamondMask";
 	G4double diamond_sizeZ = 800.*um;
 	G4Material *carbon = nist->FindOrBuildMaterial("G4_C");
 	G4double density_diamond = 3.5*g/cm3;
@@ -207,7 +207,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 
 	#ifdef MASK_FULL
 	// full gold for mask
-	name = "gold";
+	name = "GoldMask";
 	G4double gold_sizeZ = 20.*um;
 	G4Material *gold_mat = nist->FindOrBuildMaterial("G4_Au");
 	G4ThreeVector gold_pos = G4ThreeVector(0, 0, position_of_mask-gold_sizeZ/2.);
