@@ -307,37 +307,12 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 			                  checkOverlaps);          //overlaps checking
 			sensitiveObjectVector.push_back(objet);
 		#endif
-#define COPPER_BLOCKER_ON
-		#ifdef COPPER_BLOCKER_ON
-			// select edge-on or face-on
-			// edge-on
-			G4Material* copper_mat = nist->FindOrBuildMaterial("G4_Cu");
-			G4ThreeVector copper1_pos = G4ThreeVector(0, 0, 45.*cm - env_sizeZ/2.);
-			name = "CopperBlocker";
-			//G4double copper1_length = 200.*um; // HER=8743/4/0 LER=21459/0/0
-			//G4double copper1_length = 100.*um; // HER=8743/5/0 LER=21459/10/5
-			//G4double copper1_length = 50.*um; // HER=8743/42/15 LER=21459/56/26
-			//G4double copper1_length = 25.*um; // HER=8743/123/44 LER=21459/148/79
-			//G4double copper1_length = 0.*um; // HER=8743/690/339 LER=21459/1285/868
-			G4double copper1_length = 9.525*mm; // HER=8743/123/44 LER=21459/148/79
-			G4Tubs *copper1_solidshape = new G4Tubs(name, 0., object_radius, copper1_length/2., 0., 2.*M_PI);
-			G4LogicalVolume* copper_logical_volume = new G4LogicalVolume(copper1_solidshape, copper_mat, name);
-			objet = new sensitiveObject(0,                       //no rotation
-			                  copper1_pos,                    //at position
-			                  copper_logical_volume,             //its logical volume
-			                  name,                //its name
-			                  logicEnv,                //its mother  volume
-			                  false,                   //no boolean operation
-			                  0,                       //copy number
-			                  checkOverlaps);          //overlaps checking
-			sensitiveObjectVector.push_back(objet);
-		#endif
-//#define COPPER_SLIT_ON
+		G4Material* copper_mat = nist->FindOrBuildMaterial("G4_Cu");
+#define COPPER_SLIT_ON
 		#ifdef COPPER_SLIT_ON
 			// select edge-on or face-on
 			// edge-on
-			G4Material* copper_mat = nist->FindOrBuildMaterial("G4_Cu");
-			G4ThreeVector copper_slit1_pos = G4ThreeVector(0, 0, 45.*cm - env_sizeZ/2.);
+			G4ThreeVector copper_slit1_pos = G4ThreeVector(0, 0, 40.*cm - env_sizeZ/2.);
 			name = "CopperSlit";
 			//G4double copper1_length = 200.*um; // HER=8743/4/0 LER=21459/0/0
 			//G4double copper1_length = 100.*um; // HER=8743/5/0 LER=21459/10/5
@@ -351,6 +326,29 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 			objet = new sensitiveObject(0,                       //no rotation
 			                  copper_slit1_pos,                    //at position
 			                  copper_slit1_logical_volume,             //its logical volume
+			                  name,                //its name
+			                  logicEnv,                //its mother  volume
+			                  false,                   //no boolean operation
+			                  0,                       //copy number
+			                  checkOverlaps);          //overlaps checking
+			sensitiveObjectVector.push_back(objet);
+		#endif
+//#define COPPER_BLOCKER_ON
+		#ifdef COPPER_BLOCKER_ON
+			//G4Material* copper_mat = nist->FindOrBuildMaterial("G4_Cu");
+			G4ThreeVector copper1_pos = G4ThreeVector(0, 0, 45.*cm - env_sizeZ/2.);
+			name = "CopperBlocker";
+			//G4double copper1_length = 200.*um; // HER=8743/4/0 LER=21459/0/0
+			//G4double copper1_length = 100.*um; // HER=8743/5/0 LER=21459/10/5
+			//G4double copper1_length = 50.*um; // HER=8743/42/15 LER=21459/56/26
+			//G4double copper1_length = 25.*um; // HER=8743/123/44 LER=21459/148/79
+			//G4double copper1_length = 0.*um; // HER=8743/690/339 LER=21459/1285/868
+			G4double copper1_length = 9.525*mm; // HER=8743/123/44 LER=21459/148/79
+			G4Tubs *copper1_solidshape = new G4Tubs(name, 0., object_radius, copper1_length/2., 0., 2.*M_PI);
+			G4LogicalVolume* copper_logical_volume = new G4LogicalVolume(copper1_solidshape, copper_mat, name);
+			objet = new sensitiveObject(0,                       //no rotation
+			                  copper1_pos,                    //at position
+			                  copper_logical_volume,             //its logical volume
 			                  name,                //its name
 			                  logicEnv,                //its mother  volume
 			                  false,                   //no boolean operation
