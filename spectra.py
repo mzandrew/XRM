@@ -156,12 +156,14 @@ for filename in filenames:
 					histograms[name] = ROOT.TH1F(name, title, number_of_bins, fbin_widths)
 					histograms[name].Fill(deposited_energy_eV/1000.0)
 			#print str(event_number) + " " + str(incoming_energy) + " " + str(deposited_energy)
-			if 0==matching_lines%100000:
+			if 0==matching_lines%1000000:
 				print "read " + str(matching_lines) + " lines from file " + filename + " so far..."
+				sys.stdout.flush()
 			if stop_short:
 				if 300000==matching_lines:
 					break
 	print "read " + str(matching_lines) + " lines from file " + filename + " total"
+	sys.stdout.flush()
 	show_energy_per_bunch_and_power(filename)
 
 	#normalization = histograms[i].GetEntries()
