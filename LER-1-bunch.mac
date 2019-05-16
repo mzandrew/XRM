@@ -2,7 +2,7 @@
 #/run/initialize
 #/gun/position 0 0 0
 
-/gun/position {x_m} 0 0
+/gun/position {x_m} 0 0 m
 
 # 1W:
 /run/beamOn 388154
