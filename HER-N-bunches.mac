@@ -7,8 +7,8 @@
 /run/verbose 0
 #/tracking/verbose 0
 
-/control/alias x_start_m -7.875e-4
-/control/alias x_end_m    8.625e-4
+/control/alias x_start_m -825.e-6
+/control/alias x_end_m    825.e-6
 # 22 steps is appropriate for 75 um in 1.65 mm
 /control/alias x_step_m 75.e-6
 
