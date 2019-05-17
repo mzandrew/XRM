@@ -118,6 +118,7 @@
 /vis/geometry/set/colour DiamondMask 0 0.1 0.1 0.1 0.6
 /vis/geometry/set/colour BeWindow    0 0.4 0.5 0.6 0.6
 /vis/geometry/set/colour CopperSlit  0 0.8 0.8 0.0 0.6
+/vis/geometry/set/colour Plating     0 0.3 0.3 0.3 0.6
 /vis/geometry/set/colour WireBonds   0 0.2 0.3 0.4 0.6
 /vis/geometry/set/colour SiEdgeOn    0 0.6 0.0 0.4 0.6
 /vis/geometry/set/colour SiBeamDump  0 0.6 0.0 0.4 0.6
