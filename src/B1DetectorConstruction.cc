@@ -385,8 +385,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 			                  checkOverlaps);          //overlaps checking
 			sensitiveObjectVector.push_back(objet);
 			name = "SiHandle";
-			G4double position_of_edge_on_handle = position_of_first_part_of_sensor + handle_sizeZ/2.;
-			G4ThreeVector SiHandle_pos = G4ThreeVector(handle_sizeX/2., 0, position_of_edge_on_handle);
+			G4ThreeVector SiHandle_pos = G4ThreeVector(handle_sizeX/2., 0, position_of_first_part_of_sensor + handle_sizeZ/2.);
 			G4Box *SiHandle_solid = new G4Box(name, handle_sizeX/2., handle_sizeY/2., handle_sizeZ/2.);
 			G4LogicalVolume* SiHandle_logical_volume = new G4LogicalVolume(SiHandle_solid,         //its solid
 			                      Si_mat,          //its material
@@ -394,6 +393,22 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 			objet = new sensitiveObject(0,                       //no rotation
 			                  SiHandle_pos,                    //at position
 			                  SiHandle_logical_volume,             //its logical volume
+			                  name,                //its name
+			                  logicEnv,                //its mother  volume
+			                  false,                   //no boolean operation
+			                  0,                       //copy number
+			                  checkOverlaps);          //overlaps checking
+			sensitiveObjectVector.push_back(objet);
+			name = "CopperBlock";
+			G4double CopperBlock_sizeX = 8.5*mm;
+			G4double CopperBlock_sizeY = 50.*mm;
+			G4double CopperBlock_sizeZ = 67.75*mm;
+			G4ThreeVector CopperBlock_pos = G4ThreeVector(handle_sizeX+CopperBlock_sizeX/2., 0, position_of_first_part_of_sensor + CopperBlock_sizeZ/2.);
+			G4Box *CopperBlock_solidshape = new G4Box(name, CopperBlock_sizeX/2., CopperBlock_sizeY/2., CopperBlock_sizeZ/2.);
+			G4LogicalVolume* CopperBlock_logical_volume = new G4LogicalVolume(CopperBlock_solidshape, copper_mat, name);
+			objet = new sensitiveObject(0,                       //no rotation
+			                  CopperBlock_pos,                    //at position
+			                  CopperBlock_logical_volume,             //its logical volume
 			                  name,                //its name
 			                  logicEnv,                //its mother  volume
 			                  false,                   //no boolean operation
