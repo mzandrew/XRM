@@ -111,8 +111,16 @@
 # To get nice view
 # Make the "World" box invisible
 /vis/geometry/set/visibility World 0 false
-/vis/geometry/set/colour BeamPipeVac 0 1.0 1.0 1.0 .2
-/vis/geometry/set/colour Envelope 0 0.0 1.0 0.6 .3
+/vis/geometry/set/colour BeamPipeVac 0 1.0 1.0 1.0 0.3
+/vis/geometry/set/colour Envelope    0 0.0 1.0 0.6 0.3
+/vis/geometry/set/colour BeFilter    0 0.4 0.5 0.6 0.6
+/vis/geometry/set/colour GoldMask    0 0.5 0.5 0.0 0.6
+/vis/geometry/set/colour DiamondMask 0 0.1 0.1 0.1 0.6
+/vis/geometry/set/colour BeWindow    0 0.4 0.5 0.6 0.6
+/vis/geometry/set/colour CopperSlit  0 0.8 0.8 0.0 0.6
+/vis/geometry/set/colour WireBonds   0 0.2 0.3 0.4 0.6
+/vis/geometry/set/colour SiEdgeOn    0 0.6 0.0 0.4 0.6
+/vis/geometry/set/colour SiBeamDump  0 0.6 0.0 0.4 0.6
 /vis/viewer/set/style surface
 /vis/viewer/set/hiddenMarker true
 #/vis/viewer/set/viewpointThetaPhi 120 150
