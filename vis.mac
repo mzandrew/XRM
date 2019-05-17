@@ -121,6 +121,7 @@
 /vis/geometry/set/colour Plating     0 0.3 0.3 0.3 0.6
 /vis/geometry/set/colour WireBonds   0 0.2 0.3 0.4 0.6
 /vis/geometry/set/colour SiEdgeOn    0 0.6 0.0 0.4 0.6
+/vis/geometry/set/colour SiHandle    0 0.3 0.0 0.3 0.6
 /vis/geometry/set/colour SiBeamDump  0 0.6 0.0 0.4 0.6
 /vis/viewer/set/style surface
 /vis/viewer/set/hiddenMarker true

@@ -119,9 +119,13 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	sensitiveObject *objet;
 	G4int ncomponents;
 
+	G4double handle_sizeX = 300.*um;
+	G4double handle_sizeY = 6.75*mm;
+	G4double handle_sizeZ = 2.415*mm;
+
 	G4double sensor_sizeX = 75.*um;
-	G4double sensor_sizeY = 6.*mm;
-	G4double sensor_sizeZ = 2.*mm;
+	G4double sensor_sizeY = 6.75*mm;
+	G4double sensor_sizeZ = 2.415*mm;
 
 	G4Material *world_mat = nist->FindOrBuildMaterial("G4_AIR");
 	G4Material *vac_mat = nist->FindOrBuildMaterial("G4_Galactic");
@@ -366,14 +370,30 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 		#ifdef EDGE_ON
 			name = "SiEdgeOn";
 			G4double position_of_edge_on_sensor = position_of_first_part_of_sensor + sensor_sizeZ/2.;
-			G4ThreeVector pos1 = G4ThreeVector(0, 0, position_of_edge_on_sensor);
-			G4Box *solidShape1 = new G4Box(name, sensor_sizeX/2., sensor_sizeY/2., sensor_sizeZ/2.);
-			G4LogicalVolume* logicShape1 = new G4LogicalVolume(solidShape1,         //its solid
+			G4ThreeVector SiSensor_pos = G4ThreeVector(0, 0, position_of_edge_on_sensor);
+			G4Box *SiSensor_solid = new G4Box(name, sensor_sizeX/2., sensor_sizeY/2., sensor_sizeZ/2.);
+			G4LogicalVolume* SiSensor_logical_volume = new G4LogicalVolume(SiSensor_solid,         //its solid
 			                      Si_mat,          //its material
 			                      name);           //its name
 			objet = new sensitiveObject(0,                       //no rotation
-			                  pos1,                    //at position
-			                  logicShape1,             //its logical volume
+			                  SiSensor_pos,                    //at position
+			                  SiSensor_logical_volume,             //its logical volume
+			                  name,                //its name
+			                  logicEnv,                //its mother  volume
+			                  false,                   //no boolean operation
+			                  0,                       //copy number
+			                  checkOverlaps);          //overlaps checking
+			sensitiveObjectVector.push_back(objet);
+			name = "SiHandle";
+			G4double position_of_edge_on_handle = position_of_first_part_of_sensor + handle_sizeZ/2.;
+			G4ThreeVector SiHandle_pos = G4ThreeVector(handle_sizeX/2., 0, position_of_edge_on_handle);
+			G4Box *SiHandle_solid = new G4Box(name, handle_sizeX/2., handle_sizeY/2., handle_sizeZ/2.);
+			G4LogicalVolume* SiHandle_logical_volume = new G4LogicalVolume(SiHandle_solid,         //its solid
+			                      Si_mat,          //its material
+			                      name);           //its name
+			objet = new sensitiveObject(0,                       //no rotation
+			                  SiHandle_pos,                    //at position
+			                  SiHandle_logical_volume,             //its logical volume
 			                  name,                //its name
 			                  logicEnv,                //its mother  volume
 			                  false,                   //no boolean operation
@@ -435,13 +455,16 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 		                  0,                       //copy number
 		                  checkOverlaps);          //overlaps checking
 		sensitiveObjectVector.push_back(objet);
-		// wirebonds
+		// 0.8 mil aluminum wirebonds
 		name = "WireBonds";
-		G4double positionZ_of_wirebonds = 50.*cm;
-		G4double wirebond_sizeX = 500.*um;
-		G4double wirebond_sizeY = sensor_sizeY+2.*mm;
-		G4double wirebond_sizeZ = 2.5*mm;
-		G4ThreeVector wirebond_pos = G4ThreeVector(-sensor_sizeX/2.-plating_sizeX/2.-wirebond_sizeX/2., 0, positionZ_of_wirebonds - inside_dimension_of_box/2. + wirebond_sizeZ/2. + sensor_sizeZ);
+		G4double positionZ_of_wirebonds = 50.*cm + sensor_sizeZ;
+		G4double wirebond_sizeX = 670.*um;
+		G4double wirebond_sizeY = 8.5*mm;
+		G4double wirebond_sizeZ = 3.0*mm;
+		G4double wirebond_diameter = 20.32*um;
+		G4double wirebond_packing_fraction = 131.*wirebond_diameter/wirebond_sizeY; // about 1/3
+		wirebond_sizeX *= wirebond_packing_fraction;
+		G4ThreeVector wirebond_pos = G4ThreeVector(-sensor_sizeX/2.-plating_sizeX/2.-wirebond_sizeX/2., 0, positionZ_of_wirebonds - inside_dimension_of_box/2. + wirebond_sizeZ/2.);
 		G4Box *wirebond_solid = new G4Box(name, wirebond_sizeX/2., wirebond_sizeY/2., wirebond_sizeZ/2.);
 		G4LogicalVolume *wirebond_logical_volume = new G4LogicalVolume(wirebond_solid,         //its solid
 		                      Al_mat,          //its material
