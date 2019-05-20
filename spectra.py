@@ -38,6 +38,7 @@ fbin_widths = numpy.array(bin_widths, dtype='float64')
 #epsilon_eV = 4.9
 epsilon_eV = 99.9
 legend1 = ROOT.TLegend(0.15, 0.52, 0.5, 0.77)
+plot_epsilon_W = 0.025 # this is a comparison *after* scaling to the full beam power
 
 J_per_eV = 1.60217733e-19
 J_per_MeV = 1.0e6 * J_per_eV
@@ -170,65 +171,98 @@ for filename in filenames:
 	#histograms[i].Scale(1./normalization)
 	#histograms[i].GetYaxis().SetTitle("relative abundance")
 
+match = re.search("HER", png_filename)
+if match:
+	power_ratio = 40.36 # HER
+else:
+	power_ratio = 21.48 # LER
+power_ratio *= skim
+for key in sorted(total_power_deposited_W, key=total_power_deposited_W.get):
+	histograms[key].Scale(power_ratio)
+	total_power_deposited_W[key] *= power_ratio
+
 j = 0
 counter = {}
 counter["Copper"] = 0
 for key in sorted(total_power_deposited_W, key=total_power_deposited_W.get, reverse=True):
-	histograms[key].SetLineColor(ROOT.kWhite)
+	should_plot = 1
+	if total_power_deposited_W[key] < plot_epsilon_W:
+		should_plot = 0
+	j_should_increment = 1
+	histograms[key].SetLineColor(ROOT.kCyan+j)
 	match = re.search("(SiBulk|incoming)", key)
 	if match:
+		j_should_increment = 0
 		histograms[key].SetLineColor(ROOT.kGray)
 		histograms[key].SetFillColor(ROOT.kGray)
 	match = re.search("BeFilter", key)
 	if match:
+		j_should_increment = 0
 		histograms[key].SetLineColor(ROOT.kCyan)
 	match = re.search("BeWindow", key)
 	if match:
+		j_should_increment = 0
 		histograms[key].SetLineColor(ROOT.kCyan+2)
-	match = re.search("GoldMask", key)
+	match = re.search("(GoldMask|WireBonds)", key)
 	if match:
+		j_should_increment = 0
 		histograms[key].SetLineColor(ROOT.kYellow)
 	match = re.search("DiamondMask", key)
 	if match:
+		j_should_increment = 0
 		histograms[key].SetLineColor(ROOT.kBlack)
 	match = re.search("Air", key)
 	if match:
+		j_should_increment = 0
 		histograms[key].SetLineColor(ROOT.kGray+2)
 	match = re.search("Copper", key)
 	if match:
+		j_should_increment = 0
 		histograms[key].SetLineColor(ROOT.kOrange+10-counter["Copper"])
 		counter["Copper"] = counter["Copper"] + 1
 	match = re.search("LuAG:Ce", key)
 	if match:
+		j_should_increment = 0
 		histograms[key].SetLineColor(ROOT.kRed)
-	match = re.search("gold_LuAG:Ce", key)
+	match = re.search("(gold_LuAG:Ce|SiHandle)", key)
 	if match:
+		j_should_increment = 0
 		histograms[key].SetLineColor(ROOT.kRed+2)
 	match = re.search("SiEdgeOn", key)
 	if match:
+		j_should_increment = 0
 		histograms[key].SetLineColor(ROOT.kGreen+2)
+		should_plot = 1
 	match = re.search("scint_SiEdgeOn", key)
 	if match:
+		j_should_increment = 0
 		histograms[key].SetLineColor(ROOT.kBlue)
+		should_plot = 1
 	match = re.search("scint_gold_SiEdgeOn", key)
 	if match:
+		j_should_increment = 0
 		histograms[key].SetLineColor(ROOT.kMagenta)
+		should_plot = 1
 #	match = re.search("SiFaceOn", key)
 #	if match:
 #		histograms[key].SetLineColor(ROOT.kRed)
 	match = re.search("SiBeamDump", key)
 	if match:
+		j_should_increment = 0
 		histograms[key].SetLineColor(ROOT.kGray+1)
 	match = re.search("(scint|scint_gold)_incoming", key)
-	if not match:
+	if match:
+		should_plot = 0
+	if should_plot:
 		histogram_stack.Add(histograms[key])
 		legend1.AddEntry(histograms[key], "%.3f W %s (%d entries)" % (total_power_deposited_W[key], key, histograms[key].GetEntries()))
-	j = j + 1
+	if j_should_increment:
+		j = j + 1
 
 canvas1 = ROOT.TCanvas('canvas1', 'mycanvas', 100, 50, 1280, 1024)
 canvas1.SetLogx()
 canvas1.SetLogy()
-histogram_stack.Draw("nostack")
+histogram_stack.Draw("nostack,hist")
 histogram_stack.GetXaxis().SetTitle("deposited energy [keV]")
 histogram_stack.GetYaxis().SetTitle("number of events")
 histogram_stack.GetXaxis().CenterTitle(1)
