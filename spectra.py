@@ -35,37 +35,14 @@ for i in range(number_of_bins - 1):
 	bin_widths.append(bin_widths[i]*factor)
 bin_widths.append(high)
 fbin_widths = numpy.array(bin_widths, dtype='float64')
-#epsilon_eV = 4.9
-epsilon_eV = 99.9
-legend1 = ROOT.TLegend(0.15, 0.52, 0.5, 0.77)
+epsilon1_eV = 4.9 # for total_energy_deposited_eV
+epsilon2_eV = 99.9 # for histograms
+legend1 = ROOT.TLegend(0.11, 0.6, 0.57, 0.8)
 plot_epsilon_W = 0.025 # this is a comparison *after* scaling to the full beam power
 
 J_per_eV = 1.60217733e-19
 J_per_MeV = 1.0e6 * J_per_eV
 bunches_per_second = 508.8875e6
-
-total_energy_deposited_J = {}
-total_power_deposited_W = {}
-def show_energy_per_bunch_and_power(string):
-	#print "total_energy_incoming " + str(total_energy_incoming_eV/1.e6) + " MeV per bunch"
-	#total_energy_incoming_J = J_per_MeV * total_energy_incoming_eV / 1.e6
-	#print "total_energy_incoming " + str(total_energy_incoming_J) + " J per bunch"
-	#total_power_incoming_W = total_energy_incoming_J * bunches_per_second
-	#print "total_power_incoming %.3f W" % total_power_incoming_W
-	#print "%.3f W incoming" % (total_power_incoming_W)
-	for key in sorted(total_energy_deposited_eV, key=total_energy_deposited_eV.get, reverse=True):
-		match = re.search(string, key)
-		if match:
-			#print "total_energy_deposited[" + key + "] " + str(total_energy_deposited_eV[key]/1.e6) + " MeV per bunch"
-			total_energy_deposited_J[key] = J_per_MeV * total_energy_deposited_eV[key] / 1.e6
-			#print "total_energy_deposited[" + key + "] " + str(total_energy_deposited_J[key]) + " J per bunch"
-			total_power_deposited_W[key] = total_energy_deposited_J[key] * bunches_per_second
-			#print "total_power_deposited[" + key + "] %.3f W" % total_power_deposited_W[key]
-			match = re.search("incoming", key)
-			if match:
-				print "%.3f W %s" % (total_power_deposited_W[key], key)
-			else:
-				print "%.3f W deposited in %s" % (total_power_deposited_W[key], key)
 
 def parse_string(string):
 #	print string
@@ -91,6 +68,36 @@ histograms = {}
 i = 0
 title = " vs ".join(filenames)
 histogram_stack = ROOT.THStack("histogram_stack", title)
+
+match = re.search("HER", png_filename)
+if match:
+	power_ratio = 40.36 # HER
+else:
+	power_ratio = 21.48 # LER
+power_ratio *= skim
+
+total_energy_deposited_J = {}
+total_power_deposited_W = {}
+def show_energy_per_bunch_and_power(string):
+	#print "total_energy_incoming " + str(total_energy_incoming_eV/1.e6) + " MeV per bunch"
+	#total_energy_incoming_J = J_per_MeV * total_energy_incoming_eV / 1.e6
+	#print "total_energy_incoming " + str(total_energy_incoming_J) + " J per bunch"
+	#total_power_incoming_W = total_energy_incoming_J * bunches_per_second
+	#print "total_power_incoming %.3f W" % total_power_incoming_W
+	#print "%.3f W incoming" % (total_power_incoming_W)
+	for key in sorted(total_energy_deposited_eV, key=total_energy_deposited_eV.get, reverse=True):
+		match = re.search(string, key)
+		if match:
+			#print "total_energy_deposited[" + key + "] " + str(total_energy_deposited_eV[key]/1.e6) + " MeV per bunch"
+			total_energy_deposited_J[key] = J_per_MeV * total_energy_deposited_eV[key] / 1.e6
+			#print "total_energy_deposited[" + key + "] " + str(total_energy_deposited_J[key]) + " J per bunch"
+			total_power_deposited_W[key] = total_energy_deposited_J[key] * bunches_per_second
+			#print "total_power_deposited[" + key + "] %.3f W" % total_power_deposited_W[key]
+			match = re.search("incoming", key)
+			if match:
+				print "%.3f W %s" % (power_ratio*total_power_deposited_W[key], key)
+			else:
+				print "%.3f W deposited in %s" % (power_ratio*total_power_deposited_W[key], key)
 
 for filename in filenames:
 	print "reading file " + filename + "..."
@@ -122,8 +129,6 @@ for filename in filenames:
 			not_done = len(remaining_string)
 			while not_done:
 				(deposited_energy_eV, tag, not_done, remaining_string) = parse_string(remaining_string)
-				if deposited_energy_eV < epsilon_eV:
-					continue
 				match = re.search("(phot|eIoni|msc|compt|eBrem|Rayl)", tag)
 				if match:
 					continue
@@ -145,17 +150,22 @@ for filename in filenames:
 					continue
 				if 2==mode: # executive summary of signal:no signal
 					match = re.search("(BeFilter|BeWindow|scint_gold_GoldMask|DiamondMask|LuAG:Ce|SiBeamDump)", name)
+					#match = re.search("(BeFilter|BeWindow|scint_gold_GoldMask|DiamondMask|LuAG:Ce|Copper|SiBeamDump)", name)
 					if match:
 						continue
-				try:
-					total_energy_deposited_eV[name] += deposited_energy_eV
-				except:
-					total_energy_deposited_eV[name] = deposited_energy_eV
-				try:
-					histograms[name].Fill(deposited_energy_eV/1000.0)
-				except:
-					histograms[name] = ROOT.TH1F(name, title, number_of_bins, fbin_widths)
-					histograms[name].Fill(deposited_energy_eV/1000.0)
+				match = re.search("(CopperBlock|SiEdgeOn|SiHandle|WireBonds|Plating)", tag)
+				name = filename + "_CopperBlock_SiEdgeOn_SiHandle_WireBonds_Plating"
+				if epsilon1_eV < deposited_energy_eV:
+					try:
+						total_energy_deposited_eV[name] += deposited_energy_eV
+					except:
+						total_energy_deposited_eV[name] = deposited_energy_eV
+				if epsilon2_eV < deposited_energy_eV:
+					try:
+						histograms[name].Fill(deposited_energy_eV/1000.0)
+					except:
+						histograms[name] = ROOT.TH1F(name, title, number_of_bins, fbin_widths)
+						histograms[name].Fill(deposited_energy_eV/1000.0)
 			#print str(event_number) + " " + str(incoming_energy) + " " + str(deposited_energy)
 			if 0==matching_lines%1000000:
 				print "read " + str(matching_lines) + " lines from file " + filename + " so far..."
@@ -171,12 +181,6 @@ for filename in filenames:
 	#histograms[i].Scale(1./normalization)
 	#histograms[i].GetYaxis().SetTitle("relative abundance")
 
-match = re.search("HER", png_filename)
-if match:
-	power_ratio = 40.36 # HER
-else:
-	power_ratio = 21.48 # LER
-power_ratio *= skim
 for key in sorted(total_power_deposited_W, key=total_power_deposited_W.get):
 	histograms[key].Scale(power_ratio)
 	total_power_deposited_W[key] *= power_ratio
