@@ -153,8 +153,8 @@ for filename in filenames:
 					#match = re.search("(BeFilter|BeWindow|scint_gold_GoldMask|DiamondMask|LuAG:Ce|Copper|SiBeamDump)", name)
 					if match:
 						continue
-				match = re.search("(CopperBlock|SiEdgeOn|SiHandle|WireBonds|Plating)", tag)
-				name = filename + "_CopperBlock_SiEdgeOn_SiHandle_WireBonds_Plating"
+				match = re.search("(SiEdgeOn|CopperBlock|SiHandle|WireBonds|Plating)", tag)
+				name = filename + "_SiEdgeOn_CopperBlock_SiHandle_WireBonds_Plating"
 				if epsilon1_eV < deposited_energy_eV:
 					try:
 						total_energy_deposited_eV[name] += deposited_energy_eV
