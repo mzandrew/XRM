@@ -1,5 +1,14 @@
 #!/bin/bash -e
 
+declare string="$(ps ax)"
+declare instances_already_running=$(echo "$string" | grep -c daemon.sh)
+if [ $instances_already_running -gt 1 ]; then
+	echo "daemon.sh already running"
+	exit 0
+fi
+
+sleep 10
+
 declare date
 declare filename
 declare localdir=$(cd $(dirname $(readlink -f $0)); pwd)
