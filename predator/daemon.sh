@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 
 declare string="$(ps ax)"
 declare instances_already_running=$(echo "$string" | grep -c daemon.sh)
