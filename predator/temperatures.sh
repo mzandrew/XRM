@@ -17,11 +17,12 @@ function go {
 	sleep 1
 }
 
-#go today
-go 2019-06-04
-
 #for day in $(seq 28 30); do
 #	go 2019-05-$day
 #done
 # historical images are archived in dailysnap-2019/dailysnap-2019-05/
+
+#go today # doesn't make sense, since final snapshot is not yet generated
+go yesterday
+#go 2019-06-04
 
