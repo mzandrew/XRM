@@ -3,7 +3,8 @@ set timefmt "%Y-%m-%d.%H%M%S"
 #set format x "%Y\n%m/%d\n%H:%M"
 #set format x "%H:%M"
 set format x "%Hh"
-set key right center
+#set key right center
+set key right
 #set xrange ['2019-05-28.143000' : '2019-05-29.143000']
 #set xrange ['2019-06-03.085600' : '2019-06-04.085600']
 #set xrange ['2019-06-03.000000' : '2019-06-03.235959']
