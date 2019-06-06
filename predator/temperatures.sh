@@ -41,6 +41,6 @@ function go {
 #done
 # historical images are archived in dailysnap-2019/dailysnap-2019-05/
 
-#go yesterday
-go today # doesn't make sense, since the day's final snapshot is not yet generated, but still useful when across the international date line from KEK
+go yesterday
+#go today # doesn't make sense, since the day's final snapshot is not yet generated, but still useful when across the international date line from KEK
 
