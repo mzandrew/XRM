@@ -1,13 +1,11 @@
 #!/bin/bash -e
 
-if [ ! -e /sys/class/gpio/gpio17 ]; then
-	echo "17" > /sys/class/gpio/export
-fi
-if [ ! -e /sys/class/gpio/gpio22 ]; then
-	echo "22" > /sys/class/gpio/export
-fi
-echo "out" > /sys/class/gpio/gpio17/direction
-echo "out" > /sys/class/gpio/gpio22/direction
-echo "1" > /sys/class/gpio/gpio17/value
-echo "1" > /sys/class/gpio/gpio22/value
+declare GPIOS="21 20 16 12 26"
+for GPIO in $GPIOS; do
+	if [ ! -e "/sys/class/gpio/gpio$GPIO" ]; then
+		echo "$GPIO" > /sys/class/gpio/export
+	fi
+	echo "out" > /sys/class/gpio/gpio$GPIO/direction
+	echo "1" > /sys/class/gpio/gpio$GPIO/value
+done
 
