@@ -12,6 +12,7 @@ sleep 10
 declare date
 declare filename
 declare localdir=$(cd $(dirname $(readlink -f $0)); pwd)
+declare logfile="logs/temperatures.log"
 
 cd "$localdir"
 mkdir -p pictures
@@ -21,8 +22,8 @@ while /bin/true; do
 	filename="pictures/${date}.jpg"
 	./take_pic.sh
 	cp -a "pictures/picture.jpg" "$filename"
-	echo -n "$date " | tee -a temperatures.log
-	./get_temperatures.py | tee -a temperatures.log
+	echo -n "$date " | tee -a "$logfile"
+	./get_temperatures.py | tee -a "$logfile"
 	sleep 60
 done
 
