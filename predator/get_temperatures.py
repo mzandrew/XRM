@@ -1,5 +1,6 @@
-#!/usr/bin/python3
-# Copyright (c) 2017 Mike Lawrence
+#!/usr/bin/env python3
+# Copyright (c) 2016 John Robinson
+# Author: John Robinson
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -19,77 +20,40 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-# Can enable debug output by uncommenting:
-#import logging
-#logging.basicConfig(level=logging.DEBUG)
-
+# Global Imports
+import logging
 import time
+import Adafruit_GPIO
 
-from w1thermsensor import W1ThermSensor
-from w1thermsensor import NoSensorFoundError
-import RPi.GPIO as GPIO
-import MAX31855 as MAX31855
+import sys
+sys.path.append('contrib')
+# Local Imports
+from Adafruit_MAX31856 import MAX31856 as MAX31856
 
-# DS18S20 sensor on PCB
-try:
-  boardSensor = W1ThermSensor()
-except NoSensorFoundError:
-  boardSensor = None
-  print('DS18S20 Sensor not found!')
+logging.basicConfig(filename='logs/simpletest.log', level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+_logger = logging.getLogger(__name__)
 
-# just creating the object will open the correct port and address lines
-remoteSensor = MAX31855.MAX31855()
+# Uncomment one of the blocks of code below to configure your Pi to use software or hardware SPI.
 
-# turn alert signal into an output
-ALERT = 5
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(ALERT, GPIO.OUT)
-GPIO.output(ALERT, GPIO.LOW)
+## Raspberry Pi software SPI configuration.
+#software_spi = {"clk": 25, "cs": 8, "do": 9, "di": 10}
+#sensor = MAX31856(software_spi=software_spi)
 
-# Define a function to convert celsius to fahrenheit.
-def c_to_f(c):
-  return c * 9.0 / 5.0 + 32.0
+# Raspberry Pi hardware SPI configuration.
+SPI_PORT   = 0
+SPI_DEVICE = 1
+sensor = MAX31856(hardware_spi=Adafruit_GPIO.SPI.SpiDev(SPI_PORT, SPI_DEVICE))
 
-tempA = 0.
-temp = []
-temp.append(0.0)
-temp.append(0.1)
-temp.append(0.2)
 # Loop printing measurements every second.
-try:
-  #print('Press Ctrl-C to quit.')
-  #print("Testing alert buzzer...")
-  #GPIO.output(ALERT, GPIO.HIGH)
-  #time.sleep(1)
-  #GPIO.output(ALERT, GPIO.LOW)
-  #while True:
-#  print()
-  if boardSensor != None:
-#    try:
-    tempA = boardSensor.get_temperature()
-    #print('DS18S20 on PCB: {0:0.2F}C / {1:0.2F}F'.format(temp, c_to_f(temp)))
-    #print('{0:0.2F}C'.format(temp))
-#    except KeyboardInterrupt:
-#      break
-  for n in range(0,2):
-    tempState = remoteSensor.readState(n)
-    temp[n] = remoteSensor.readLinearizedTempC(n)
-    if tempState['fault']:
-      temp[n] = 0.0
-      # there is a fault in the reading
-      if tempState['openCircuit']:
-        error = 'No thermocouple connected'
-      elif tempState['shortGND']:
-        error = 'Thermocouple shorted to ground'
-      elif tempState['shortVCC']:
-        error = 'Thermocouple shorted to VCC';
-      #print('Thermocouple {0:d}: Error - {1}'.format(n, error))
-    #else:
-      #print('Thermocouple {0:d}: {1:0.2F}C / {2:0.2F}F'.format(n, temp, c_to_f(temp)))
-      #print('{0:0.2F}'.format(temp[n]))
-  print('{0:0.1F} {1:0.1F} {2:0.1F}'.format(tempA, temp[0], temp[1]))
-#    time.sleep(1.0)
+#print('Press Ctrl-C to quit.')
+#while True:
+    #temp = sensor.read_temp_c()
+    #internal = sensor.read_internal_temp_c()
+    #print('Thermocouple Temperature: {0:0.3F}*C'.format(temp))
+    #print('    Internal Temperature: {0:0.3F}*C'.format(internal))
+    #time.sleep(1.0)
 
-finally:
-  # release GPIO stuff
-  GPIO.cleanup()
+temp = sensor.read_temp_c()
+internal = sensor.read_internal_temp_c()
+print(' {0:0.1F}'.format(internal) + ' {0:0.1F}'.format(temp))
+
