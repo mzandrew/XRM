@@ -26,7 +26,10 @@ import time
 import Adafruit_GPIO
 
 import sys
-sys.path.append('contrib')
+import os
+sys.path.append("contrib")
+#sys.path.append(os.path.join(sys.path[0], "contrib"))
+#print(sys.path[0])
 # Local Imports
 from Adafruit_MAX31856 import MAX31856 as MAX31856
 
@@ -55,5 +58,8 @@ sensor = MAX31856(hardware_spi=Adafruit_GPIO.SPI.SpiDev(SPI_PORT, SPI_DEVICE))
 
 temp = sensor.read_temp_c()
 internal = sensor.read_internal_temp_c()
-print(' {0:0.1F}'.format(internal) + ' {0:0.1F}'.format(temp))
+string = ""
+if len(sys.argv)>1:
+	string = sys.argv[1]
+print(string + ' {0:0.1F}'.format(internal) + ' {0:0.1F}'.format(temp))
 

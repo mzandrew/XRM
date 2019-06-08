@@ -16,10 +16,10 @@ set lmargin 9
 set rmargin 12
 #set style line 1 linewidth 40
 
-#plot "temperatures.log" using 1:2 title "ambient", "temperatures.log" using 1:(22+$2-$3) with linespoints title "copper"
-#plot "temperatures.log" using 1:2 with lines linewidth 2 title "ambient", "temperatures.log" using 1:(47-$3) with lines linewidth 2 title "copper"
-plot "temperatures.log" using 1:2 with lines linewidth 2 title "ambient"
-#plot "temperatures.log" using 1:2 with lines linewidth 2 title "ambient", "temperatures.log" using 1:3 with lines linewidth 2 title "copper"
+#plot "logs/temperatures.log" using 1:2 title "ambient", "temperatures.log" using 1:(22+$2-$3) with linespoints title "copper"
+#plot "logs/temperatures.log" using 1:2 with lines linewidth 2 title "ambient", "temperatures.log" using 1:(47-$3) with lines linewidth 2 title "copper"
+plot "logs/temperatures.log" using 1:2 with lines linewidth 2 title "ambient"
+#plot "logs/temperatures.log" using 1:2 with lines linewidth 2 title "ambient", "temperatures.log" using 1:3 with lines linewidth 2 title "copper"
 
 #pause -1
 
