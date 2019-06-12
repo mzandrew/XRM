@@ -1,9 +1,7 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python2
 
 import serial
-
 ser = serial.Serial('/dev/ttyACM0', 9600)
-
-cc=str(ser.readline())
+cc = ser.readline().rstrip()
 print(cc)
 

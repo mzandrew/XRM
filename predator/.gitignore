@@ -3,4 +3,5 @@ pictures
 videos
 logs
 __pycache__
+*.pyc
 
