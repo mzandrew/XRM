@@ -50,7 +50,7 @@ while True:
     #temp_f = thermistor.temperature * 9.0 / 5.0 + 32.0
     #votlageN = getVoltage(analogin)
     #print("T: %f C and %f F A : %f mV" % (temp_c, temp_f, getVoltage(analogin)))
-    print(" %.1f %.3f" % (temp_c, getCurrent(analogin)))
+    print("%.1f %.3f" % (temp_c, getCurrent(analogin)))
     #pixel.fill(255, 0, 0)
     time.sleep(0.25)
 

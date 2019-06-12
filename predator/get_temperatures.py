@@ -58,8 +58,8 @@ sensor = MAX31856(hardware_spi=Adafruit_GPIO.SPI.SpiDev(SPI_PORT, SPI_DEVICE))
 
 temp = sensor.read_temp_c()
 internal = sensor.read_internal_temp_c()
-string = ""
-if len(sys.argv)>1:
-	string = sys.argv[1]
-print(string + ' {0:0.1F}'.format(internal) + ' {0:0.1F}'.format(temp))
+#string = ""
+#if len(sys.argv)>1:
+#	string = sys.argv[1]
+print('{0:0.1F}'.format(internal) + ' {0:0.1F}'.format(temp))
 

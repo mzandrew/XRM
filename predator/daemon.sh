@@ -20,8 +20,10 @@ mkdir -p pictures
 ./lights_on.sh
 while /bin/true; do
 	date=$(date +"%Y-%m-%d.%H%M%S")
-	#echo -n "$date " | tee -a "$logfile"
-	./get_temperatures.py $date >> "$logfile"
+	string="$date"
+	string="$string $(./get_temperatures.py)"
+	string="$string $(./read_serial.py)"
+	echo "$string" >> "$logfile"
 	picfile="pictures/${date}.jpg"
 	./take_pic.sh
 	cp -a "pictures/picture.jpg" "$picfile"
