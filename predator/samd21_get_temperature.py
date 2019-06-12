@@ -14,7 +14,8 @@ import math
 import adafruit_thermistor
 thermistor = adafruit_thermistor.Thermistor(board.TEMPERATURE, 10000, 10000, 25, 3950)
 from analogio import AnalogIn
-analogin = AnalogIn(board.A1)
+analog0 = AnalogIn(board.A0)
+analog1 = AnalogIn(board.A1)
 #import neopixel
 
 NUM_SAMPLES = 160
@@ -23,10 +24,14 @@ NUM_SAMPLES = 160
 #pixel.fill(0, 0, 255)
 #time.sleep(0.25)
 
+def getVoltage(pin):
+    return pin.value * 3.3 / 65536.0
+
 def getCurrent(pin):  # helper
     R = 0.01
+    gain = 10.0
     #return ((((pin.value * 3.3) / 65536)/R)*10-175)
-    return ((((pin.value * 3.3) / 65536.0)/R)*10.0)
+    return (getVoltage(pin)/gain/R)
 
 def mean(values):
     return sum(values) / len(values)
@@ -50,7 +55,8 @@ while True:
     #temp_f = thermistor.temperature * 9.0 / 5.0 + 32.0
     #votlageN = getVoltage(analogin)
     #print("T: %f C and %f F A : %f mV" % (temp_c, temp_f, getVoltage(analogin)))
-    print("%.1f %.3f" % (temp_c, getCurrent(analogin)))
+    #print("%.1f %.3f" % (temp_c, getCurrent(analogin)))
+    print("%.1f %.3f %.3f" % (temp_c, getVoltage(analog0), getVoltage(analog1)))
     #pixel.fill(255, 0, 0)
     time.sleep(0.25)
 
