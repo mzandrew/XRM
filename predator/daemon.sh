@@ -26,7 +26,9 @@ while /bin/true; do
 	echo "$string" >> "$logfile"
 	picfile="pictures/${date}.jpg"
 	./take_pic.sh
-	cp -a "pictures/picture.jpg" "$picfile"
+	if [ $? -eq 0 ]; then
+		cp -a "pictures/picture.jpg" "$picfile"
+	fi
 	sleep 60
 done
 
