@@ -4,7 +4,7 @@ declare output_size="3840x2160"
 #output_size="1920x1080"
 output_size="1024x576"
 #output_size="800x450"
-declare output_filename="XRM-HER-next-try.mp4"
+declare output_filename="pictures/XRM-HER-next-try.mp4"
 declare -i xi=275 w=425
 declare -i yi=77 h=170
 declare -i last_frame_number=701
