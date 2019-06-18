@@ -31,6 +31,18 @@ function go {
 	#sleep 1
 }
 
+function hardcode_try0 {
+	gnuplot -e "xrange_start='2019-05-28.143000'; xrange_end='2019-05-29.143000'" temperatures.gnuplot 
+	convert pictures/2019-05-29.1430.superkekb.dailysnap.gif pictures/temperatures.png -append pictures/2019-05-29.143000.superkekb-with-temperatures.png
+	echo "pictures/2019-05-29.143000.superkekb-with-temperatures.png"
+}
+
+function hardcode_try1 {
+	gnuplot -e "xrange_start='2019-06-13.090100'; xrange_end='2019-06-14.090100'" temperatures.gnuplot 
+	convert pictures/2019-06-14.090100.superkekb.gif pictures/temperatures.png -append pictures/2019-06-14.090100.superkekb-with-temperatures.png
+	echo "pictures/2019-06-14.090100.superkekb-with-temperatures.png"
+}
+
 #echo $HOSTNAME
 #if [ "$HOSTNAME" != "raspberrypi" ]; then
 #	rsync xrmrpi:build/XRM/predator/temperatures.log .
@@ -41,6 +53,8 @@ function go {
 #done
 # historical images are archived in dailysnap-2019/dailysnap-2019-05/
 
+#hardcode_try0
+#hardcode_try1
 go yesterday
 #go today # doesn't make sense, since the day's final snapshot is not yet generated, but still useful when across the international date line from KEK
 
