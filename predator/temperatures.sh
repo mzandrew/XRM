@@ -13,7 +13,7 @@ function go {
 		wget -q $url/$filename1 -O pictures/$filename2
 	fi
 	echo "plotting temperatures..."
-	gnuplot -e "xrange_start='${date2}.000000'" -e "xrange_end='${date2}.235959'" temperatures.gnuplot
+	gnuplot -e "xrange_start='${date2}.000000'; xrange_end='${date2}.235959'" temperatures.gnuplot
 	if [ -s "pictures/$filename2" ] && [ -s "pictures/temperatures.png" ]; then
 		convert pictures/$filename2 pictures/temperatures.png -append pictures/${date2}.superkekb-with-temperatures.png
 	else
