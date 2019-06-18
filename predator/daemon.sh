@@ -16,6 +16,7 @@ declare localdir=$(cd $(dirname $(readlink -f $0)); pwd)
 declare logfile="logs/temperatures.log"
 
 cd "$localdir"
+mkdir -p logs
 mkdir -p pictures
 ./lights_on.sh
 while /bin/true; do
