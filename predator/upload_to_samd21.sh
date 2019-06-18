@@ -7,6 +7,9 @@ declare device="/dev/sda"
 #	sudo umount /media
 #fi
 sudo mount ${device}1 /media
+sudo ls -lart samd21_get_temperature.py /media/code.py
 sudo rsync -t samd21_get_temperature.py /media/code.py
+sync
+sudo ls -lart samd21_get_temperature.py /media/code.py
 sudo umount /media
 
