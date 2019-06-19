@@ -3,15 +3,18 @@ set timefmt "%Y-%m-%d.%H%M%S"
 #set format x "%Y\n%m/%d\n%H:%M"
 #set format x "%H:%M"
 set format x "%Hh"
-#set format x "%m-%d\n%Hh"
+#set format x "%H"
+#set format x "%dth\n%Hh"
 #set key right center
 #set key right
 set key left bottom box opaque
+#set key right top box opaque
 #set xrange ['2019-05-28.143000' : '2019-05-29.143000']
 #set xrange ['2019-06-03.085600' : '2019-06-04.085600']
 #set xrange ['2019-06-03.000000' : '2019-06-03.235959']
 #set xtics "2019-06-13.090100",10800,"2019-06-14.090100"
 set xtics xrange_start,10800,xrange_end
+#set xtics xrange_start,21600,xrange_end
 set xrange [ xrange_start : xrange_end ] 
 set mxtics 6
 #set xlabel "%m/%d"
