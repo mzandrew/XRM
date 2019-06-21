@@ -7,8 +7,8 @@ set format x "%Hh"
 #set format x "%dth\n%Hh"
 #set key right center
 #set key right
-set key left bottom box opaque
-#set key right top box opaque
+#set key left bottom box opaque
+set key right top box opaque
 #set xrange ['2019-05-28.143000' : '2019-05-29.143000']
 #set xrange ['2019-06-03.085600' : '2019-06-04.085600']
 #set xrange ['2019-06-03.000000' : '2019-06-03.235959']
@@ -19,13 +19,13 @@ set xrange [ xrange_start : xrange_end ]
 set mxtics 6
 #set xlabel "%m/%d"
 
-set yrange [20:32]
+set yrange [20:33]
 set mytics 2
 #set yrange [-5:40]
 set ylabel "temperature (C)"
 
 #set autoscale y2
-set y2range [0.0:0.5]
+set y2range [0.0:0.6]
 set y2tics
 set my2tics 2
 set y2label "amplifier current (A)"
