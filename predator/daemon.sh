@@ -14,6 +14,7 @@ declare date
 declare picfile
 declare localdir=$(cd $(dirname $(readlink -f $0)); pwd)
 declare logfile="logs/temperatures.log"
+declare -i should_take_pic=0
 
 cd "$localdir"
 mkdir -p logs
@@ -25,10 +26,12 @@ while /bin/true; do
 	string="$string $(./get_temperatures.py)"
 	string="$string $(./read_serial.py)"
 	echo "$string" >> "$logfile"
-	picfile="pictures/${date}.jpg"
-	./take_pic.sh
-	if [ $? -eq 0 ]; then
-		cp -a "pictures/picture.jpg" "$picfile"
+	if [ $should_take_pic -gt 0 ]; then
+		picfile="pictures/${date}.jpg"
+		./take_pic.sh
+		if [ $? -eq 0 ]; then
+			cp -a "pictures/picture.jpg" "$picfile"
+		fi
 	fi
 	sleep 60
 done
