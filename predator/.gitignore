@@ -4,4 +4,5 @@ videos
 logs
 __pycache__
 *.pyc
+*.swp
 
