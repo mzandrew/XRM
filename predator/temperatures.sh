@@ -48,6 +48,11 @@ function hardcode_try1_full {
 	gnuplot -e "xrange_start='2019-06-13.150000'; xrange_end='2019-06-18.081200'" temperatures.gnuplot 
 }
 
+function testing {
+	#gnuplot -e "xrange_start='2019-06-13.150000'; xrange_end='2019-06-18.013200'" temperatures.gnuplot 
+	gnuplot -e "xrange_start='2019-06-22.000000'; xrange_end='2019-06-25.000000'" temperatures.gnuplot 
+}
+
 #echo $HOSTNAME
 #if [ "$HOSTNAME" != "raspberrypi" ]; then
 #	rsync xrmrpi:build/XRM/predator/temperatures.log .
@@ -60,7 +65,8 @@ function hardcode_try1_full {
 
 #hardcode_try0
 #hardcode_try1
-#hardcode_try1_full
-go yesterday
+hardcode_try1_full
+#testing
+#go yesterday
 #go today # doesn't make sense, since the day's final snapshot is not yet generated, but still useful when across the international date line from KEK
 
