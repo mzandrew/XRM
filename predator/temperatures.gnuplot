@@ -14,13 +14,15 @@ set key right bottom box opaque
 #set xrange ['2019-06-03.085600' : '2019-06-04.085600']
 #set xrange ['2019-06-03.000000' : '2019-06-03.235959']
 #set xtics "2019-06-13.090100",10800,"2019-06-14.090100"
+set xtics xrange_start,3600,xrange_end
 #set xtics xrange_start,10800,xrange_end
-set xtics xrange_start,21600,xrange_end
+#set xtics xrange_start,21600,xrange_end
 set xrange [ xrange_start : xrange_end ] 
-set mxtics 6
+#set mxtics 6
 #set xlabel "%m/%d"
 
-set yrange [20:33]
+#set yrange [20:33]
+set yrange [25.5:28.5]
 set mytics 2
 #set yrange [-5:40]
 set ylabel "temperature (C)"
@@ -33,7 +35,8 @@ set y2label "current (A)"
 resistance=0.01
 current_fudge=4.0
 
-set terminal png size 1022,260
+#set terminal png size 1022,260
+set terminal png size 1920,400
 set output "pictures/temperatures.png"
 set lmargin 9
 set rmargin 12

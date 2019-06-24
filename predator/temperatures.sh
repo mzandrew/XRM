@@ -45,7 +45,8 @@ function hardcode_try1 {
 
 function hardcode_try1_full {
 	#gnuplot -e "xrange_start='2019-06-13.150000'; xrange_end='2019-06-18.013200'" temperatures.gnuplot 
-	gnuplot -e "xrange_start='2019-06-13.150000'; xrange_end='2019-06-18.081200'" temperatures.gnuplot 
+	#gnuplot -e "xrange_start='2019-06-13.150000'; xrange_end='2019-06-18.081200'" temperatures.gnuplot 
+	gnuplot -e "xrange_start='2019-06-13.200000'; xrange_end='2019-06-14.020000'" temperatures.gnuplot 
 }
 
 function testing {
