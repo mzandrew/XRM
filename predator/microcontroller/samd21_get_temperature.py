@@ -10,14 +10,16 @@ import math
 import adafruit_thermistor
 import analogio
 
+fudge_factor = 1.0/6.0
+resistance = 0.01
+
 def getVoltage(pin):
     return pin.value * 3.3 / 65536.0
 
 def getCurrent(pin):  # helper
-    R = 0.01
     gain = 10.0
-    #return ((((pin.value * 3.3) / 65536)/R)*10-175)
-    return (getVoltage(pin)/gain/R)
+    #return ((((pin.value * 3.3) / 65536)/resistance)*10-175)
+    return (getVoltage(pin)/gain/resistance)
 
 #def mean(values):
 #    return sum(values) / len(values)
@@ -111,7 +113,9 @@ def main():
             v0 /= number_of_acquisitions_to_accumulate
             v1 /= number_of_acquisitions_to_accumulate
             diff = 1000.0 * (v1 - v0)
-            print("%.1f %.3f %.3f %.3f" % (temp_c, v0, v1, diff))
+            I = diff/resistance
+            I *= fudge_factor
+            print("%.1f %.3f %.3f %.1f %.1f" % (temp_c, v0, v1, diff, I))
             #pixel.fill(255, 0, 0)
             #time.sleep(long_timestep)
     except:

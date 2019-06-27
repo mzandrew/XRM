@@ -25,6 +25,7 @@ while /bin/true; do
 	string="$date"
 	string="$string $(./get_temperatures.py)"
 	string="$string $(./read_serial.py)"
+	string="$string $(./IV.py)"
 	echo "$string" >> "$logfile"
 	if [ $should_take_pic -gt 0 ]; then
 		picfile="pictures/${date}.jpg"
