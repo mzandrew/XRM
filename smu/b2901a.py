@@ -3,7 +3,7 @@
 # written 2020-12-15 by mza
 # based on B2910-90030.pdf (SCPI-reference)
 # and https://socketscpi.readthedocs.io/en/latest/usage.html#socketinstrument
-# last updated 2020-12-16 by mza
+# last updated 2020-12-18 by mza
 
 ip = "192.168.1.2"
 
@@ -11,6 +11,7 @@ import time
 import re
 import atexit
 import socketscpi # sudo pip3 install socketscpi
+from DebugInfoWarningError24 import debug, info, warning, error, debug2, debug3, set_verbosity, create_new_logfile_with_string
 
 def setip(desired_ip):
 	global ip
@@ -34,35 +35,62 @@ def program(message):
 	scpi.write(message)
 	#response = query(":SYSTem:ERRor:COUNt?")
 
-def query(message, prefix="", suffix=""):
+def query_quiet(message):
 	response = scpi.query(message)
-	print(prefix + response + suffix)
+	return response
+
+def query(message, prefix="", suffix=""):
+	response = query_quiet(message)
+	info(prefix + response + suffix)
 	return response
 
 def identify():
 	message = "*IDN?"
 	response = scpi.query(message)
-	print(response + " at " + ip)
+	info(response + " at " + ip)
 
 def show_errors():
 	query(":SYSTem:ERRor:ALL?")
 
 def get_mode():
-	mode = query(":FUNCtion:MODE?")
+	mode = query_quiet(":FUNCtion:MODE?")
 	return mode
 
 def show_status():
 	mode = get_mode()
 	if mode=="VOLT":
-		get_i()
-		get_v()
+		info("voltage mode")
+		if check()=="1":
+			info("output enabled")
+			get_i()
+			get_v()
+		else:
+			info("output disabled")
 		get_ilim()
 		get_vlim()
 	else:
-		get_i()
-		get_v()
+		info("current mode")
+		if check()=="1":
+			info("output enabled")
+			get_i()
+			get_v()
+		else:
+			info("output disabled")
 		get_ilim()
 		get_vlim()
+
+def print_header():
+	info("#current (A), voltage (V)")
+
+def compact_status():
+	# warning ":MEAS" turns on the channel!
+	current_string = query_quiet(":MEASure:CURRent?")
+	voltage_string = query_quiet(":MEASure:VOLTage?")
+	info("%s, %s" % (current_string, voltage_string))
+
+def check():
+	response = query_quiet("OUTp:STAT?")
+	return response
 
 def on():
 	program("OUTp:STAT ON")
@@ -77,10 +105,20 @@ def get_vlim():
 	query(":SENS:VOLTage:PROT:LEVel?", "voltage limit: ", " V")
 
 def get_i():
+	# warning ":MEAS" turns on the channel!
 	query(":MEASure:CURRent?", "current: ", " A")
 
 def get_v():
+	# warning ":MEAS" turns on the channel!
 	query(":MEASure:VOLTage?", "voltage: ", " V")
+
+def get_i_if_on():
+	if check()=="1":
+		get_i()
+
+def get_v_if_on():
+	if check()=="1":
+		get_v()
 
 def set_ilim(desired_ilim):
 	program(":SENS:CURRent:PROT:LEVel " + str(desired_ilim))
@@ -96,16 +134,16 @@ def set_i(desired_i):
 
 def set_v(desired_v):
 	program(":FUNCtion:MODE VOLT;:VOLTage:LEVel:IMM:AMPL " + str(desired_v))
-	get_v()
+	get_v_if_on()
 
 def set_ilim_v(desired_ilim, desired_v):
 	program(":FUNCtion:MODE VOLT;:VOLTage:LEVel " + str(desired_v) + ";:SENS:CURRent:PROT:LEVel " + str(desired_ilim))
 	get_ilim()
-	get_v()
+	get_v_if_on()
 
 def set_vlim_i(desired_vlim, desired_i):
 	program(":FUNCtion:MODE CURR;:CURRent:LEVel " + str(desired_i) + ";:SENS:VOLTage:PROT:LEVel " + str(desired_vlim))
-	get_i()
+	get_i_if_on()
 	get_vlim()
 
 #def sweep_voltage(start_v, end_v, step_v):

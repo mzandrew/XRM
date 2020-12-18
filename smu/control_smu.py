@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # written 2020-12-16 by mza
-# last updated 2020-12-16 by mza
+# last updated 2020-12-18 by mza
 
 # keysign B2901A:
 ip = "192.168.22.40"
@@ -14,6 +14,7 @@ import time
 import sys
 import re
 import b2901a
+from DebugInfoWarningError24 import debug, info, warning, error, debug2, debug3, set_verbosity, create_new_logfile_with_string
 
 # led strip for testing:
 vlim = 11.1
@@ -28,28 +29,36 @@ i = 1.00
 #b2901a.set_vlim_i(vlim, i)
 
 if __name__ == "__main__":
+	create_new_logfile_with_string("control_smu")
 	b2901a.setip(ip)
 	b2901a.connect()
 	if len(sys.argv) > 1:
 		command = ""
-		#print(str(len(sys.argv)))
+		#debug(str(len(sys.argv)))
 		for arg in sys.argv[1:]:
-			#print(arg)
+			#debug(arg)
 			match = re.search("(on|off)", arg, re.IGNORECASE)
 			if match:
 				command = match.group(1)
-				#print("matched " + command)
+				debug("matched " + command)
 		if not command=="":
-			match = re.search("on", arg, re.IGNORECASE)
+			match = re.search("on", command, re.IGNORECASE)
 			if match:
+				info("turning on")
 				b2901a.set_ilim_v(ilim, v)
 				b2901a.on()
-			match = re.search("off", arg, re.IGNORECASE)
+			match = re.search("off", command, re.IGNORECASE)
 			if match:
+				info("turning off")
 				b2901a.off()
 	else:
-		b2901a.identify()
-		b2901a.show_status()
+		#b2901a.identify()
+		#b2901a.show_status()
+		b2901a.print_header()
+		while True:
+			b2901a.compact_status()
+			sys.stdout.flush()
+			time.sleep(1)
 
 #b2901a.kelvin("on")
 #time.sleep(1)
