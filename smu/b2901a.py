@@ -80,13 +80,14 @@ def show_status():
 		get_vlim()
 
 def print_header():
-	info("#current (A), voltage (V)")
+	info("#date, current (A), voltage (V)")
 
 def compact_status():
 	# warning ":MEAS" turns on the channel!
+	date_string = time.strftime("%Y-%m-%d+%X")
 	current_string = query_quiet(":MEASure:CURRent?")
 	voltage_string = query_quiet(":MEASure:VOLTage?")
-	info("%s, %s" % (current_string, voltage_string))
+	info("%s, %s, %s" % (date_string, current_string, voltage_string))
 
 def check():
 	response = query_quiet("OUTp:STAT?")
