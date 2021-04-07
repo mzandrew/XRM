@@ -1,5 +1,18 @@
 #!/bin/bash -e
 
+# written 2019-04-30 by mza
+# last updated 2021-04-06 by mza
+
+# sudo apt install -y python3-dev cmake qtdeclarative5-dev libxm4
+# cd /usr/lib/x86_64-linux-gnu
+# sudo ln -s libXm.so.4 libXm.so
+# sudo ln -s libSM.so.6 libSM.so
+# sudo ln -s libICE.so.6 libICE.so
+# sudo ln -s libXt.so.6 libXt.so
+# sudo ln -s libXmu.so.6 libXmu.so
+# sudo ln -s libXpm.so.4 libXpm.so
+# sudo ln -s libexpat.so.1 libexpat.so
+
 declare -i build=1 generate=1 plot=1
 declare -i parallel_generate=1
 declare -i num_cpus=$(grep -c "^processor" /proc/cpuinfo)
@@ -17,7 +30,8 @@ fi
 #echo "$ROOTSYS $PYTHONPATH"
 . /usr/local/bin/geant4.sh
 #echo "$ROOTSYS $PYTHONPATH"
-. ${HOME}/build/root/bin/thisroot.sh
+#. ${HOME}/build/root/bin/thisroot.sh
+. /usr/local/bin/thisroot.sh
 #echo "$ROOTSYS $PYTHONPATH"
 
 #declare situation_list="bulk_si edge_on edge_on_CeYAG face_on"

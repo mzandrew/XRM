@@ -1,7 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # written 2019-04-30 by mza
-# last updated 2019-05-14 by mza
+# last updated 2021-04-06 by mza
 
 import os # path, environ
 import sys # path, exit, argv
@@ -9,17 +9,18 @@ import sys # path, exit, argv
 try:
 	import ROOT # TH1F
 except:
-	print "ROOT environment not setup yet"
+	print("ROOT environment not setup yet")
 	HOME = os.environ['HOME']
-	#print ". " + HOME + "/build/root/bin/thisroot.sh; " + str(sys.argv)
-	print ". " + HOME + "/build/root/bin/thisroot.sh"
-	#print sys.argv[0] + sys.argv[1:]
-	print " ".join(sys.argv[0:])
+	#print(". " + HOME + "/build/root/bin/thisroot.sh; " + str(sys.argv))
+	#print(". " + HOME + "/build/root/bin/thisroot.sh")
+	print(". " + "/usr/local/bin/thisroot.sh")
+	#print(sys.argv[0] + sys.argv[1:])
+	print(" ".join(sys.argv[0:]))
 	sys.exit(1)
 ROOT.gROOT.SetBatch(True)
 import re # search
 import math # log10
-import numpy # float array
+import numpy # float array - sudo apt install -y python3-numpy
 
 #mode = 1 # suppress processes, similar spectra
 mode = 2 # executive summary
@@ -45,7 +46,7 @@ J_per_MeV = 1.0e6 * J_per_eV
 bunches_per_second = 508.8875e6
 
 def parse_string(string):
-#	print string
+#	print(string)
 	match = re.search(" +([.e0-9-]+) ([:a-zA-Z0-9]+)(.*)$", string)
 	if match:
 		deposited_energy_eV = float(match.group(1))
@@ -79,28 +80,28 @@ power_ratio *= skim
 total_energy_deposited_J = {}
 total_power_deposited_W = {}
 def show_energy_per_bunch_and_power(string):
-	#print "total_energy_incoming " + str(total_energy_incoming_eV/1.e6) + " MeV per bunch"
+	#print("total_energy_incoming " + str(total_energy_incoming_eV/1.e6) + " MeV per bunch")
 	#total_energy_incoming_J = J_per_MeV * total_energy_incoming_eV / 1.e6
-	#print "total_energy_incoming " + str(total_energy_incoming_J) + " J per bunch"
+	#print("total_energy_incoming " + str(total_energy_incoming_J) + " J per bunch")
 	#total_power_incoming_W = total_energy_incoming_J * bunches_per_second
-	#print "total_power_incoming %.3f W" % total_power_incoming_W
-	#print "%.3f W incoming" % (total_power_incoming_W)
+	#print("total_power_incoming %.3f W" % total_power_incoming_W)
+	#print("%.3f W incoming" % (total_power_incoming_W))
 	for key in sorted(total_energy_deposited_eV, key=total_energy_deposited_eV.get, reverse=True):
 		match = re.search(string, key)
 		if match:
-			#print "total_energy_deposited[" + key + "] " + str(total_energy_deposited_eV[key]/1.e6) + " MeV per bunch"
+			#print("total_energy_deposited[" + key + "] " + str(total_energy_deposited_eV[key]/1.e6) + " MeV per bunch")
 			total_energy_deposited_J[key] = J_per_MeV * total_energy_deposited_eV[key] / 1.e6
-			#print "total_energy_deposited[" + key + "] " + str(total_energy_deposited_J[key]) + " J per bunch"
+			#print("total_energy_deposited[" + key + "] " + str(total_energy_deposited_J[key]) + " J per bunch")
 			total_power_deposited_W[key] = total_energy_deposited_J[key] * bunches_per_second
-			#print "total_power_deposited[" + key + "] %.3f W" % total_power_deposited_W[key]
+			#print("total_power_deposited[" + key + "] %.3f W" % total_power_deposited_W[key])
 			match = re.search("incoming", key)
 			if match:
-				print "%.3f W %s" % (power_ratio*total_power_deposited_W[key], key)
+				print("%.3f W %s" % (power_ratio*total_power_deposited_W[key], key))
 			else:
-				print "%.3f W deposited in %s" % (power_ratio*total_power_deposited_W[key], key)
+				print("%.3f W deposited in %s" % (power_ratio*total_power_deposited_W[key], key))
 
 for filename in filenames:
-	print "reading file " + filename + "..."
+	print("reading file " + filename + "...")
 	#total_energy_incoming_eV = 0.0
 	total_energy_deposited_eV = {}
 	histogram_initiated = 0
@@ -166,14 +167,14 @@ for filename in filenames:
 					except:
 						histograms[name] = ROOT.TH1F(name, title, number_of_bins, fbin_widths)
 						histograms[name].Fill(deposited_energy_eV/1000.0)
-			#print str(event_number) + " " + str(incoming_energy) + " " + str(deposited_energy)
+			#print(str(event_number) + " " + str(incoming_energy) + " " + str(deposited_energy))
 			if 0==matching_lines%1000000:
-				print "read " + str(matching_lines) + " lines from file " + filename + " so far..."
+				print("read " + str(matching_lines) + " lines from file " + filename + " so far...")
 				sys.stdout.flush()
 			if stop_short:
 				if 300000==matching_lines:
 					break
-	print "read " + str(matching_lines) + " lines from file " + filename + " total"
+	print("read " + str(matching_lines) + " lines from file " + filename + " total")
 	sys.stdout.flush()
 	show_energy_per_bunch_and_power(filename)
 
@@ -267,12 +268,12 @@ canvas1 = ROOT.TCanvas('canvas1', 'mycanvas', 100, 50, 1280, 1024)
 canvas1.SetLogx()
 canvas1.SetLogy()
 histogram_stack.Draw("nostack,hist")
-histogram_stack.GetXaxis().SetTitle("deposited energy [keV]")
-histogram_stack.GetYaxis().SetTitle("number of events")
-histogram_stack.GetXaxis().CenterTitle(1)
-histogram_stack.GetYaxis().CenterTitle(1)
-histogram_stack.GetXaxis().SetTitleOffset(1.3)
-histogram_stack.GetYaxis().SetMaxDigits(3)
+#histogram_stack.GetXaxis().SetTitle("deposited energy [keV]")
+#histogram_stack.GetYaxis().SetTitle("number of events")
+#histogram_stack.GetXaxis().CenterTitle(1)
+#histogram_stack.GetYaxis().CenterTitle(1)
+#histogram_stack.GetXaxis().SetTitleOffset(1.3)
+#histogram_stack.GetYaxis().SetMaxDigits(3)
 legend1.Draw()
 canvas1.Modified()
 canvas1.Update()
@@ -285,5 +286,5 @@ else:
 	imagefile = ROOT.TImage.Create()
 	imagefile.FromPad(canvas1)
 	imagefile.WriteImage(png_filename)
-	print "generated " + png_filename
+	print("generated " + png_filename)
 
