@@ -12,7 +12,7 @@ https://github.com/mzandrew/bin/blob/master/physics/make_geant4_and_visualizatio
 to build a geant4 executable:
 
 ```
-. /usr/local/share/Geant4-10.5.1/geant4make/geant4make.sh
+. /usr/local/share/Geant4/geant4make/geant4make.sh
 mkdir build; cd build; cmake ..; make
 ```
 
