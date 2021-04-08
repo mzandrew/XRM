@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 # written 2019-04-30 by mza
-# last updated 2021-04-06 by mza
+# last updated 2021-04-07 by mza
 
 # sudo apt install -y python3-dev cmake qtdeclarative5-dev libxm4
 # cd /usr/lib/x86_64-linux-gnu
@@ -16,6 +16,9 @@
 declare -i build=1 generate=1 plot=1
 declare -i parallel_generate=1
 declare -i num_cpus=$(grep -c "^processor" /proc/cpuinfo)
+if [ $num_cpus -lt 4 ]; then
+	parallel_generate=0
+fi
 
 declare localdir=$(cd $(dirname $(readlink -f $0)); pwd)
 cd $localdir
