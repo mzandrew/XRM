@@ -25,7 +25,7 @@ cd $localdir
 mkdir -p build
 cd build
 if [ $build -gt 0 ]; then
-	. /usr/local/share/Geant4-10.7.1/geant4make/geant4make.sh
+	. /usr/local/share/Geant4/geant4make/geant4make.sh
 	cmake ..
 	make -j$num_cpus
 fi
