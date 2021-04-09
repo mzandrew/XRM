@@ -33,9 +33,6 @@ fi
 #echo "$ROOTSYS $PYTHONPATH"
 . /usr/local/bin/geant4.sh
 #echo "$ROOTSYS $PYTHONPATH"
-#. ${HOME}/build/root/bin/thisroot.sh
-. /usr/local/bin/thisroot.sh
-#echo "$ROOTSYS $PYTHONPATH"
 
 #declare situation_list="bulk_si edge_on edge_on_CeYAG face_on"
 #declare situation_list="bulk_si edge_on edge_on_scint edge_on_scint_gold"
@@ -64,6 +61,9 @@ function do_ring {
 		fi
 	fi
 	if [ $plot -gt 0 ]; then
+		#. ${HOME}/build/root/bin/thisroot.sh
+		. /usr/local/bin/thisroot.sh
+		#echo "$ROOTSYS $PYTHONPATH"
 		filename="XRM.${HL}ER.png"
 		#../spectra.py $filename ${HL}ER-bulk_si ${HL}ER-edge_on ${HL}ER-face_on
 		#../spectra.py $filename ${HL}ER-bulk_si ${HL}ER-edge_on ${HL}ER-edge_on_scint ${HL}ER-edge_on_scint_gold
