@@ -1,6 +1,8 @@
+# modified from original exampleB1 2019-04 by mza
+# last updated 2021-04-19 by mza
+
 # Macro file for the visualization setting in the initialization phase 
 # of the B1 example when running in interactive mode
-#
 
 # Use these open statements to open selected visualization
 #
@@ -67,69 +69,73 @@
 #/vis/modeling/trajectories/drawByParticleID-0/set e+ yellow
 #
 # To superimpose all of the events from a given run:
-/vis/scene/endOfEventAction accumulate
+#/vis/scene/endOfEventAction accumulate
+/vis/scene/endOfEventAction accumulate 1000
 #
 # Decorations
 # Name
-/vis/set/textColour green
-/vis/set/textLayout right
+#/vis/set/textColour green
+#/vis/set/textLayout right
 #/vis/scene/add/text2D 0.9 -.9 24 ! ! exampleB1
 # or, if your system does not support right-adjustment
 #/vis/scene/add/text2D 0 -.9 24 ! ! exampleB1
-/vis/set/textLayout    # Revert to normal (left adjusted) layout
-/vis/set/textColour    # Revert to default text colour (blue)
+#/vis/set/textLayout    # Revert to normal (left adjusted) layout
+#/vis/set/textColour    # Revert to default text colour (blue)
 #
 # Axes, scale, etc.
 #/vis/scene/add/scale   # Simple scale line
 #/vis/scene/add/axes    # Simple axes: x=red, y=green, z=blue.
-/vis/scene/add/eventID # Drawn at end of event
+#/vis/scene/add/eventID # Drawn at end of event
 #/vis/scene/add/date    # Date stamp
 #/vis/scene/add/logo2D  # Simple logo
 #/vis/scene/add/logo    # 3D logo
 #
 # Frame
-/vis/set/colour red
-/vis/set/lineWidth 2
-/vis/scene/add/frame   # Simple frame around the view
-/vis/set/colour        # Revert to default colour (white)
-/vis/set/lineWidth     # Revert to default line width (1.)
+#/vis/set/colour red
+#/vis/set/lineWidth 2
+#/vis/scene/add/frame   # Simple frame around the view
+#/vis/set/colour        # Revert to default colour (white)
+#/vis/set/lineWidth     # Revert to default line width (1.)
 #
 # Attach text to one edge of Shape1, with a small, fixed offset
 #/vis/scene/add/text 0 6 -4 cm 18 4 4 Shape1
 # Attach text to one corner of Shape2, with a small, fixed offset
 #/vis/scene/add/text 6 7 10 cm 18 4 4 Shape2
 
-/vis/scene/add/text 1.0 1.0 -16 cm 18 0 0 pipe
-/vis/scene/add/text 1.0 1.0 -11 cm 18 0 0 Be
-/vis/scene/add/text 1.0 1.0  -7 cm 18 0 0 mask
-/vis/scene/add/text 1.0 1.0  -1 cm 18 0 0 Be
-/vis/scene/add/text 1.0 1.0  19 cm 18 0 0 scint
-/vis/scene/add/text 1.0 1.0  30 cm 18 0 0 He
-/vis/scene/add/text 1.0 1.0  44 cm 18 0 0 Cu
-/vis/scene/add/text 1.0 1.0  50 cm 18 0 0 Si
+/vis/scene/add/text  2.0  2.0 -17 cm 26 0 0 vac
+/vis/scene/add/text -2.0 -2.0 -13 cm 26 0 0 Be
+/vis/scene/add/text  2.5  2.5 -10 cm 26 0 0 mask
+/vis/scene/add/text -2.0 -2.0  -2 cm 26 0 0 Be
+/vis/scene/add/text  2.5  2.5  16 cm 26 0 0 scint
+/vis/scene/add/text  2.5  2.5  38 cm 26 0 0 slit
+/vis/scene/add/text -0.5  0.0  50 cm 26 0 0 Si
+/vis/set/textColour 0.8 0.0 0.0
+/vis/scene/add/text -2.0 -2.0  26 cm 26 0 0 He
 #
 # To get nice view
 # Make the "World" box invisible
 /vis/geometry/set/visibility World 0 false
-/vis/geometry/set/colour BeamPipeVac 0 1.0 1.0 1.0 0.3
-/vis/geometry/set/colour Envelope    0 0.0 1.0 0.6 0.3
+/vis/geometry/set/colour BeamPipeVac 0 0.0 0.0 0.8 0.2
+/vis/geometry/set/colour HeBox       0 0.8 0.0 0.0 0.2
 /vis/geometry/set/colour BeFilter    0 0.4 0.5 0.6 0.6
 /vis/geometry/set/colour GoldMask    0 0.5 0.5 0.0 0.6
 /vis/geometry/set/colour DiamondMask 0 0.1 0.1 0.1 0.6
 /vis/geometry/set/colour BeWindow    0 0.4 0.5 0.6 0.6
 /vis/geometry/set/colour CopperSlit  0 0.8 0.8 0.0 0.6
-/vis/geometry/set/colour Plating     0 0.3 0.3 0.3 0.6
+/vis/geometry/set/colour CopperBlock 0 0.8 0.8 0.0 0.6
+/vis/geometry/set/colour Plating     0 0.3 0.3 0.3 0.4
 /vis/geometry/set/colour WireBonds   0 0.2 0.3 0.4 0.6
 /vis/geometry/set/colour SiEdgeOn    0 0.6 0.0 0.4 0.6
 /vis/geometry/set/colour SiHandle    0 0.3 0.0 0.3 0.6
 /vis/geometry/set/colour SiBeamDump  0 0.6 0.0 0.4 0.6
 /vis/viewer/set/style surface
+/vis/viewer/set/background 0.85 0.85 0.85
 /vis/viewer/set/hiddenMarker true
 #/vis/viewer/set/viewpointThetaPhi 120 150
-/vis/viewer/set/viewpointThetaPhi 160 150
+/vis/viewer/set/viewpointThetaPhi 152 150
 #targetPoint
 #upVector
-/vis/viewer/zoom 5.1
+/vis/viewer/zoom 3.75
 #
 # Re-establish auto refreshing and verbosity:
 /vis/viewer/set/autoRefresh true

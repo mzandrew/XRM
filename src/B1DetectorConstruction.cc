@@ -1,4 +1,6 @@
-//
+// modified from original exampleB1 2019-04 by mza
+// last updated 2021-04-19 by mza
+
 // ********************************************************************
 // * License and Disclaimer                                           *
 // *                                                                  *
@@ -22,8 +24,6 @@
 // * use  in  resulting  scientific  publications,  and indicate your *
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
-//
-//
 /// \file B1DetectorConstruction.cc
 /// \brief Implementation of the B1DetectorConstruction class
 
@@ -97,7 +97,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 //	G4double neck_dimension_of_box = 50.*mm + 108.*mm;
 	G4double position_of_vacuum = 0. - vacuum_dimension/2. - Be_window_dimension;
 	//G4double hypotenuse = sqrt(6.9**2.+14.**2.); // 15.61
-	G4double env_diameter = 16.*mm;
+	G4double env_diameter = 25.*mm;
 	G4double object_radius = env_diameter/2. - 250.*um;
 	#ifdef REAL_XRM_SITUATION
 	G4double inside_dimension_of_box = 614.*mm;
@@ -136,19 +136,21 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	G4Material *gold_mat = nist->FindOrBuildMaterial("G4_Au");
 	G4Material *Si_mat = nist->FindOrBuildMaterial("G4_Si");
 	G4Material *Al_mat = nist->FindOrBuildMaterial("G4_Al");
+	G4String name = "nothing";
 
 	// World
+	name = "World";
 	G4double world_sizeXY = 5.0*env_diameter;
 	G4double world_sizeZ  = 2.*650.*mm;
-	G4Box* solidWorld = new G4Box("World", 0.5*world_sizeXY, 0.5*world_sizeXY, 0.5*world_sizeZ);
+	G4Box* solidWorld = new G4Box(name, 0.5*world_sizeXY, 0.5*world_sizeXY, 0.5*world_sizeZ);
 	G4LogicalVolume* logicWorld = new G4LogicalVolume(solidWorld,          //its solid
 	                      world_mat,           //its material
-	                      "World");            //its name
+	                      name);            //its name
 	G4VPhysicalVolume* physWorld = 
 	  new sensitiveObject(0,                     //no rotation
 	                    G4ThreeVector(),       //at (0,0,0)
 	                    logicWorld,            //its logical volume
-	                    "Air",               //its name
+	                    name,               //its name
 	                    0,                     //its mother  volume
 	                    false,                 //no boolean operation
 	                    0,                     //copy number
@@ -156,15 +158,16 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	sensitiveObjectVector.push_back((sensitiveObject*) physWorld);
 
 	// beam pipe
-	G4Tubs* solidVac = new G4Tubs("BeamPipeVac", 0., 0.5*env_diameter, 0.5*vacuum_dimension, 0., 2.*M_PI);
+	name = "BeamPipeVac";
+	G4Tubs* solidVac = new G4Tubs(name, 0., 0.5*env_diameter, 0.5*vacuum_dimension, 0., 2.*M_PI);
 	G4LogicalVolume* logicVac = new G4LogicalVolume(solidVac,            //its solid
 	                      vac_mat,             //its material
-	                      "BeamPipeVac");         //its name
+	                      name);         //its name
 	G4ThreeVector pos_vac = G4ThreeVector(0, 0, position_of_vacuum);
 	objet = new sensitiveObject(0,                       //no rotation
 	                  pos_vac,
 	                  logicVac,                //its logical volume
-	                  "BeamPipeVacuum",              //its name
+	                  name,              //its name
 	                  logicWorld,              //its mother  volume
 	                  false,                   //no boolean operation
 	                  0,                       //copy number
@@ -175,7 +178,6 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	G4double shape0_rminb =  0.*cm, shape0_rmaxb = object_radius;
 	G4double shape0_phimin = 0.*deg, shape0_phimax = 360.*deg;
 
-	G4String name = "nothing";
 	G4RotationMatrix *yRot = new G4RotationMatrix; // Rotates X and Z axes only
 	yRot->rotateY(M_PI/4.*rad);
 
@@ -257,16 +259,17 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 		                  0,                       //copy number
 		                  checkOverlaps);          //overlaps checking
 		sensitiveObjectVector.push_back(objet);
-		// Envelope
-		G4Tubs *solidEnv = new G4Tubs("Envelope", 0., env_diameter/2., 0.5*env_sizeZ, 0., 2.*M_PI);
+		// HeBox
+		name = "HeBox";
+		G4Tubs *solidEnv = new G4Tubs(name, 0., env_diameter/2., 0.5*env_sizeZ, 0., 2.*M_PI);
 		G4LogicalVolume *logicEnv = new G4LogicalVolume(solidEnv,            //its solid
 		                      env_mat,             //its material
-		                      "Envelope");         //its name
+		                      name);         //its name
 		G4ThreeVector env_pos = G4ThreeVector(0, 0, position_of_He_envelope);
 		objet = new sensitiveObject(0,                       //no rotation
 		                  env_pos,
 		                  logicEnv,                //its logical volume
-		                  "HeBox",              //its name
+		                  name,              //its name
 		                  logicWorld,              //its mother  volume
 		                  false,                   //no boolean operation
 		                  0,                       //copy number
@@ -319,7 +322,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 			                  checkOverlaps);          //overlaps checking
 			sensitiveObjectVector.push_back(objet);
 		#endif
-//#define COPPER_SLIT_ON
+#define COPPER_SLIT_ON
 		#ifdef COPPER_SLIT_ON
 			// select edge-on or face-on
 			// edge-on
@@ -442,7 +445,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 		G4double thickness_gold = 100.*nm;
 		G4double positionZ_of_plating = 50.*cm;
 		G4double plating_sizeX = thickness_nickel + thickness_gold;
-		G4double plating_sizeY = 14.*mm; // 40.*mm;
+		G4double plating_sizeY = 40.*mm;
 		G4double plating_sizeZ = 56.*mm;
 		G4double density_nickel = 8.908*g/cm3;
 		G4double density_gold = 19.3*g/cm3;
@@ -516,20 +519,21 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 
 	#ifdef BULK_SI_SITUATION
 		// Si bulk
+		name = "SiBulk";
 		G4double shape3_dz = 6.*mm;
 		//G4double position_of_bulk_sensor = position_of_first_part_of_sensor + shape3_dz/2.;
 		//G4double position_of_bulk_sensor = position_of_vacuum;
 		G4double position_of_bulk_sensor = 0. - 5*cm;
 		//G4double position_of_bulk_sensor = - inside_dimension_of_box/2.;
 		G4ThreeVector pos3 = G4ThreeVector(0, 0, position_of_bulk_sensor);
-		G4Tubs* solidShape3 = new G4Tubs("Envelope", 0., object_radius, 0.5*shape3_dz, 0., 2.*M_PI);
+		G4Tubs* solidShape3 = new G4Tubs(name, 0., object_radius, 0.5*shape3_dz, 0., 2.*M_PI);
 		G4LogicalVolume* logicShape3 = new G4LogicalVolume(solidShape3,         //its solid
 		                      Si_mat,          //its material
-		                      "Envelope");           //its name
+		                      name);           //its name
 		objet = new sensitiveObject(0,                       //rotation
 		                  pos3,                    //at position
 		                  logicShape3,             //its logical volume
-		                  "SiBulk",                //its name
+		                  name,                //its name
 		                  logicVac,                //its mother  volume
 		                  false,                   //no boolean operation
 		                  0,                       //copy number

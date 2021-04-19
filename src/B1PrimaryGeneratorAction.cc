@@ -1,4 +1,6 @@
-//
+// modified from original exampleB1 2019-04 by mza
+// last updated 2021-04-19 by mza
+
 // ********************************************************************
 // * License and Disclaimer                                           *
 // *                                                                  *
@@ -22,8 +24,6 @@
 // * use  in  resulting  scientific  publications,  and indicate your *
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
-//
-//
 /// \file B1PrimaryGeneratorAction.cc
 /// \brief Implementation of the B1PrimaryGeneratorAction class
 
@@ -105,7 +105,7 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 	// on DetectorConstruction class we get Envelope volume
 	// from G4LogicalVolumeStore.
 	if (!fEnvelopeBox) {
-		G4LogicalVolume* envLV = G4LogicalVolumeStore::GetInstance()->GetVolume("Envelope");
+		G4LogicalVolume* envLV = G4LogicalVolumeStore::GetInstance()->GetVolume("World");
 		if ( envLV ) fEnvelopeBox = dynamic_cast<G4Box*>(envLV->GetSolid());
 	}
 	G4ThreeVector pos;
