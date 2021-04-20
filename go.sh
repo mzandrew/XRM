@@ -1,18 +1,19 @@
 #!/bin/bash -e
 
 # written 2019-04-30 by mza
-# last updated 2021-04-09 by mza
+# last updated 2021-04-18 by mza
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 declare -i MAX_CPUS_TO_USE=4 # to limit the max # of CPU cores to use
-declare -i    SHOULD_BUILD=1 # whether we should (re)build the simulations
-declare -i SHOULD_GENERATE=1 # whether we should run the simulations
+declare -i    SHOULD_BUILD=0 # whether we should (re)build the simulations
+declare -i SHOULD_GENERATE=0 # whether we should run the simulations
 declare -i     SHOULD_PLOT=1 # whether we should produce the plots
 
 #declare situation_list="bulk_si edge_on edge_on_CeYAG face_on"
 #declare situation_list="bulk_si edge_on edge_on_scint edge_on_scint_gold"
-declare situation_list="edge_on edge_on_scint edge_on_scint_gold"
+#declare situation_list="edge_on edge_on_scint edge_on_scint_gold"
+declare situation_list="edge_on_scint_gold"
 declare -i NUMBER_OF_RUNS=2 # half HER, half LER
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -131,7 +132,13 @@ function do_ring {
 		if [ $FAKE_PLOT -eq 0 ]; then
 		#../spectra.py $filename ${HL}ER-bulk_si ${HL}ER-edge_on ${HL}ER-face_on
 		#../spectra.py $filename ${HL}ER-bulk_si ${HL}ER-edge_on ${HL}ER-edge_on_scint ${HL}ER-edge_on_scint_gold
-			../spectra.py $filename ${HL}ER-edge_on ${HL}ER-edge_on_scint ${HL}ER-edge_on_scint_gold && mv $filename .. &
+			string=""
+			for situation in $situation_list; do
+				string="$string ${HL}ER-${situation}"
+			done
+			#../spectra.py $filename ${HL}ER-edge_on ${HL}ER-edge_on_scint ${HL}ER-edge_on_scint_gold && mv $filename .. &
+			#echo "$string"; echo "$string" >/dev/stderr
+			../spectra.py $filename $string && mv $filename .. &
 		else
 			sleep 4 &
 		fi
@@ -157,11 +164,14 @@ if [ $PARALLEL_GENERATE -gt 0 ]; then
 	do_ring H >> output-HER.log &
 	echo "running LER simulation..."
 	do_ring L >> output-LER.log
+	sleep 1
+	wait_for_bpid_list_to_finish $plot_bpid_list
 else
 	echo "running HER simulation..."
 	do_ring H >> output-HER.log
 	echo "running LER simulation..."
 	do_ring L >> output-LER.log
+	sleep 1
 	wait_for_bpid_list_to_finish $plot_bpid_list
 fi
 

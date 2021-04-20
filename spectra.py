@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # written 2019-04-30 by mza
-# last updated 2021-04-06 by mza
+# last updated 2021-04-18 by mza
 
 import os # path, environ
 import sys # path, exit, argv
@@ -25,7 +25,8 @@ import numpy # float array - sudo apt install -y python3-numpy
 #mode = 1 # suppress processes, similar spectra
 mode = 2 # executive summary
 skim = 1
-stop_short = False
+STOP_SHORT_CONSTANT = 300000
+stop_short = False # just do the first STOP_SHORT_CONSTANT entries
 number_of_bins = 100
 low = 0.1
 high = 100.
@@ -68,18 +69,21 @@ else:
 histograms = {}
 i = 0
 title = " vs ".join(filenames)
-histogram_stack = ROOT.THStack("histogram_stack", title)
 
 match = re.search("HER", png_filename)
 if match:
 	power_ratio = 40.36 # HER
+	title = "HER"
 else:
 	power_ratio = 21.48 # LER
+	title = "LER"
 power_ratio *= skim
+
+histogram_stack = ROOT.THStack("histogram_stack", title)
 
 total_energy_deposited_J = {}
 total_power_deposited_W = {}
-def show_energy_per_bunch_and_power(string):
+def determine_and_show_energy_per_bunch_and_power():
 	#print("total_energy_incoming " + str(total_energy_incoming_eV/1.e6) + " MeV per bunch")
 	#total_energy_incoming_J = J_per_MeV * total_energy_incoming_eV / 1.e6
 	#print("total_energy_incoming " + str(total_energy_incoming_J) + " J per bunch")
@@ -87,18 +91,19 @@ def show_energy_per_bunch_and_power(string):
 	#print("total_power_incoming %.3f W" % total_power_incoming_W)
 	#print("%.3f W incoming" % (total_power_incoming_W))
 	for key in sorted(total_energy_deposited_eV, key=total_energy_deposited_eV.get, reverse=True):
-		match = re.search(string, key)
+#		match = re.search(string, key)
+#		if match:
+		#print("total_energy_deposited[" + key + "] " + str(total_energy_deposited_eV[key]/1.e6) + " MeV per bunch")
+		total_energy_deposited_J[key] = J_per_MeV * total_energy_deposited_eV[key] / 1.e6
+		#print("total_energy_deposited[" + key + "] " + str(total_energy_deposited_J[key]) + " J per bunch")
+		total_power_deposited_W[key] = total_energy_deposited_J[key] * bunches_per_second
+		#print("total_power_deposited[" + key + "] %.3f W" % total_power_deposited_W[key])
+		match = re.search("incoming", key)
 		if match:
-			#print("total_energy_deposited[" + key + "] " + str(total_energy_deposited_eV[key]/1.e6) + " MeV per bunch")
-			total_energy_deposited_J[key] = J_per_MeV * total_energy_deposited_eV[key] / 1.e6
-			#print("total_energy_deposited[" + key + "] " + str(total_energy_deposited_J[key]) + " J per bunch")
-			total_power_deposited_W[key] = total_energy_deposited_J[key] * bunches_per_second
-			#print("total_power_deposited[" + key + "] %.3f W" % total_power_deposited_W[key])
-			match = re.search("incoming", key)
-			if match:
-				print("%.3f W %s" % (power_ratio*total_power_deposited_W[key], key))
-			else:
-				print("%.3f W deposited in %s" % (power_ratio*total_power_deposited_W[key], key))
+			print("%.3f W %s" % (power_ratio*total_power_deposited_W[key], key))
+		else:
+			#print("%.3f W deposited in %s" % (power_ratio*total_power_deposited_W[key], key))
+			print("%.3f W %s" % (power_ratio*total_power_deposited_W[key], key))
 
 for filename in filenames:
 	print("reading file " + filename + "...")
@@ -108,7 +113,8 @@ for filename in filenames:
 	#total_lines = sum(1 for line in open(filename))
 	lines = 0
 	matching_lines = 0
-	incoming = filename + "_incoming"
+	#incoming = filename + "_incoming"
+	incoming = "incoming"
 	total_energy_deposited_eV[incoming] = 0.
 	histograms[incoming] = ROOT.TH1F(incoming, title, number_of_bins, fbin_widths)
 	for line in open(filename):
@@ -154,13 +160,16 @@ for filename in filenames:
 					#match = re.search("(BeFilter|BeWindow|scint_gold_GoldMask|DiamondMask|LuAG:Ce|Copper|SiBeamDump)", name)
 					if match:
 						continue
-				match = re.search("(SiEdgeOn|CopperBlock|SiHandle|WireBonds|Plating)", tag)
-				name = filename + "_SiEdgeOn_CopperBlock_SiHandle_WireBonds_Plating"
+				#match = re.search("(SiEdgeOn|CopperBlock|SiHandle|WireBonds|Plating)", tag)
+				#name = filename + "_SiEdgeOn_CopperBlock_SiHandle_WireBonds_Plating"
+				name = "deposited"
 				if epsilon1_eV < deposited_energy_eV:
 					try:
 						total_energy_deposited_eV[name] += deposited_energy_eV
 					except:
 						total_energy_deposited_eV[name] = deposited_energy_eV
+#				else:
+#					print("ignoring " + str(deposited_energy_eV) + " eV")
 				if epsilon2_eV < deposited_energy_eV:
 					try:
 						histograms[name].Fill(deposited_energy_eV/1000.0)
@@ -172,11 +181,11 @@ for filename in filenames:
 				print("read " + str(matching_lines) + " lines from file " + filename + " so far...")
 				sys.stdout.flush()
 			if stop_short:
-				if 300000==matching_lines:
+				if STOP_SHORT_CONSTANT==matching_lines:
 					break
 	print("read " + str(matching_lines) + " lines from file " + filename + " total")
 	sys.stdout.flush()
-	show_energy_per_bunch_and_power(filename)
+	determine_and_show_energy_per_bunch_and_power()
 
 	#normalization = histograms[i].GetEntries()
 	#histograms[i].Scale(1./normalization)
@@ -185,6 +194,9 @@ for filename in filenames:
 for key in sorted(total_power_deposited_W, key=total_power_deposited_W.get):
 	histograms[key].Scale(power_ratio)
 	total_power_deposited_W[key] *= power_ratio
+
+#for key in sorted(total_power_deposited_W, key=total_power_deposited_W.get):
+#	print(key + " " + str(total_power_deposited_W[key]))
 
 j = 0
 counter = {}
@@ -195,6 +207,7 @@ for key in sorted(total_power_deposited_W, key=total_power_deposited_W.get, reve
 		should_plot = 0
 	j_should_increment = 1
 	histograms[key].SetLineColor(ROOT.kCyan+j)
+	histograms[key].SetLineWidth(4)
 	match = re.search("(SiBulk|incoming)", key)
 	if match:
 		j_should_increment = 0
@@ -243,7 +256,7 @@ for key in sorted(total_power_deposited_W, key=total_power_deposited_W.get, reve
 		j_should_increment = 0
 		histograms[key].SetLineColor(ROOT.kBlue)
 		should_plot = 1
-	match = re.search("scint_gold_SiEdgeOn", key)
+	match = re.search("scint_gold_SiEdgeOn|deposited", key)
 	if match:
 		j_should_increment = 0
 		histograms[key].SetLineColor(ROOT.kMagenta)
@@ -255,26 +268,35 @@ for key in sorted(total_power_deposited_W, key=total_power_deposited_W.get, reve
 	if match:
 		j_should_increment = 0
 		histograms[key].SetLineColor(ROOT.kGray+1)
-	match = re.search("(scint|scint_gold)_incoming", key)
-	if match:
-		should_plot = 0
+#	match = re.search("(scint|scint_gold)_incoming", key)
+#	if match:
+#		should_plot = 0
 	if should_plot:
 		histogram_stack.Add(histograms[key])
-		legend1.AddEntry(histograms[key], "%.3f W %s (%d entries)" % (total_power_deposited_W[key], key, histograms[key].GetEntries()))
+		#legend1.AddEntry(histograms[key], "%.3f W %s (%d entries)" % (total_power_deposited_W[key], key, histograms[key].GetEntries()))
+		legend1.AddEntry(histograms[key], "%.3f W %s" % (total_power_deposited_W[key], key))
 	if j_should_increment:
 		j = j + 1
 
-canvas1 = ROOT.TCanvas('canvas1', 'mycanvas', 100, 50, 1280, 1024)
+canvas1 = ROOT.TCanvas('canvas1', 'mycanvas', 100, 50, 600, 400)
 canvas1.SetLogx()
 canvas1.SetLogy()
 histogram_stack.Draw("nostack,hist")
-#histogram_stack.GetXaxis().SetTitle("deposited energy [keV]")
-#histogram_stack.GetYaxis().SetTitle("number of events")
-#histogram_stack.GetXaxis().CenterTitle(1)
-#histogram_stack.GetYaxis().CenterTitle(1)
-#histogram_stack.GetXaxis().SetTitleOffset(1.3)
-#histogram_stack.GetYaxis().SetMaxDigits(3)
+histogram_stack.GetXaxis().SetTitle("energy [keV]")
+histogram_stack.GetYaxis().SetTitle("number of events")
+histogram_stack.GetXaxis().CenterTitle(1)
+histogram_stack.GetYaxis().CenterTitle(1)
+histogram_stack.GetXaxis().SetTitleOffset(1.3)
+histogram_stack.GetYaxis().SetMaxDigits(3)
+#gStyle->SetTitleFontSize(1.0)
 legend1.Draw()
+legend1.SetTextSize(0.05)
+histogram_stack.GetXaxis().SetLabelSize(0.05)
+histogram_stack.GetYaxis().SetLabelSize(0.05)
+histogram_stack.GetXaxis().SetTitleSize(0.05)
+histogram_stack.GetYaxis().SetTitleSize(0.05)
+histogram_stack.GetXaxis().SetTitleOffset(0.9)
+histogram_stack.GetYaxis().SetTitleOffset(0.9)
 canvas1.Modified()
 canvas1.Update()
 
