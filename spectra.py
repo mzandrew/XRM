@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # written 2019-04-30 by mza
-# last updated 2021-04-18 by mza
+# last updated 2021-05-13 by mza
 
 import os # path, environ
 import sys # path, exit, argv
@@ -160,6 +160,9 @@ for filename in filenames:
 					#match = re.search("(BeFilter|BeWindow|scint_gold_GoldMask|DiamondMask|LuAG:Ce|Copper|SiBeamDump)", name)
 					if match:
 						continue
+					#match = re.search("(Copper)", name)
+					#if match:
+					#	continue
 				#match = re.search("(SiEdgeOn|CopperBlock|SiHandle|WireBonds|Plating)", tag)
 				#name = filename + "_SiEdgeOn_CopperBlock_SiHandle_WireBonds_Plating"
 				name = "deposited"

@@ -1,5 +1,5 @@
 // modified from original exampleB1 2019-04 by mza
-// last updated 2021-04-19 by mza
+// last updated 2021-05-13 by mza
 
 // ********************************************************************
 // * License and Disclaimer                                           *
@@ -42,6 +42,8 @@
 #include "sensitiveObject.hh"
 //#include "G4PVPlacement.hh"
 #include "G4SystemOfUnits.hh"
+#define mil (25.4*mm/1000.) // 25.4 mm = 1000 mil
+#define uinch (25.4*mm/1000000.) // 25.4 mm = 1000000 uinch
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -133,7 +135,6 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	//G4Material *env_mat = nist->FindOrBuildMaterial("G4_AIR"); // suppression; HER=8743/447/162 LER=21459/597/268
 	G4Material *copper_mat = nist->FindOrBuildMaterial("G4_Cu");
 	G4Material *Be_mat = nist->FindOrBuildMaterial("G4_Be");
-	G4Material *gold_mat = nist->FindOrBuildMaterial("G4_Au");
 	G4Material *Si_mat = nist->FindOrBuildMaterial("G4_Si");
 	G4Material *Al_mat = nist->FindOrBuildMaterial("G4_Al");
 	G4String name = "nothing";
@@ -227,6 +228,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	G4double gold_sizeZ = 20.*um;
 	G4ThreeVector gold_pos = G4ThreeVector(0, 0, position_of_mask-gold_sizeZ/2.);
 	G4Tubs *gold_solid = new G4Tubs(name, 0., object_radius, 0.5*gold_sizeZ, 0., 2.*M_PI);
+	G4Material *gold_mat = nist->FindOrBuildMaterial("G4_Au");
 	G4LogicalVolume *gold_logical_volume = new G4LogicalVolume(gold_solid,         //its solid
 	                      gold_mat,          //its material
 	                      name);           //its name
@@ -349,7 +351,6 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 		#endif
 //#define COPPER_BLOCKER_ON
 		#ifdef COPPER_BLOCKER_ON
-			//G4Material* copper_mat = nist->FindOrBuildMaterial("G4_Cu");
 			G4ThreeVector copper1_pos = G4ThreeVector(0, 0, 45.*cm - env_sizeZ/2.);
 			name = "CopperBlocker";
 			//G4double copper1_length = 200.*um; // HER=8743/4/0 LER=21459/0/0
@@ -439,30 +440,79 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 			                  checkOverlaps);          //overlaps checking
 			sensitiveObjectVector.push_back(objet);
 		#endif
-		// ENIG
 		name = "Plating";
-		G4double thickness_nickel = 4.5*um;
-		G4double thickness_gold = 100.*nm;
 		G4double positionZ_of_plating = 50.*cm;
-		G4double plating_sizeX = thickness_nickel + thickness_gold;
 		G4double plating_sizeY = 40.*mm;
 		G4double plating_sizeZ = 56.*mm;
-		G4double density_nickel = 8.908*g/cm3;
-		G4double density_gold = 19.3*g/cm3;
-		//G4double fraction_nickel = thickness_nickel/plating_sizeX;
-		//G4double fraction_gold = density_gold/plating_sizeX;
-		G4double density_ENIG = (density_nickel*thickness_nickel + density_gold*thickness_gold) / plating_sizeX;
-		G4Material *ENIG_mat = new G4Material(name,density_ENIG,ncomponents=2);
-		G4Element *Ni = nist->FindOrBuildElement("Ni");
-		G4Element *Au = nist->FindOrBuildElement("Au");
-		//ENIG_mat->AddElement(Ni,fraction_nickel);
-		//ENIG_mat->AddElement(Au,fraction_gold);
-		ENIG_mat->AddElement(Ni,97.826*perCent); // this is wrong
-		ENIG_mat->AddElement(Au,2.174*perCent); // this is wrong
+#define ENIG
+//#define ENEPIG
+		#ifdef ENIG // ENIG or "soft gold"
+			G4double plating_sizeX = 1.2*mil;
+			G4double thickness_gold = 100.*nm;
+			G4double thickness_nickel = 4.5*um;
+			G4double thickness_copper = plating_sizeX - thickness_nickel - thickness_gold;
+			G4double density_copper = 8.96*g/cm3;
+			G4double density_nickel = 8.908*g/cm3;
+			G4double density_gold = 19.3*g/cm3;
+			//G4double fraction_nickel = thickness_nickel/plating_sizeX;
+			//G4double fraction_gold = density_gold/plating_sizeX;
+			G4double density_plating = (density_copper*thickness_copper + density_nickel*thickness_nickel + density_gold*thickness_gold) / plating_sizeX;
+			if (0) {
+				G4cout << "thickness_plating = " << plating_sizeX/um <<  " um" <<G4endl;
+				G4cout << "thickness_copper = " << thickness_copper/um <<  " um" <<G4endl;
+				G4cout << "thickness_nickel = " << thickness_nickel/um <<  " um" <<G4endl;
+				G4cout << "thickness_gold = " << thickness_gold/um << " um" << G4endl;
+				G4cout << "density_plating = " << density_plating*cm3/g << " g/cm3" << G4endl;
+			}
+			G4Material *plating_mat = new G4Material(name,density_plating,ncomponents=3);
+			G4Element *Cu = nist->FindOrBuildElement("Cu");
+			G4Element *Ni = nist->FindOrBuildElement("Ni");
+			G4Element *Au = nist->FindOrBuildElement("Au");
+			//plating_mat->AddElement(Ni,fraction_nickel);
+			//plating_mat->AddElement(Au,fraction_gold);
+			plating_mat->AddElement(Cu,thickness_copper/plating_sizeX);
+			plating_mat->AddElement(Ni,thickness_nickel/plating_sizeX);
+			plating_mat->AddElement(Au,thickness_gold/plating_sizeX);
+		#elif defined ENEPIG
+			G4double plating_sizeX = 1.2*mil;
+			G4double thickness_gold = 1.5*uinch;
+			G4double thickness_palladium = 4.*uinch;
+			G4double thickness_nickel = 180.*uinch;
+			G4double thickness_copper = plating_sizeX - thickness_nickel - thickness_palladium - thickness_gold;
+			G4double density_copper = 8.96*g/cm3;
+			G4double density_nickel = 8.908*g/cm3;
+			G4double density_palladium = 12.203*g/cm3;
+			G4double density_gold = 19.3*g/cm3;
+			//G4double fraction_nickel = thickness_nickel/plating_sizeX;
+			//G4double fraction_gold = density_gold/plating_sizeX;
+			G4double density_plating = (density_copper*thickness_copper + density_nickel*thickness_nickel + density_palladium*thickness_palladium + density_gold*thickness_gold) / plating_sizeX;
+			if (0) {
+				G4cout << "thickness_plating = " << plating_sizeX/um <<  " um" <<G4endl;
+				G4cout << "thickness_copper = " << thickness_copper/um <<  " um" <<G4endl;
+				G4cout << "thickness_nickel = " << thickness_nickel/um <<  " um" <<G4endl;
+				G4cout << "thickness_palladium = " << thickness_palladium/um <<  " um" <<G4endl;
+				G4cout << "thickness_gold = " << thickness_gold/um << " um" << G4endl;
+				G4cout << "density_plating = " << density_plating*cm3/g << " g/cm3" << G4endl;
+			}
+			G4Material *plating_mat = new G4Material(name,density_plating,ncomponents=4);
+			G4Element *Cu = nist->FindOrBuildElement("Cu");
+			G4Element *Ni = nist->FindOrBuildElement("Ni");
+			G4Element *Pd = nist->FindOrBuildElement("Pd");
+			G4Element *Au = nist->FindOrBuildElement("Au");
+			//plating_mat->AddElement(Ni,fraction_nickel);
+			//plating_mat->AddElement(Au,fraction_gold);
+			plating_mat->AddElement(Cu,thickness_copper/plating_sizeX);
+			plating_mat->AddElement(Ni,thickness_nickel/plating_sizeX);
+			plating_mat->AddElement(Pd,thickness_palladium/plating_sizeX);
+			plating_mat->AddElement(Au,thickness_gold/plating_sizeX);
+//		#else // "wirebondable gold"
+//		#else // "deep/hard gold"
+//			// ???
+		#endif
 		G4ThreeVector plating_pos = G4ThreeVector(-sensor_sizeX/2.-plating_sizeX/2., 0, positionZ_of_plating - inside_dimension_of_box/2. + plating_sizeZ/2.);
 		G4Box *plating_solid = new G4Box(name, plating_sizeX/2., plating_sizeY/2., plating_sizeZ/2.);
 		G4LogicalVolume *plating_logical_volume = new G4LogicalVolume(plating_solid,         //its solid
-		                      ENIG_mat,          //its material
+		                      plating_mat,          //its material
 		                      name);           //its name
 		objet = new sensitiveObject(0,                       //no rotation
 		                  plating_pos,                    //at position
