@@ -1,11 +1,11 @@
 #!/bin/bash -e
 
 # written 2019-04-30 by mza
-# last updated 2021-04-18 by mza
+# last updated 2023-05-25 by mza
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-declare -i MAX_CPUS_TO_USE=6 # to limit the max # of CPU cores to use
+declare -i MAX_CPUS_TO_USE=16 # to limit the max # of CPU cores to use
 declare -i    SHOULD_BUILD=1 # whether we should (re)build the simulations
 declare -i SHOULD_GENERATE=1 # whether we should run the simulations
 declare -i     SHOULD_PLOT=1 # whether we should produce the plots
@@ -15,6 +15,7 @@ declare -i     SHOULD_PLOT=1 # whether we should produce the plots
 #declare situation_list="edge_on edge_on_scint edge_on_scint_gold"
 declare situation_list="edge_on_scint_gold"
 declare -i NUMBER_OF_RUNS=2 # half HER, half LER
+declare -x G4FORCENUMBEROFTHREADS=16
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 

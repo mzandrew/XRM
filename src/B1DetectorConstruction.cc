@@ -29,7 +29,6 @@
 
 #include "B1DetectorConstruction.hh"
 
-#include "G4RunManager.hh"
 #include "G4NistManager.hh"
 #include "G4SubtractionSolid.hh"
 #include "G4Box.hh"

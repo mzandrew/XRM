@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # written 2019-04-30 by mza
-# last updated 2021-05-13 by mza
+# last updated 2023-05-25 by mza
 
 import os # path, environ
 import sys # path, exit, argv
@@ -122,13 +122,19 @@ for filename in filenames:
 		if not 0==lines%skim:
 			continue
 		line = line.rstrip("\n\r")
+		for thread_id in range(0,32):
+			line = line.replace("G4WT" + str(thread_id) + " > ", "")
 		# evt# incoming_E E1 process1 E2 process2 ... depE_a object_a depE_b object_b ...
 		# 1 36.8176 13.63 phot 23.1876 eIoni 0 Air 0 BeFilter 36.8176 SiBulk
 		match = re.search("^([0-9]+) +([.e0-9-]+)(.*)$", line)
 		if match:
 			matching_lines = matching_lines + 1
 			event_number = int(match.group(1))
-			incoming_energy_eV = float(match.group(2))
+			try:
+				incoming_energy_eV = float(match.group(2))
+			except Exception as message:
+				print("exception: " + str(message) + " while processing file" + filename + " line " + str(lines))
+				continue
 			histograms[incoming].Fill(incoming_energy_eV/1000.0)
 			#total_energy_incoming_eV += incoming_energy_eV
 			total_energy_deposited_eV[incoming] += incoming_energy_eV
@@ -202,6 +208,7 @@ for key in sorted(total_power_deposited_W, key=total_power_deposited_W.get):
 #	print(key + " " + str(total_power_deposited_W[key]))
 
 j = 0
+histogram_stack_entries = 0
 counter = {}
 counter["Copper"] = 0
 for key in sorted(total_power_deposited_W, key=total_power_deposited_W.get, reverse=True):
@@ -275,41 +282,46 @@ for key in sorted(total_power_deposited_W, key=total_power_deposited_W.get, reve
 #	if match:
 #		should_plot = 0
 	if should_plot:
+		print("adding entry")
+		histogram_stack_entries += 1
 		histogram_stack.Add(histograms[key])
 		#legend1.AddEntry(histograms[key], "%.3f W %s (%d entries)" % (total_power_deposited_W[key], key, histograms[key].GetEntries()))
 		legend1.AddEntry(histograms[key], "%.3f W %s" % (total_power_deposited_W[key], key))
 	if j_should_increment:
 		j = j + 1
+print(str(histogram_stack_entries) + " histograms")
 
-canvas1 = ROOT.TCanvas('canvas1', 'mycanvas', 100, 50, 600, 400)
-canvas1.SetLogx()
-canvas1.SetLogy()
-histogram_stack.Draw("nostack,hist")
-histogram_stack.GetXaxis().SetTitle("energy [keV]")
-histogram_stack.GetYaxis().SetTitle("number of events")
-histogram_stack.GetXaxis().CenterTitle(1)
-histogram_stack.GetYaxis().CenterTitle(1)
-histogram_stack.GetXaxis().SetTitleOffset(1.3)
-histogram_stack.GetYaxis().SetMaxDigits(3)
-#gStyle->SetTitleFontSize(1.0)
-legend1.Draw()
-legend1.SetTextSize(0.05)
-histogram_stack.GetXaxis().SetLabelSize(0.05)
-histogram_stack.GetYaxis().SetLabelSize(0.05)
-histogram_stack.GetXaxis().SetTitleSize(0.05)
-histogram_stack.GetYaxis().SetTitleSize(0.05)
-histogram_stack.GetXaxis().SetTitleOffset(0.9)
-histogram_stack.GetYaxis().SetTitleOffset(0.9)
-canvas1.Modified()
-canvas1.Update()
+if histogram_stack_entries:
+	canvas1 = ROOT.TCanvas('canvas1', 'mycanvas', 100, 50, 600, 400)
+	canvas1.SetLogx()
+	canvas1.SetLogy()
+	histogram_stack.Draw("nostack,hist")
+	histogram_stack.GetXaxis().SetTitle("energy [keV]")
+	histogram_stack.GetYaxis().SetTitle("number of events")
+	histogram_stack.GetXaxis().CenterTitle(1)
+	histogram_stack.GetYaxis().CenterTitle(1)
+	histogram_stack.GetXaxis().SetTitleOffset(1.3)
+	histogram_stack.GetYaxis().SetMaxDigits(3)
+	#gStyle->SetTitleFontSize(1.0)
+	legend1.Draw()
+	legend1.SetTextSize(0.05)
+	histogram_stack.GetXaxis().SetLabelSize(0.05)
+	histogram_stack.GetYaxis().SetLabelSize(0.05)
+	histogram_stack.GetXaxis().SetTitleSize(0.05)
+	histogram_stack.GetYaxis().SetTitleSize(0.05)
+	histogram_stack.GetXaxis().SetTitleOffset(0.9)
+	histogram_stack.GetYaxis().SetTitleOffset(0.9)
+	canvas1.Modified()
+	canvas1.Update()
 
 if len(sys.argv) < 2:
 	import time
 	time.sleep(1)
 else:
 	#raw_input("Press Enter to continue...")
-	imagefile = ROOT.TImage.Create()
-	imagefile.FromPad(canvas1)
-	imagefile.WriteImage(png_filename)
-	print("generated " + png_filename)
+	if histogram_stack_entries:
+		imagefile = ROOT.TImage.Create()
+		imagefile.FromPad(canvas1)
+		imagefile.WriteImage(png_filename)
+		print("generated " + png_filename)
 
