@@ -207,6 +207,8 @@ for filename in filenames:
 							continue
 						elif 3==mode:
 							name = "upstream"
+						# BeFilter 32W HER / 16W LER
+						# GoldMask 27W HER / 15W LER
 				if not handled:
 					match = re.search("LuAG:Ce|Ce:YAG", tag)
 					if match:
