@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # written 2019-04-30 by mza
-# last updated 2023-05-25 by mza
+# last updated 2023-05-26 by mza
 
 import os # path, environ
 import sys # path, exit, argv
@@ -41,7 +41,7 @@ fbin_widths = numpy.array(bin_widths, dtype='float64')
 epsilon1_eV = 4.9 # for total_energy_deposited_eV
 epsilon2_eV = 99.9 # for histograms
 legend1 = ROOT.TLegend(0.11, 0.6, 0.57, 0.8)
-plot_epsilon_W = 0.025 # this is a comparison *after* scaling to the full beam power
+plot_epsilon_W = 0.001 # this is a comparison *after* scaling to the full beam power
 
 J_per_eV = 1.60217733e-19
 J_per_MeV = 1.0e6 * J_per_eV
@@ -234,10 +234,15 @@ for filename in filenames:
 				#match = re.search("(BeFilter|BeWindow|scint_gold_GoldMask|DiamondMask|LuAG:Ce|Copper|SiBeamDump)", tag)
 				#name = filename + "_SiEdgeOn_CopperBlock_SiHandle_WireBonds_Plating"
 				if not handled:
-					match = re.search("(SiEdgeOn|CopperSlit|CopperBlock|SiHandle|WireBonds|Plating)", tag)
+					match = re.search("(CopperSlit|CopperBlock|SiHandle|WireBonds|Plating)", tag)
 					if match:
 						handled = True
-						name = "deposited"
+						name = "apparatus"
+				if not handled:
+					match = re.search("(SiEdgeOn|InGaAsEdgeOn)", tag)
+					if match:
+						handled = True
+						name = "sensor"
 				if not handled:
 					print("unhandled case: " + tag)
 				if handled:
@@ -292,11 +297,11 @@ for key in sorted(total_power_deposited_W, key=total_power_deposited_W.get, reve
 		j_should_increment = 0
 		histograms[key].SetLineColor(ROOT.kGray)
 		histograms[key].SetFillColor(ROOT.kGray)
-	match = re.search("BeFilter", key)
+	match = re.search("(BeFilter)", key)
 	if match:
 		j_should_increment = 0
 		histograms[key].SetLineColor(ROOT.kCyan)
-	match = re.search("BeWindow", key)
+	match = re.search("(BeWindow)", key)
 	if match:
 		j_should_increment = 0
 		histograms[key].SetLineColor(ROOT.kCyan+2)
@@ -304,38 +309,28 @@ for key in sorted(total_power_deposited_W, key=total_power_deposited_W.get, reve
 	if match:
 		j_should_increment = 0
 		histograms[key].SetLineColor(ROOT.kYellow)
-	match = re.search("DiamondMask", key)
+	match = re.search("(DiamondMask|upstream)", key)
 	if match:
 		j_should_increment = 0
 		histograms[key].SetLineColor(ROOT.kBlack)
-	match = re.search("Air", key)
+	match = re.search("(Air)", key)
 	if match:
 		j_should_increment = 0
 		histograms[key].SetLineColor(ROOT.kGray+2)
-	match = re.search("Copper", key)
+	match = re.search("(Copper)", key)
 	if match:
 		j_should_increment = 0
 		histograms[key].SetLineColor(ROOT.kOrange+10-counter["Copper"])
 		counter["Copper"] = counter["Copper"] + 1
-	match = re.search("LuAG:Ce", key)
+	match = re.search("(LuAG:Ce|Ce:YAG|scintillator)", key)
 	if match:
 		j_should_increment = 0
 		histograms[key].SetLineColor(ROOT.kRed)
-	match = re.search("(gold_LuAG:Ce|SiHandle)", key)
+	match = re.search("(SiHandle|apparatus)", key)
 	if match:
 		j_should_increment = 0
-		histograms[key].SetLineColor(ROOT.kRed+2)
-	match = re.search("SiEdgeOn", key)
-	if match:
-		j_should_increment = 0
-		histograms[key].SetLineColor(ROOT.kGreen+2)
-		should_plot = 1
-	match = re.search("scint_SiEdgeOn", key)
-	if match:
-		j_should_increment = 0
-		histograms[key].SetLineColor(ROOT.kBlue)
-		should_plot = 1
-	match = re.search("scint_gold_SiEdgeOn|deposited", key)
+		histograms[key].SetLineColor(ROOT.kBlue+2)
+	match = re.search("(SiEdgeOn|sensor)", key)
 	if match:
 		j_should_increment = 0
 		histograms[key].SetLineColor(ROOT.kMagenta)
@@ -343,7 +338,7 @@ for key in sorted(total_power_deposited_W, key=total_power_deposited_W.get, reve
 #	match = re.search("SiFaceOn", key)
 #	if match:
 #		histograms[key].SetLineColor(ROOT.kRed)
-	match = re.search("SiBeamDump", key)
+	match = re.search("(SiBeamDump|downstream)", key)
 	if match:
 		j_should_increment = 0
 		histograms[key].SetLineColor(ROOT.kGray+1)
@@ -361,7 +356,8 @@ for key in sorted(total_power_deposited_W, key=total_power_deposited_W.get, reve
 print(str(histogram_stack_entries) + " histograms")
 
 if histogram_stack_entries:
-	canvas1 = ROOT.TCanvas('canvas1', 'mycanvas', 100, 50, 600, 400)
+	#canvas1 = ROOT.TCanvas('canvas1', 'mycanvas', 100, 50, 600, 400)
+	canvas1 = ROOT.TCanvas('canvas1', 'mycanvas', 100, 50, 1920, 1080)
 	canvas1.SetLogx()
 	canvas1.SetLogy()
 	histogram_stack.Draw("nostack,hist")
@@ -373,7 +369,7 @@ if histogram_stack_entries:
 	histogram_stack.GetYaxis().SetMaxDigits(3)
 	#gStyle->SetTitleFontSize(1.0)
 	legend1.Draw()
-	legend1.SetTextSize(0.05)
+	legend1.SetTextSize(0.04)
 	histogram_stack.GetXaxis().SetLabelSize(0.05)
 	histogram_stack.GetYaxis().SetLabelSize(0.05)
 	histogram_stack.GetXaxis().SetTitleSize(0.05)

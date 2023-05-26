@@ -59,6 +59,8 @@ B1DetectorConstruction::~B1DetectorConstruction()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4double z_position_of_gun;
 
+//#define SENSOR_SI // otherwise InGaAs
+
 #ifndef BULK_SI_SITUATION
 #define REAL_XRM_SITUATION
 #endif
@@ -124,9 +126,15 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	G4double handle_sizeY = 6.75*mm;
 	G4double handle_sizeZ = 2.415*mm;
 
-	G4double sensor_sizeX = 75.*um;
-	G4double sensor_sizeY = 6.75*mm;
-	G4double sensor_sizeZ = 2.415*mm;
+	#ifdef SENSOR_SI
+		G4double sensor_sizeX = 75.*um;
+		G4double sensor_sizeY = 6.75*mm;
+		G4double sensor_sizeZ = 2.415*mm;
+	#else
+		G4double sensor_sizeX = 25.*um; // ??
+		G4double sensor_sizeY = 6.75*mm; // ??
+		G4double sensor_sizeZ = 0.950*mm;
+	#endif
 
 	G4Material *world_mat = nist->FindOrBuildMaterial("G4_AIR");
 	G4Material *vac_mat = nist->FindOrBuildMaterial("G4_Galactic");
@@ -136,6 +144,17 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	G4Material *Be_mat = nist->FindOrBuildMaterial("G4_Be");
 	G4Material *Si_mat = nist->FindOrBuildMaterial("G4_Si");
 	G4Material *Al_mat = nist->FindOrBuildMaterial("G4_Al");
+	G4Material *In_mat = nist->FindOrBuildMaterial("G4_In");
+	G4Material *Ga_mat = nist->FindOrBuildMaterial("G4_Ga");
+	G4Material *As_mat = nist->FindOrBuildMaterial("G4_As");
+	#ifndef SENSOR_SI
+		// Ga0.47In0.53As
+		G4double density_InGaAs = 5.68*g/cm3;
+		G4Material *InGaAs_mat = new G4Material("InGaAs", density_InGaAs, ncomponents=3);
+		InGaAs_mat->AddMaterial(In_mat, 26.5*perCent);
+		InGaAs_mat->AddMaterial(Ga_mat, 23.5*perCent);
+		InGaAs_mat->AddMaterial(As_mat, 50.0*perCent);
+	#endif
 	G4String name = "nothing";
 
 	// World
@@ -371,13 +390,19 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 			sensitiveObjectVector.push_back(objet);
 		#endif
 		#ifdef EDGE_ON
-			name = "SiEdgeOn";
+			#ifdef SENSOR_SI
+				name = "SiEdgeOn";
+			#else
+				name = "InGaAsEdgeOn";
+			#endif
 			G4double position_of_edge_on_sensor = position_of_first_part_of_sensor + sensor_sizeZ/2.;
 			G4ThreeVector SiSensor_pos = G4ThreeVector(0, 0, position_of_edge_on_sensor);
 			G4Box *SiSensor_solid = new G4Box(name, sensor_sizeX/2., sensor_sizeY/2., sensor_sizeZ/2.);
-			G4LogicalVolume* SiSensor_logical_volume = new G4LogicalVolume(SiSensor_solid,         //its solid
-			                      Si_mat,          //its material
-			                      name);           //its name
+			#ifdef SENSOR_SI
+				G4LogicalVolume* SiSensor_logical_volume = new G4LogicalVolume(SiSensor_solid, Si_mat, name); // solid, material, name
+			#else
+				G4LogicalVolume* SiSensor_logical_volume = new G4LogicalVolume(SiSensor_solid, InGaAs_mat, name); // solid, material, name
+			#endif
 			objet = new sensitiveObject(0,                       //no rotation
 			                  SiSensor_pos,                    //at position
 			                  SiSensor_logical_volume,             //its logical volume
@@ -420,13 +445,19 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 			sensitiveObjectVector.push_back(objet);
 		#endif
 		#ifdef FACE_ON
-			name = "SiFaceOn";
+			#ifdef SENSOR_SI
+				name = "SiFaceOn";
+			#else
+				name = "InGaAsEdgeOn";
+			#endif
 			G4double position_of_face_on_sensor = position_of_first_part_of_sensor + sensor_sizeX/2.;
 			G4ThreeVector pos2 = G4ThreeVector(0, 0, position_of_face_on_sensor);
 			G4Box *solidShape2 = new G4Box(name, sensor_sizeX/2., sensor_sizeY/2., sensor_sizeZ/2.);
-			G4LogicalVolume* logicShape2 = new G4LogicalVolume(solidShape2,         //its solid
-			                      Si_mat,          //its material
-			                      name);           //its name
+			#ifdef SENSOR_SI
+				G4LogicalVolume* logicShape2 = new G4LogicalVolume(solidShape2, Si_mat, name); // solid, material, name
+			#else
+				G4LogicalVolume* logicShape2 = new G4LogicalVolume(solidShape2, InGaAs_mat, name); // solid, material, name
+			#endif
 			G4RotationMatrix *yRot2 = new G4RotationMatrix; // Rotates X and Z axes only
 			yRot2->rotateY(M_PI/2.*rad);
 			objet = new sensitiveObject(yRot2,                   //rotation
@@ -438,6 +469,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 			                  0,                       //copy number
 			                  checkOverlaps);          //overlaps checking
 			sensitiveObjectVector.push_back(objet);
+			// maybe also need a Si handle wafer here?
 		#endif
 		name = "Plating";
 		G4double positionZ_of_plating = 50.*cm;
