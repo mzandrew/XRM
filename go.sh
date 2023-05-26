@@ -6,8 +6,8 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 declare -i MAX_CPUS_TO_USE=16 # to limit the max # of CPU cores to use
-declare -i    SHOULD_BUILD=0 # whether we should (re)build the simulations
-declare -i SHOULD_GENERATE=0 # whether we should run the simulations
+declare -i    SHOULD_BUILD=1 # whether we should (re)build the simulations
+declare -i SHOULD_GENERATE=1 # whether we should run the simulations
 declare -i     SHOULD_PLOT=1 # whether we should produce the plots
 
 #declare situation_list="bulk_si edge_on edge_on_CeYAG face_on"
