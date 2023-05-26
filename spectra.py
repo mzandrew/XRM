@@ -22,8 +22,9 @@ import re # search
 import math # log10
 import numpy # float array - sudo apt install -y python3-numpy
 
-#mode = 1 # suppress processes, similar spectra
-mode = 2 # executive summary
+#mode = 1 # show everything by original name
+#mode = 2 # executive summary: incoming, deposited
+mode = 3 # incoming, upstream, scintillator, deposited, downstream
 skim = 1
 STOP_SHORT_CONSTANT = 300000
 stop_short = False # just do the first STOP_SHORT_CONSTANT entries
@@ -133,7 +134,7 @@ for filename in filenames:
 			try:
 				incoming_energy_eV = float(match.group(2))
 			except Exception as message:
-				print("exception: " + str(message) + " while processing file" + filename + " line " + str(lines))
+				print("exception: " + str(message) + " while processing file " + filename + " line " + str(lines))
 				continue
 			histograms[incoming].Fill(incoming_energy_eV/1000.0)
 			#total_energy_incoming_eV += incoming_energy_eV
@@ -141,50 +142,118 @@ for filename in filenames:
 			remaining_string = match.group(3)
 			not_done = len(remaining_string)
 			while not_done:
+				handled = False
 				(deposited_energy_eV, tag, not_done, remaining_string) = parse_string(remaining_string)
+				name = tag
 				match = re.search("(phot|eIoni|msc|compt|eBrem|Rayl)", tag)
 				if match:
+					handled = True
 					continue
-				match = re.search("(SiBulk|HeBox)", tag)
-				if match:
-					continue
-				match = re.search("Air", tag)
-				if match:
-					continue
-				name = filename + "_" + tag
-				match = re.search("bulk_si_(BeFilter|BeWindow|DiamondMask|GoldMask)", name)
-				if match:
-					continue
-				match = re.search("ER-edge_on_scint_(BeFilter|BeWindow|DiamondMask|SiBeamDump)", name)
-				if match:
-					continue
-				match = re.search("ER-edge_on_scint_gold_(BeFilter|BeWindow|DiamondMask|SiBeamDump)", name)
-				if match:
-					continue
-				if 2==mode: # executive summary of signal:no signal
-					match = re.search("(BeFilter|BeWindow|scint_gold_GoldMask|DiamondMask|LuAG:Ce|SiBeamDump)", name)
-					#match = re.search("(BeFilter|BeWindow|scint_gold_GoldMask|DiamondMask|LuAG:Ce|Copper|SiBeamDump)", name)
+				if not handled:
+					match = re.search("(SiBulk|HeBox)", tag)
 					if match:
-						continue
-					#match = re.search("(Copper)", name)
-					#if match:
-					#	continue
-				#match = re.search("(SiEdgeOn|CopperBlock|SiHandle|WireBonds|Plating)", tag)
+						handled = True
+						if 2==mode:
+							continue
+						elif 3==mode:
+							name = "other"
+				if not handled:
+					match = re.search("Air", tag)
+					if match:
+						handled = True
+						if 2==mode:
+							continue
+						elif 3==mode:
+							name = "other"
+				if not handled:
+					match = re.search("World", tag)
+					if match:
+						handled = True
+						if 2==mode:
+							name = "world"
+							continue
+						elif 3==mode:
+							name = "other"
+#				if not handled:
+#					match = re.search("(BeFilter|BeWindow|DiamondMask|GoldMask|LuAG:Ce|Ce:YAG)", tag)
+#					if match:
+#						handled = True
+#						if 2==mode: # executive summary of signal:no signal
+#							continue
+#						elif 3==mode:
+#							name = "upstream"
+				fullname = filename + "_" + tag
+#				if not handled:
+#					match = re.search("bulk_si_(BeFilter|BeWindow|DiamondMask|GoldMask|LuAG:Ce|Ce:YAG)", fullname)
+#					if match:
+#						handled = True
+#						if 2==mode: # executive summary of signal:no signal
+#							continue
+#						elif 3==mode:
+#							name = "upstream"
+#				if not handled:
+#					match = re.search("ER-edge_on_scint_(BeFilter|BeWindow|DiamondMask|GoldMask|SiBeamDump|LuAG:Ce|Ce:YAG)", fullname)
+#					if match:
+#						handled = True
+#						if 2==mode: # executive summary of signal:no signal
+#							continue
+#						elif 3==mode:
+#							name = "upstream"
+				if not handled:
+					match = re.search("ER-edge_on_scint_gold_(BeFilter|BeWindow|DiamondMask|GoldMask)", fullname)
+					if match:
+						handled = True
+						if 2==mode: # executive summary of signal:no signal
+							continue
+						elif 3==mode:
+							name = "upstream"
+				if not handled:
+					match = re.search("LuAG:Ce|Ce:YAG", tag)
+					if match:
+						handled = True
+						if 2==mode: # executive summary of signal:no signal
+							continue
+						elif 3==mode:
+							name = "scintillator"
+#				if not handled:
+#					match = re.search("(BeFilter|BeWindow|scint_gold_GoldMask|DiamondMask|SiBeamDump|LuAG:Ce|Ce:YAG)", fullname)
+#					if match:
+#						handled = True
+#						if 2==mode: # executive summary of signal:no signal
+#							continue
+#						elif 3==mode:
+#							name = "upstream"
+				if not handled:
+					match = re.search("(SiBeamDump)", tag)
+					if match:
+						handled = True
+						if 2==mode: # executive summary of signal:no signal
+							continue
+						elif 3==mode:
+							name = "downstream"
+				#match = re.search("(BeFilter|BeWindow|scint_gold_GoldMask|DiamondMask|LuAG:Ce|Copper|SiBeamDump)", tag)
 				#name = filename + "_SiEdgeOn_CopperBlock_SiHandle_WireBonds_Plating"
-				name = "deposited"
-				if epsilon1_eV < deposited_energy_eV:
-					try:
-						total_energy_deposited_eV[name] += deposited_energy_eV
-					except:
-						total_energy_deposited_eV[name] = deposited_energy_eV
-#				else:
-#					print("ignoring " + str(deposited_energy_eV) + " eV")
-				if epsilon2_eV < deposited_energy_eV:
-					try:
-						histograms[name].Fill(deposited_energy_eV/1000.0)
-					except:
-						histograms[name] = ROOT.TH1F(name, title, number_of_bins, fbin_widths)
-						histograms[name].Fill(deposited_energy_eV/1000.0)
+				if not handled:
+					match = re.search("(SiEdgeOn|CopperSlit|CopperBlock|SiHandle|WireBonds|Plating)", tag)
+					if match:
+						handled = True
+						name = "deposited"
+				if not handled:
+					print("unhandled case: " + tag)
+				if handled:
+					if epsilon1_eV < deposited_energy_eV:
+						try:
+							total_energy_deposited_eV[name] += deposited_energy_eV
+						except:
+							total_energy_deposited_eV[name] = deposited_energy_eV
+#					else:
+#						print("ignoring " + str(deposited_energy_eV) + " eV")
+					if epsilon2_eV < deposited_energy_eV:
+						try:
+							histograms[name].Fill(deposited_energy_eV/1000.0)
+						except:
+							histograms[name] = ROOT.TH1F(name, title, number_of_bins, fbin_widths)
+							histograms[name].Fill(deposited_energy_eV/1000.0)
 			#print(str(event_number) + " " + str(incoming_energy) + " " + str(deposited_energy))
 			if 0==matching_lines%1000000:
 				print("read " + str(matching_lines) + " lines from file " + filename + " so far...")
