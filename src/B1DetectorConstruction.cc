@@ -1,5 +1,5 @@
 // modified from original exampleB1 2019-04 by mza
-// last updated 2021-05-13 by mza
+// last updated 2021-06-06 by mza
 
 // ********************************************************************
 // * License and Disclaimer                                           *
@@ -131,9 +131,9 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 		G4double sensor_sizeY = 6.75*mm;
 		G4double sensor_sizeZ = 2.415*mm;
 	#else
-		G4double sensor_sizeX = 25.*um; // ??
-		G4double sensor_sizeY = 6.75*mm; // ??
-		G4double sensor_sizeZ = 0.950*mm;
+		G4double sensor_sizeX = 1.5*um; // ??
+		G4double sensor_sizeY = 6.4*mm; // ??
+		G4double sensor_sizeZ = 0.5*mm;
 	#endif
 
 	G4Material *world_mat = nist->FindOrBuildMaterial("G4_AIR");
@@ -147,13 +147,21 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 	G4Material *In_mat = nist->FindOrBuildMaterial("G4_In");
 	G4Material *Ga_mat = nist->FindOrBuildMaterial("G4_Ga");
 	G4Material *As_mat = nist->FindOrBuildMaterial("G4_As");
-	#ifndef SENSOR_SI
+	G4Material *P_mat = nist->FindOrBuildMaterial("G4_P");
+	#ifdef SENSOR_SI
+		G4Material *Handle_mat = nist->FindOrBuildMaterial("G4_Si");
+	#else
 		// Ga0.47In0.53As
 		G4double density_InGaAs = 5.68*g/cm3;
 		G4Material *InGaAs_mat = new G4Material("InGaAs", density_InGaAs, ncomponents=3);
 		InGaAs_mat->AddMaterial(In_mat, 26.5*perCent);
 		InGaAs_mat->AddMaterial(Ga_mat, 23.5*perCent);
 		InGaAs_mat->AddMaterial(As_mat, 50.0*perCent);
+		G4double density_InP = 4.81*g/cm3;
+		G4Material *InP_mat = new G4Material("InP", density_InP, ncomponents=2);
+		InP_mat->AddMaterial(In_mat, 50.0*perCent);
+		InP_mat->AddMaterial(P_mat, 50.0*perCent);
+		G4Material *Handle_mat = InP_mat;
 	#endif
 	G4String name = "nothing";
 
@@ -412,15 +420,15 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct() {
 			                  0,                       //copy number
 			                  checkOverlaps);          //overlaps checking
 			sensitiveObjectVector.push_back(objet);
-			name = "SiHandle";
-			G4ThreeVector SiHandle_pos = G4ThreeVector(handle_sizeX/2., 0, position_of_first_part_of_sensor + handle_sizeZ/2.);
-			G4Box *SiHandle_solid = new G4Box(name, handle_sizeX/2., handle_sizeY/2., handle_sizeZ/2.);
-			G4LogicalVolume* SiHandle_logical_volume = new G4LogicalVolume(SiHandle_solid,         //its solid
-			                      Si_mat,          //its material
+			name = "Handle";
+			G4ThreeVector Handle_pos = G4ThreeVector(handle_sizeX/2., 0, position_of_first_part_of_sensor + handle_sizeZ/2.);
+			G4Box *Handle_solid = new G4Box(name, handle_sizeX/2., handle_sizeY/2., handle_sizeZ/2.);
+			G4LogicalVolume* Handle_logical_volume = new G4LogicalVolume(Handle_solid,         //its solid
+			                      Handle_mat,          //its material
 			                      name);           //its name
 			objet = new sensitiveObject(0,                       //no rotation
-			                  SiHandle_pos,                    //at position
-			                  SiHandle_logical_volume,             //its logical volume
+			                  Handle_pos,                    //at position
+			                  Handle_logical_volume,             //its logical volume
 			                  name,                //its name
 			                  logicEnv,                //its mother  volume
 			                  false,                   //no boolean operation

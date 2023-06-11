@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # written 2019-04-30 by mza
-# last updated 2023-05-26 by mza
+# last updated 2023-06-11 by mza
 
 import os # path, environ
 import sys # path, exit, argv
@@ -234,9 +234,9 @@ for filename in filenames:
 						elif 3==mode:
 							name = "downstream"
 				#match = re.search("(BeFilter|BeWindow|scint_gold_GoldMask|DiamondMask|LuAG:Ce|Copper|SiBeamDump)", tag)
-				#name = filename + "_SiEdgeOn_CopperBlock_SiHandle_WireBonds_Plating"
+				#name = filename + "_SiEdgeOn_CopperBlock_Handle_WireBonds_Plating"
 				if not handled:
-					match = re.search("(CopperSlit|CopperBlock|SiHandle|WireBonds|Plating)", tag)
+					match = re.search("(CopperSlit|CopperBlock|Handle|WireBonds|Plating)", tag)
 					if match:
 						handled = True
 						name = "apparatus"
@@ -328,7 +328,7 @@ for key in sorted(total_power_deposited_W, key=total_power_deposited_W.get, reve
 	if match:
 		j_should_increment = 0
 		histograms[key].SetLineColor(ROOT.kRed)
-	match = re.search("(SiHandle|apparatus)", key)
+	match = re.search("(Handle|apparatus)", key)
 	if match:
 		j_should_increment = 0
 		histograms[key].SetLineColor(ROOT.kBlue+2)
