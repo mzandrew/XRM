@@ -33,6 +33,8 @@ declare -i      FAKE_BUILD=0 # used to test this script
 declare -i   FAKE_GENERATE=0 # used to test this script
 declare -i       FAKE_PLOT=0 # used to test this script
 
+declare -i PARALLEL_GENERATE=0
+
 declare -i NUMBER_OF_SITUATION_PER_RUN=0
 for situation in $situation_list; do
 	NUMBER_OF_SITUATION_PER_RUN=$((NUMBER_OF_SITUATION_PER_RUN+1))
@@ -46,13 +48,12 @@ if [ $NUM_CPUS -gt $MAX_CPUS_TO_USE ]; then
 	NUM_CPUS=$MAX_CPUS_TO_USE
 fi
 #echo "NUM_CPUS = $NUM_CPUS"
-declare -i PARALLEL_GENERATE=0
-if [ $TOTAL_NUMBER_OF_RUNS -lt $NUM_CPUS ]; then
-	PARALLEL_GENERATE=1
-	NUM_CPUS=$((NUM_CPUS/NUMBER_OF_RUNS))
-else
-	PARALLEL_GENERATE=0
-fi
+#if [ $TOTAL_NUMBER_OF_RUNS -lt $NUM_CPUS ]; then
+#	PARALLEL_GENERATE=1
+#	NUM_CPUS=$((NUM_CPUS/NUMBER_OF_RUNS))
+#else
+#	PARALLEL_GENERATE=0
+#fi
 #echo "PARALLEL_GENERATE = $PARALLEL_GENERATE"
 #echo "NUM_CPUS = $NUM_CPUS"
 

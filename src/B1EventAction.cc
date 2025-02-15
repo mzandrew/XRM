@@ -1,4 +1,3 @@
-//
 // ********************************************************************
 // * License and Disclaimer                                           *
 // *                                                                  *
@@ -23,7 +22,6 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-//
 /// \file B1EventAction.cc
 /// \brief Implementation of the B1EventAction class
 
@@ -31,19 +29,15 @@
 #include "B1RunAction.hh"
 
 #include "G4Event.hh"
-#include "G4RunManager.hh"
+#include "G4MTRunManager.hh"
 #include <iterator>
 #include "B1DetectorConstruction.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-B1EventAction::B1EventAction(B1RunAction* runAction)
-: G4UserEventAction(),
-  fRunAction(runAction),
-  fEdep(0.)
-{
+B1EventAction::B1EventAction(B1RunAction* runAction) : G4UserEventAction(), fRunAction(runAction), fEdep(0.) {
 //	G4cout << "B1EventAction constructor called" << G4endl;
-} 
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -53,10 +47,10 @@ B1EventAction::~B1EventAction() {
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void B1EventAction::BeginOfEventAction(const G4Event*) {    
+void B1EventAction::BeginOfEventAction(const G4Event*) {
 //	G4cout << "BeginOfEventAction called" << G4endl;
   fEdep = 0.;
-	B1DetectorConstruction *detector = (B1DetectorConstruction*) G4RunManager::GetRunManager()->GetUserDetectorConstruction();
+	B1DetectorConstruction *detector = (B1DetectorConstruction*) G4MTRunManager::GetRunManager()->GetUserDetectorConstruction();
 	for (std::vector<sensitiveObject*>::iterator i=detector->sensitiveObjectVector.begin(); i!=detector->sensitiveObjectVector.end(); i++) {
 		(*i)->clearDepositedEnergy();
 	}
@@ -67,8 +61,8 @@ void B1EventAction::BeginOfEventAction(const G4Event*) {
 const float epsilon = 1.e-3*CLHEP::eV;
 //const float silicon_work_function = epsilon;
 //const G4double silicon_work_function = 4.91*CLHEP::eV;
-void B1EventAction::EndOfEventAction(const G4Event*) {   
-	B1DetectorConstruction *detector = (B1DetectorConstruction*) G4RunManager::GetRunManager()->GetUserDetectorConstruction();
+void B1EventAction::EndOfEventAction(const G4Event*) {
+	B1DetectorConstruction *detector = (B1DetectorConstruction*) G4MTRunManager::GetRunManager()->GetUserDetectorConstruction();
 	for (std::vector<sensitiveObject*>::iterator i=detector->sensitiveObjectVector.begin(); i!=detector->sensitiveObjectVector.end(); i++) {
 		G4double energy_deposited = (*i)->getDepositedEnergy();
 		if (energy_deposited > epsilon) {
