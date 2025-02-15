@@ -61,8 +61,8 @@ B1RunAction::B1RunAction()
 
   // Register accumulable to the accumulable manager
   G4AccumulableManager* accumulableManager = G4AccumulableManager::Instance();
-  accumulableManager->RegisterAccumulable(fEdep);
-  accumulableManager->RegisterAccumulable(fEdep2); 
+  accumulableManager->Register(fEdep);
+  accumulableManager->Register(fEdep2); // /home/mza/build/xrm/src/B1RunAction.cc:65:42: warning: ‘G4bool G4AccumulableManager::RegisterAccumulable(G4AccValue<T>&) [with T = double; G4bool = bool]’ is deprecated: Use `G4AccumulableManager::Register` instead [-Wdeprecated-declarations]
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
