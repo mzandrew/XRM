@@ -3,6 +3,21 @@
 # written 2019-04-30 by mza
 # last updated 2025-02-17 by mza
 
+#mode = 1 # show everything by original name
+#mode = 2 # executive summary: incoming, deposited
+mode = 3 # incoming, scintillator, apparatus, other, sensor, downstream
+skim = 1
+STOP_SHORT_CONSTANT = 300000
+stop_short = False # just do the first STOP_SHORT_CONSTANT entries
+number_of_bins = 100
+epsilon1_eV = 4.9 # for total_energy_deposited_eV
+epsilon2_eV = 99.9 # for histograms
+plot_epsilon_W = 0.001 # this is a comparison *after* scaling to the full beam power
+energy_actually_simulated_within_geant_J = 10.0
+power_ratio = {}
+power_ratio["HER"] = 40.36 / energy_actually_simulated_within_geant_J
+power_ratio["LER"] = 21.46 / energy_actually_simulated_within_geant_J
+
 import os # path, environ
 import sys # path, exit, argv, stderr
 #sys.path.append(ps.path.join(os.path.expanduser("~"), "/build/root/lib"))
@@ -22,13 +37,6 @@ import re # search
 import math # log10
 import numpy # float array - sudo apt install -y python3-numpy
 
-#mode = 1 # show everything by original name
-#mode = 2 # executive summary: incoming, deposited
-mode = 3 # incoming, upstream, scintillator, deposited, downstream
-skim = 1
-STOP_SHORT_CONSTANT = 300000
-stop_short = False # just do the first STOP_SHORT_CONSTANT entries
-number_of_bins = 100
 low = 0.1
 high = 100.
 factor = 10.**(math.log10(high/low)/number_of_bins)
@@ -38,10 +46,7 @@ for i in range(number_of_bins - 1):
 	bin_widths.append(bin_widths[i]*factor)
 bin_widths.append(high)
 fbin_widths = numpy.array(bin_widths, dtype='float64')
-epsilon1_eV = 4.9 # for total_energy_deposited_eV
-epsilon2_eV = 99.9 # for histograms
 legend1 = ROOT.TLegend(0.11, 0.6, 0.57, 0.8)
-plot_epsilon_W = 0.001 # this is a comparison *after* scaling to the full beam power
 
 J_per_eV = 1.60217733e-19
 J_per_MeV = 1.0e6 * J_per_eV
@@ -76,18 +81,16 @@ else:
 		filenames.append(each)
 histograms = {}
 i = 0
-title = " vs ".join(filenames)
+#title = " vs ".join(filenames)
 
 match = re.search("HER", png_filename)
 if match:
-	power_ratio = 40.36 # HER
-	title = "HER"
+	station = "HER"
 else:
-	power_ratio = 21.48 # LER
-	title = "LER"
-power_ratio *= skim
+	station = "LER"
+power_ratio[station] *= skim
 
-histogram_stack = ROOT.THStack("histogram_stack", title)
+histogram_stack = ROOT.THStack("histogram_stack", station)
 
 total_energy_deposited_J = {}
 total_power_deposited_W = {}
@@ -102,16 +105,16 @@ def determine_and_show_energy_per_bunch_and_power():
 #		match = re.search(string, key)
 #		if match:
 		#print("total_energy_deposited[" + key + "] " + str(total_energy_deposited_eV[key]/1.e6) + " MeV per bunch")
-		total_energy_deposited_J[key] = J_per_MeV * total_energy_deposited_eV[key] / 1.e6
+		total_energy_deposited_J[key] = J_per_eV * total_energy_deposited_eV[key]
 		#print("total_energy_deposited[" + key + "] " + str(total_energy_deposited_J[key]) + " J per bunch")
 		total_power_deposited_W[key] = total_energy_deposited_J[key] * bunches_per_second
 		#print("total_power_deposited[" + key + "] %.3f W" % total_power_deposited_W[key])
 		match = re.search("incoming", key)
 		if match:
-			print("%.3f W %s" % (power_ratio*total_power_deposited_W[key], key))
+			print("%.3f W %s" % (power_ratio[station]*total_power_deposited_W[key], key))
 		else:
-			#print("%.3f W deposited in %s" % (power_ratio*total_power_deposited_W[key], key))
-			print("%.3f W %s" % (power_ratio*total_power_deposited_W[key], key))
+			#print("%.3f W deposited in %s" % (power_ratio[station]*total_power_deposited_W[key], key))
+			print("%.3f W %s" % (power_ratio[station]*total_power_deposited_W[key], key))
 
 for filename in filenames:
 	print("reading file " + filename + "...")
@@ -124,7 +127,7 @@ for filename in filenames:
 	#incoming = filename + "_incoming"
 	incoming = "incoming"
 	total_energy_deposited_eV[incoming] = 0.
-	histograms[incoming] = ROOT.TH1F(incoming, title, number_of_bins, fbin_widths)
+	histograms[incoming] = ROOT.TH1F(incoming, station, number_of_bins, fbin_widths)
 	for line in open(filename):
 		lines = lines + 1
 		if not 0==lines%skim:
@@ -166,6 +169,7 @@ for filename in filenames:
 							continue
 						elif 3==mode:
 							name = "other"
+							continue
 				if not handled:
 					match = re.search("Air", tag)
 					if match:
@@ -174,6 +178,7 @@ for filename in filenames:
 							continue
 						elif 3==mode:
 							name = "other"
+							continue
 				if not handled:
 					match = re.search("World", tag)
 					if match:
@@ -216,6 +221,7 @@ for filename in filenames:
 							continue
 						elif 3==mode:
 							name = "upstream"
+							continue
 						# BeFilter 32W HER / 16W LER
 						# GoldMask 27W HER / 15W LER
 				if not handled:
@@ -268,7 +274,7 @@ for filename in filenames:
 						try:
 							histograms[name].Fill(deposited_energy_eV/1000.0)
 						except:
-							histograms[name] = ROOT.TH1F(name, title, number_of_bins, fbin_widths)
+							histograms[name] = ROOT.TH1F(name, station, number_of_bins, fbin_widths)
 							histograms[name].Fill(deposited_energy_eV/1000.0)
 			#print(str(event_number) + " " + str(incoming_energy) + " " + str(deposited_energy))
 			if 0==matching_lines%1000000:
@@ -283,11 +289,11 @@ for filename in filenames:
 
 	#normalization = histograms[i].GetEntries()
 	#histograms[i].Scale(1./normalization)
-	#histograms[i].GetYaxis().SetTitle("relative abundance")
+	#histograms[i].GetYaxis().Setstation("relative abundance")
 
 for key in sorted(total_power_deposited_W, key=total_power_deposited_W.get):
-	histograms[key].Scale(power_ratio)
-	total_power_deposited_W[key] *= power_ratio
+	histograms[key].Scale(power_ratio[station])
+	total_power_deposited_W[key] *= power_ratio[station]
 
 #for key in sorted(total_power_deposited_W, key=total_power_deposited_W.get):
 #	print(key + " " + str(total_power_deposited_W[key]))
