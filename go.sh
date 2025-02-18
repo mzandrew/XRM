@@ -5,17 +5,16 @@
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-declare -i MAX_CPUS_TO_USE=15 # to limit the max # of CPU cores to use
-declare -i    SHOULD_BUILD=1 # whether we should (re)build the simulations
-declare -i SHOULD_GENERATE=1 # whether we should (re)run the simulations
-declare -i     SHOULD_PLOT=1 # whether we should (re)produce the plots
+declare -i LEAVE_THIS_MANY_CPUS_UNUSED=2 # to limit the max # of CPU cores to use
+declare -i                SHOULD_BUILD=1 # whether we should (re)build the simulations
+declare -i             SHOULD_GENERATE=1 # whether we should (re)run the simulations
+declare -i                 SHOULD_PLOT=1 # whether we should (re)produce the plots
 
 #declare situation_list="bulk_si edge_on edge_on_CeYAG face_on"
 #declare situation_list="bulk_si edge_on edge_on_scint edge_on_scint_gold"
 #declare situation_list="edge_on edge_on_scint edge_on_scint_gold"
 declare situation_list="edge_on_scint_gold"
 declare -i NUMBER_OF_RUNS=2 # half HER, half LER
-declare -x G4FORCENUMBEROFTHREADS=15
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -44,10 +43,9 @@ done
 declare -i TOTAL_NUMBER_OF_RUNS=$((NUMBER_OF_RUNS*NUMBER_OF_SITUATION_PER_RUN))
 #echo "TOTAL_NUMBER_OF_RUNS = $TOTAL_NUMBER_OF_RUNS"
 declare -i NUM_CPUS=$(grep -c "^processor" /proc/cpuinfo)
-if [ $NUM_CPUS -gt $MAX_CPUS_TO_USE ]; then
-	NUM_CPUS=$MAX_CPUS_TO_USE
-fi
-#echo "NUM_CPUS = $NUM_CPUS"
+NUM_CPUS=$((NUM_CPUS-LEAVE_THIS_MANY_CPUS_UNUSED))
+echo "using $NUM_CPUS threads"
+declare -xi G4FORCENUMBEROFTHREADS=$NUM_CPUS
 #if [ $TOTAL_NUMBER_OF_RUNS -lt $NUM_CPUS ]; then
 #	PARALLEL_GENERATE=1
 #	NUM_CPUS=$((NUM_CPUS/NUMBER_OF_RUNS))
