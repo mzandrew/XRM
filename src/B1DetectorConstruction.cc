@@ -1,5 +1,5 @@
 // modified from original exampleB1 2019-04 by mza
-// last updated 2021-06-06 by mza
+// last updated 2025-02-17 by mza
 
 // ********************************************************************
 // * License and Disclaimer                                           *
@@ -28,7 +28,6 @@
 /// \brief Implementation of the B1DetectorConstruction class
 
 #include "B1DetectorConstruction.hh"
-
 #include "G4NistManager.hh"
 #include "G4SubtractionSolid.hh"
 #include "G4Box.hh"
@@ -46,20 +45,16 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-B1DetectorConstruction::B1DetectorConstruction()
-: G4VUserDetectorConstruction(),
-  fScoringVolume(0)
-{ }
+B1DetectorConstruction::B1DetectorConstruction() : G4VUserDetectorConstruction(), fScoringVolume(0) { }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-B1DetectorConstruction::~B1DetectorConstruction()
-{ }
+B1DetectorConstruction::~B1DetectorConstruction() { }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4double z_position_of_gun;
 
-//#define SENSOR_SI // otherwise InGaAs
+#define SENSOR_SI // otherwise InGaAs
 
 #ifndef BULK_SI_SITUATION
 #define REAL_XRM_SITUATION
