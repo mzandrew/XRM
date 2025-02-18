@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
 # written 2019-04-30 by mza
-# last updated 2023-06-11 by mza
+# last updated 2025-02-17 by mza
 
 import os # path, environ
-import sys # path, exit, argv
+import sys # path, exit, argv, stderr
 #sys.path.append(ps.path.join(os.path.expanduser("~"), "/build/root/lib"))
 try:
 	import ROOT # TH1F
@@ -48,13 +48,20 @@ J_per_MeV = 1.0e6 * J_per_eV
 bunches_per_second = 508.8875e6
 
 def parse_string(string):
-#	print(string)
+	deposited_energy_eV = 0.0
+	tag = "unknown"
+	remaining_string = ""
+	not_done = 0
 	match = re.search(" +([.e0-9-]+) ([:a-zA-Z0-9]+)(.*)$", string)
 	if match:
 		deposited_energy_eV = float(match.group(1))
 		tag = match.group(2)
 		remaining_string = match.group(3)
 		not_done = len(remaining_string)
+	else:
+		sys.stderr.write("\nerror parsing: " + original_string)
+		sys.stderr.flush()
+		#print(string)
 	return (deposited_energy_eV, tag, not_done, remaining_string)
 
 #if __name__ == "__main__":
@@ -123,6 +130,8 @@ for filename in filenames:
 		if not 0==lines%skim:
 			continue
 		line = line.rstrip("\n\r")
+		global original_string
+		original_string = line
 		for thread_id in range(0,32):
 			line = line.replace("G4WT" + str(thread_id) + " > ", "")
 		# evt# incoming_E E1 process1 E2 process2 ... depE_a object_a depE_b object_b ...
